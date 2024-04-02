@@ -1,5 +1,5 @@
 blueprint:
-  name: Set Indicator Light for SWITCH on Scene Controller with State Overwrite
+  name: ZEN32 LED state
   description: For Zooz ZEN32. Sets the indicator color when switch is off, on or unavailable.
   domain: automation
   input:
