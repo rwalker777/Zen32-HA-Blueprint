@@ -1,0 +1,203 @@
+blueprint:
+  name: Set Indicator Light for SWITCH on Scene Controller with State Overwrite
+  description: For Zooz ZEN32. Sets the indicator color when switch is off, on or unavailable.
+  domain: automation
+  input:
+    zooz_switch:
+      name: Zooz Switch
+      description: List of available Zooz ZEN32 switches.
+      selector:
+        device:
+          integration: zwave_js
+          manufacturer: Zooz
+          model: ZEN32
+    target_light:
+      name: Switch
+      description: The switch to link to button
+      selector:
+        entity:
+          domain: switch
+    scene_button:
+      name: Scene Button
+      description: The button to link to light
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - label: Scene 5 (Big Button)
+              value: '0' # param 1 for on/off, param 6 for color
+            - label: Scene 1 (Top Left)
+              value: '1' # param 2 for on/off, param 7 for color
+            - label: Scene 2 (Top Right)
+              value: '2' # param 3 for on/off, param 8 for color
+            - label: Scene 3 (Bottom Left)
+              value: '3' # param 4 for on/off, param 9 for color
+            - label: Scene 4 (Bottom Right)
+              value: '4' # param 5 for on/off, param 10 for color
+    off_state:
+      name: Off State
+      description: Led state when light is off
+      default: Led On
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - label: Led On
+              value: '3'
+            - label: Led Off
+              value: '2'
+    off_color:
+      name: State Off Color 
+      description: Color for led when switch is off (default white)
+      default: White
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - label: White
+              value: '0'
+            - label: Blue
+              value: '1'
+            - label: Green
+              value: '2'
+            - label: Red
+              value: '3'
+            - label: Magenta
+              value: '4'
+            - label: Yellow
+              value: '5'
+            - label: Cyan
+              value: '6'
+    on_state:
+      name: On State
+      description: Led state when light is On
+      default: Led On
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - label: Led On
+              value: '3'
+            - label: Led Off
+              value: '2'
+    on_color:
+      name: State On Color 
+      description: Color for led when switch is on (default white)
+      default: Green
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - label: White
+              value: '0'
+            - label: Blue
+              value: '1'
+            - label: Green
+              value: '2'
+            - label: Red
+              value: '3'
+            - label: Magenta
+              value: '4'
+            - label: Yellow
+              value: '5'
+            - label: Cyan
+              value: '6'            
+    unavail_state:
+      name: Unavailable State
+      description: Led state when light is unavailable
+      default: Led On
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - label: Led On
+              value: '3'
+            - label: Led Off
+              value: '2'
+    unavail_color:
+      name: Unavailable Color 
+      description: Color for led when switch is unavailable (default red)
+      default: Red
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - label: White
+              value: '0'
+            - label: Blue
+              value: '1'
+            - label: Green
+              value: '2'
+            - label: Red
+              value: '3'
+            - label: Magenta
+              value: '4'
+            - label: Yellow
+              value: '5'
+            - label: Cyan
+              value: '6'
+
+mode: single
+max_exceeded: silent
+variables:
+  controller_id: !input 'zooz_switch'
+  light_id: !input 'target_light'
+  button_id: !input 'scene_button'
+  toggle_offset: 1
+  color_offset: 6
+  on_state: !input 'on_state'
+  on_color: !input 'on_color'
+  off_state: !input 'off_state'
+  off_color: !input 'off_color'
+  unavail_state: !input 'unavail_state'
+  unavail_color: !input 'unavail_color'
+trigger:
+  - platform: state
+    entity_id: !input 'target_light'
+action:
+- choose:
+  - conditions: '{{ is_state(light_id, ''off'') }}' # switch off
+    sequence:
+      - parallel:
+        - service: zwave_js.set_config_parameter # set indicator color
+          data:
+            parameter: '{{ (button_id | int) + (color_offset | int) }}'
+            value: '{{ off_color }}'
+          target: 
+            device_id: '{{ controller_id }}'
+        - service: zwave_js.set_config_parameter # turn indicator on/off
+          data:
+            parameter: '{{ (button_id | int) + (toggle_offset | int) }}'
+            value: '{{ off_state }}'
+          target: 
+            device_id: '{{ controller_id }}'
+  - conditions: '{{ is_state(light_id, ''on'') }}' # switch on
+    sequence:
+      - parallel:
+        - service: zwave_js.set_config_parameter # set indicator color
+          data:
+            parameter: '{{ (button_id | int) + (color_offset | int) }}'
+            value: '{{ on_color }}'
+          target: 
+            device_id: '{{ controller_id }}'
+        - service: zwave_js.set_config_parameter # turn indicator on/off
+          data:
+            parameter: '{{ (button_id | int) + (toggle_offset | int) }}'
+            value: '{{ on_state }}'
+          target: 
+            device_id: '{{ controller_id }}'
+  - conditions: '{{ is_state(light_id, ''unavailable'') }}' # switch unavailable
+    sequence:
+      - parallel:
+        - service: zwave_js.set_config_parameter # set indicator color
+          data:
+            parameter: '{{ (button_id | int) + (color_offset | int) }}'
+            value: '{{ unavail_color }}'
+          target: 
+            device_id: '{{ controller_id }}'
+        - service: zwave_js.set_config_parameter # turn indicator on/off
+          data:
+            parameter: '{{ (button_id | int) + (toggle_offset | int) }}'
+            value: '{{ unavail_state }}'
+          target: 
+            device_id: '{{ controller_id }}'
