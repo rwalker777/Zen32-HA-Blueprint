@@ -1,6 +1,6 @@
 blueprint:
   name: ZEN32 LED state
-  description: For Zooz ZEN32. Sets the indicator color when switch is off, on or unavailable.
+  description: For Zooz ZEN32. Sets the indicator color when linked switch is off, on or unavailable.
   domain: automation
   input:
     zooz_switch:
@@ -11,15 +11,18 @@ blueprint:
           integration: zwave_js
           manufacturer: Zooz
           model: ZEN32
+          multiple: false
     target_light:
       name: Switch
-      description: The switch to link to button
+      description: The switch to track
       selector:
         entity:
-          domain: switch
+          domain:
+          - switch
+          multiple: false
     scene_button:
       name: Scene Button
-      description: The button to link to light
+      description: The button to link
       selector:
         select:
           mode: dropdown
