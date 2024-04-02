@@ -8,9 +8,13 @@ blueprint:
       description: List of available Zooz ZEN32 switches.
       selector:
         device:
-          integration: zwave_js
-          manufacturer: Zooz
-          model: ZEN32
+          filter:
+            - integration: zwave_js
+              manufacturer: Zooz
+              model: ZEN32
+            - integration: zwave_js
+              manufacturer: Zooz
+              model: ZEN32 800LR
           multiple: false
     target_light:
       name: Switch
