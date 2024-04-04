@@ -1,6 +1,6 @@
 blueprint:
   name: ZEN32 LED state
-  description: For Zooz ZEN32. Sets the indicator color when linked switch is off, on or unavailable.  4.2024.2
+  description: For Zooz ZEN32. Sets the indicator color when linked entity is off, on or unavailable.  4.2024.3
   domain: automation
   input:
     zooz_switch:
@@ -16,7 +16,7 @@ blueprint:
               manufacturer: Zooz
               model: ZEN32 800LR
           multiple: false
-    target_light:
+    target_entity:
       name: Switch
       description: The switch to track
       selector:
@@ -53,7 +53,7 @@ blueprint:
               value: '4' # param 5 for on/off, param 10 for color
     off_state:
       name: Off State
-      description: Led state when light is off
+      description: Led state when target is off
       default: Led On
       selector:
         select:
@@ -65,7 +65,7 @@ blueprint:
               value: '2'
     off_color:
       name: State Off Color 
-      description: Color for led when switch is off (default white)
+      description: Color for led when target is off (default white)
       default: White
       selector:
         select:
@@ -87,7 +87,7 @@ blueprint:
               value: '6'
     on_state:
       name: On State
-      description: Led state when light is On
+      description: Led state when target is On
       default: Led On
       selector:
         select:
@@ -99,7 +99,7 @@ blueprint:
               value: '2'
     on_color:
       name: State On Color 
-      description: Color for led when switch is on (default white)
+      description: Color for led when target is on (default white)
       default: Green
       selector:
         select:
@@ -121,7 +121,7 @@ blueprint:
               value: '6'            
     unavail_state:
       name: Unavailable State
-      description: Led state when light is unavailable
+      description: Led state when target is unavailable
       default: Led On
       selector:
         select:
@@ -133,7 +133,7 @@ blueprint:
               value: '2'
     unavail_color:
       name: Unavailable Color 
-      description: Color for led when switch is unavailable (default red)
+      description: Color for led when target is unavailable (default red)
       default: Red
       selector:
         select:
@@ -158,7 +158,7 @@ mode: single
 max_exceeded: silent
 variables:
   controller_id: !input 'zooz_switch'
-  light_id: !input 'target_light'
+  entity_id: !input 'target_entity'
   button_id: !input 'scene_button'
   toggle_offset: 1
   color_offset: 6
@@ -170,10 +170,10 @@ variables:
   unavail_color: !input 'unavail_color'
 trigger:
   - platform: state
-    entity_id: !input 'target_light'
+    entity_id: !input 'target_entity'
 action:
 - choose:
-  - conditions: '{{ is_state(light_id, ''off'') }}' # switch off
+  - conditions: '{{ is_state(entity_id, ''off'') }}' # switch off
     sequence:
       - parallel:
         - service: zwave_js.set_config_parameter # set indicator color
@@ -188,7 +188,7 @@ action:
             value: '{{ off_state }}'
           target: 
             device_id: '{{ controller_id }}'
-  - conditions: '{{ is_state(light_id, ''on'') }}' # switch on
+  - conditions: '{{ is_state(entity_id, ''on'') }}' # switch on
     sequence:
       - parallel:
         - service: zwave_js.set_config_parameter # set indicator color
@@ -203,7 +203,7 @@ action:
             value: '{{ on_state }}'
           target: 
             device_id: '{{ controller_id }}'
-  - conditions: '{{ is_state(light_id, ''unavailable'') }}' # switch unavailable
+  - conditions: '{{ is_state(entity_id, ''unavailable'') }}' # switch unavailable
     sequence:
       - parallel:
         - service: zwave_js.set_config_parameter # set indicator color
