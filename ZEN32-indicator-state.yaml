@@ -22,6 +22,16 @@ blueprint:
       selector:
         entity:
           domain:
+          - alarm_control_panel
+          - binary_sensor
+          - climate
+          - cover
+          - fan
+          - input_boolean
+          - light
+          - lock
+          - media_player
+          - sensor
           - switch
           multiple: false
     scene_button:
