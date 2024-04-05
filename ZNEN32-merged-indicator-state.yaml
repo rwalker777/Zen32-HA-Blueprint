@@ -251,6 +251,7 @@ variables:
   controller_id: !input 'zooz_switch'
   toggle_offset: 1
   color_offset: 6
+  button_id: default
   on_state0: !input 'on_state0'
   on_color0: !input 'on_color0'
   off_state0: !input 'off_state0'
