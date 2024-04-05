@@ -271,9 +271,9 @@ trigger:
     - !input 'target_entity1'
     variables:
       button_id: >
-        {% if trigger.entity_id = target_entity0 %}
+        {% if trigger.entity_id == target_entity0 %}
           0
-        {% elif trigger.entity_id = target_entity1 %}
+        {% elif trigger.entity_id == target_entity1 %}
           1
         {% endif %}
 action:
