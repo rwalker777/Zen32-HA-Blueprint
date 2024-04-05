@@ -249,7 +249,6 @@ mode: parallel
 max: 5
 variables:
   controller_id: !input 'zooz_switch'
-  button_id: default
   toggle_offset: 1
   color_offset: 6
   on_state0: !input 'on_state0'
