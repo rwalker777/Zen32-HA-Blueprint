@@ -22,16 +22,8 @@ blueprint:
       selector:
         entity:
           domain:
-          - alarm_control_panel
-          - binary_sensor
-          - climate
-          - cover
           - fan
-          - input_boolean
           - light
-          - lock
-          - media_player
-          - sensor
           - switch
           multiple: false
     scene_button:
@@ -175,45 +167,45 @@ action:
   - conditions: '{{ is_state(trigger.entity_id, ''off'') }}' # switch off
     sequence:
       - parallel:
-        - service: zwave_js.set_config_parameter # set indicator color
-          data:
-            parameter: '{{ (button_id | int) + (color_offset | int) }}'
-            value: '{{ off_color }}'
-          target: 
-            device_id: '{{ controller_id }}'
         - service: zwave_js.set_config_parameter # turn indicator on/off
           data:
             parameter: '{{ (button_id | int) + (toggle_offset | int) }}'
             value: '{{ off_state }}'
           target: 
             device_id: '{{ controller_id }}'
-  - conditions: '{{ is_state(trigger.entity_id, ''on'') }}' # switch on
-    sequence:
-      - parallel:
         - service: zwave_js.set_config_parameter # set indicator color
           data:
             parameter: '{{ (button_id | int) + (color_offset | int) }}'
-            value: '{{ on_color }}'
+            value: '{{ off_color }}'
           target: 
             device_id: '{{ controller_id }}'
+  - conditions: '{{ is_state(trigger.entity_id, ''on'') }}' # switch on
+    sequence:
+      - parallel:
         - service: zwave_js.set_config_parameter # turn indicator on/off
           data:
             parameter: '{{ (button_id | int) + (toggle_offset | int) }}'
             value: '{{ on_state }}'
           target: 
             device_id: '{{ controller_id }}'
-  - conditions: '{{ is_state(trigger.entity_id, ''unavailable'') }}' # switch unavailable
-    sequence:
-      - parallel:
         - service: zwave_js.set_config_parameter # set indicator color
           data:
             parameter: '{{ (button_id | int) + (color_offset | int) }}'
-            value: '{{ unavail_color }}'
+            value: '{{ on_color }}'
           target: 
             device_id: '{{ controller_id }}'
+  - conditions: '{{ is_state(trigger.entity_id, ''unavailable'') }}' # switch unavailable
+    sequence:
+      - parallel:
         - service: zwave_js.set_config_parameter # turn indicator on/off
           data:
             parameter: '{{ (button_id | int) + (toggle_offset | int) }}'
             value: '{{ unavail_state }}'
+          target: 
+            device_id: '{{ controller_id }}'
+        - service: zwave_js.set_config_parameter # set indicator color
+          data:
+            parameter: '{{ (button_id | int) + (color_offset | int) }}'
+            value: '{{ unavail_color }}'
           target: 
             device_id: '{{ controller_id }}'
