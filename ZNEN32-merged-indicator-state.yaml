@@ -270,12 +270,14 @@ trigger:
     - !input 'target_entity0'
     - !input 'target_entity1'
 action:
-  - variables:
+  - alias: "Set variables"
+    variables:
     button_id: >
-      {% if (trigger.entity_id = '{{ target_entity0 }}' %}
-        {% 0 %}
-      {% if (trigger.entity_id = '{{ target_entity1 }}' %}
-        {% 1 %}
+      {% if (trigger.entity_id = target_entity0 %}
+        0
+      {% elif (trigger.entity_id = target_entity1 %}
+        1
+      {% endif %}
   - choose:
     - conditions: '{{ is_state(trigger.entity_id, ''off'') }}' # switch off
       sequence:
