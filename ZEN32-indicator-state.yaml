@@ -177,7 +177,7 @@ action:
           data:
             parameter: '{{ (button_id | int) + (color_offset | int) }}'
             value: '{{ off_color }}'
-          target: 
+          target:
             device_id: '{{ controller_id }}'
   - conditions: '{{ is_state(trigger.entity_id, ''on'') }}' # switch on
     sequence:
@@ -192,7 +192,7 @@ action:
           data:
             parameter: '{{ (button_id | int) + (color_offset | int) }}'
             value: '{{ on_color }}'
-          target: 
+          target:
             device_id: '{{ controller_id }}'
   - conditions: '{{ is_state(trigger.entity_id, ''unavailable'') }}' # switch unavailable
     sequence:
@@ -207,5 +207,5 @@ action:
           data:
             parameter: '{{ (button_id | int) + (color_offset | int) }}'
             value: '{{ unavail_color }}'
-          target: 
+          target:
             device_id: '{{ controller_id }}'
