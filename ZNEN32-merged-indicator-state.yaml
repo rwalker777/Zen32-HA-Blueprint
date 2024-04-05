@@ -1,6 +1,6 @@
 blueprint:
   name: ZEN32 LED state -- merged
-  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.8
+  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.9
   domain: automation
   input:
     zooz_switch:
@@ -269,18 +269,18 @@ trigger:
     entity_id: 
     - !input 'target_entity0'
     - !input 'target_entity1'
-    variables:
-      button_id: >
-        {% if trigger.entity_id == target_entity0 %}
-          0
-        {% elif trigger.entity_id == target_entity1 %}
-          1
-        {% endif %}
 action:
   - choose:
     - conditions: '{{ is_state(trigger.entity_id, ''off'') }}' # switch off
       sequence:
-        - parallel:
+        - variables:
+          button_id: >
+            {% if trigger.entity_id == target_entity0 %}
+              0
+            {% elif trigger.entity_id == target_entity1 %}
+              1
+            {% endif %}
+          parallel:
           - service: zwave_js.set_config_parameter # turn indicator on/off
             data:
               parameter: '{{ (button_id | int) + (toggle_offset | int) }}'
@@ -295,7 +295,14 @@ action:
               device_id: '{{ controller_id }}'
     - conditions: '{{ is_state(trigger.entity_id, ''on'') }}' # switch on
       sequence:
-        - parallel:
+        - variables:
+          button_id: >
+            {% if trigger.entity_id == target_entity0 %}
+              0
+            {% elif trigger.entity_id == target_entity1 %}
+              1
+            {% endif %}
+          parallel:
           - service: zwave_js.set_config_parameter # turn indicator on/off
             data:
               parameter: '{{ (button_id | int) + (toggle_offset | int) }}'
@@ -310,7 +317,14 @@ action:
               device_id: '{{ controller_id }}'
     - conditions: '{{ is_state(trigger.entity_id, ''unavailable'') }}' # switch unavailable
       sequence:
-        - parallel:
+        - variables:
+          button_id: >
+            {% if trigger.entity_id == target_entity0 %}
+              0
+            {% elif trigger.entity_id == target_entity1 %}
+              1
+            {% endif %}
+          parallel:
           - service: zwave_js.set_config_parameter # turn indicator on/off
             data:
               parameter: '{{ (button_id | int) + (toggle_offset | int) }}'
