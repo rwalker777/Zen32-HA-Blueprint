@@ -1,6 +1,6 @@
 blueprint:
   name: ZEN32 LED state -- merged
-  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.20
+  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.21
   domain: automation
   input:
     zooz_switch:
@@ -278,7 +278,7 @@ trigger:
         {% elif trigger.entity_id == target_entity1 %}
           1
         {% endif %}
-      off_state_trigger: "{{ off_state ~ button_id }}"
+      off_state_trigger: "off_state" "{{~ button_id }}"
 action:
   - choose:
     - conditions: '{{ is_state(trigger.entity_id, ''off'') }}' # switch off
