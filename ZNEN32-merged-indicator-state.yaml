@@ -251,7 +251,7 @@ variables:
   controller_id: !input 'zooz_switch'
   toggle_offset: 1
   color_offset: 6
-  trigger_entity0: !input 'target_entity0'
+  target_entity0: !input 'input_entity0'
   target0:
     button_id: 0
     off_state: !input 'off_state0'
@@ -260,7 +260,7 @@ variables:
     on_color: !input 'on_color0'
     unavail_state: !input 'unavail_state0'
     unavail_color: !input 'unavail_color0'
-  trigger_entity1: !input 'target_entity1'
+  target_entity1: !input 'input_entity1'
   target1:
     button_id: 1
     off_state: !input 'off_state1'
@@ -273,16 +273,16 @@ trigger:
   - alias: DeviceStateTrigger
     platform: state
     entity_id: 
-    - '{{ trigger_entity0 }}'
-    - '{{ trigger_entity1 }}'
-    trigger_variables: >
-      {% if trigger.entity_id == trigger_entity0 %}
-        button_id: 0
-        var_map: target0
-      {% elif trigger.entity_id == trigger_entity1 %}
-        button_id: 1
-        var_map: target1
-      {% endif %}
+    - '{{ target_entity0 }}'
+    - '{{ target_entity1 }}'
+    # trigger_variables: >
+    #   {% if trigger.entity_id == target_entity0 %}
+    #     button_id: 0
+    #     var_map: target0
+    #   {% elif trigger.entity_id == target_entity1 %}
+    #     button_id: 1
+    #     var_map: target1
+    #   {% endif %}
 
 action:
   - choose:
