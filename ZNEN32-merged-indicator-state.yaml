@@ -1,6 +1,6 @@
 blueprint:
   name: ZEN32 LED state -- merged
-  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.26
+  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.27
   domain: automation
   input:
     zooz_switch:
@@ -260,25 +260,27 @@ trigger:
     variables:
       target_entity0: !input 'target_entity0'
       target_entity1: !input 'target_entity1'
-      trigger_vars:
-      - choose:
-        - conditions: '{{ trigger.entity_id == target_entity0 }}'
-          button_id: 0
-          off_state: !input 'off_state0'
-          off_color: !input 'off_color0'
-          on_state: !input 'on_state0'
-          on_color: !input 'on_color0'
-          unavail_state: !input 'unavail_state0'
-          unavail_color: !input 'unavail_color0'
-        - conditions:  '{{ trigger.entity_id == target_entity1 }}'
-          button_id: 1
-          off_state: !input 'off_state1'
-          off_color: !input 'off_color1'
-          on_state: !input 'on_state1'
-          on_color: !input 'on_color1'
-          unavail_state: !input 'unavail_state1'
-          unavail_color: !input 'unavail_color1'
+
 action:
+  - choose:
+    - conditions: '{{ trigger.entity_id == target_entity0 }}'
+      variables:
+        button_id: 0
+        off_state: !input 'off_state0'
+        off_color: !input 'off_color0'
+        on_state: !input 'on_state0'
+        on_color: !input 'on_color0'
+        unavail_state: !input 'unavail_state0'
+        unavail_color: !input 'unavail_color0'
+    - conditions:  '{{ trigger.entity_id == target_entity1 }}'
+      variables:
+        button_id: 1
+        off_state: !input 'off_state1'
+        off_color: !input 'off_color1'
+        on_state: !input 'on_state1'
+        on_color: !input 'on_color1'
+        unavail_state: !input 'unavail_state1'
+        unavail_color: !input 'unavail_color1'
   - choose:
     - conditions: '{{ is_state(trigger.entity_id, ''off'') }}' # switch off
       sequence:
