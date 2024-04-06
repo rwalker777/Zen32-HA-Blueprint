@@ -1,6 +1,6 @@
 blueprint:
   name: ZEN32 LED state -- merged
-  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.19
+  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.20
   domain: automation
   input:
     zooz_switch:
@@ -278,6 +278,7 @@ trigger:
         {% elif trigger.entity_id == target_entity1 %}
           1
         {% endif %}
+      off_state_trigger: "{{ off_state ~ button_id }}"
 action:
   - choose:
     - conditions: '{{ is_state(trigger.entity_id, ''off'') }}' # switch off
@@ -286,13 +287,13 @@ action:
           - service: zwave_js.set_config_parameter # turn indicator on/off
             data:
               parameter: '{{ (button_id | int) + (toggle_offset | int) }}'
-              value: '{{ ''off_state'' ~ button_id }}'
+              value: '{{ off_state_trigger }}'
             target: 
               device_id: '{{ controller_id }}'
           - service: zwave_js.set_config_parameter # set indicator color
             data:
               parameter: '{{ (button_id | int) + (color_offset | int) }}'
-              value: '{{ ''off_color'' ~ button_id }}'
+              value: "{{ off_color ~ button_id }}"
             target:
               device_id: '{{ controller_id }}'
     - conditions: '{{ is_state(trigger.entity_id, ''on'') }}' # switch on
@@ -301,13 +302,13 @@ action:
           - service: zwave_js.set_config_parameter # turn indicator on/off
             data:
               parameter: '{{ (button_id | int) + (toggle_offset | int) }}'
-              value: '{{ ''on_state'' ~ button_id }}'
+              value: "{{ on_state ~ button_id }}"
             target: 
               device_id: '{{ controller_id }}'
           - service: zwave_js.set_config_parameter # set indicator color
             data:
               parameter: '{{ (button_id | int) + (color_offset | int) }}'
-              value: '{{ ''on_color'' ~ button_id }}'
+              value: "{{ on_color ~ button_id }}"
             target:
               device_id: '{{ controller_id }}'
     - conditions: '{{ is_state(trigger.entity_id, ''unavailable'') }}' # switch unavailable
