@@ -1,6 +1,6 @@
 blueprint:
   name: ZEN32 LED state -- merged
-  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.43
+  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.44
   domain: automation
   input:
     zooz_switch:
@@ -251,28 +251,27 @@ variables:
   controller_id: !input 'zooz_switch'
   toggle_offset: 1
   color_offset: 6
-  target_entity0: !input 'input_entity0'
-  target0:
-    button_id: 0
-    off_state: !input 'off_state0.value'
-    off_color: !input 'off_color0.value'
-    on_state: !input 'on_state0.value'
-    on_color: !input 'on_color0.value'
-    unavail_state: !input 'unavail_state0.value'
-    unavail_color: !input 'unavail_color0.value'
-  target_entity1: !input 'input_entity1'
-  target1:
-    button_id: 1
-    off_state: !input 'off_state1.value'
-    off_color: !input 'off_color1.value'
-    on_state: !input 'on_state1.value'
-    on_color: !input 'on_color1.value'
-    unavail_state: !input 'unavail_state1.value'
-    unavail_color: !input 'unavail_color1.value'
+  targets:
+    !input 'input_entity0':
+      button_id: 0
+      off_state: !input 'off_state0'
+      off_color: !input 'off_color0'
+      on_state: !input 'on_state0'
+      on_color: !input 'on_color0'
+      unavail_state: !input 'unavail_state0'
+      unavail_color: !input 'unavail_color0'
+    !input 'input_entity1':
+      button_id: 1
+      off_state: !input 'off_state1'
+      off_color: !input 'off_color1'
+      on_state: !input 'on_state1'
+      on_color: !input 'on_color1'
+      unavail_state: !input 'unavail_state1'
+      unavail_color: !input 'unavail_color1'
 trigger:
   - alias: DeviceStateTrigger
     platform: state
-    entity_id: 
+    entity_id:
     - !input 'input_entity0'
     - !input 'input_entity1'
 
@@ -283,14 +282,14 @@ action:
         - parallel:
           - service: zwave_js.set_config_parameter # turn indicator on/off
             data:
-              parameter: '{{ (target0.button_id | int) + (toggle_offset | int) }}'
-              value: '{{ target0.off_state }}'
-            target: 
+              parameter: '{{ (targets[trigger.idx].button_id | int) + (toggle_offset | int) }}'
+              value: '{{ targets[trigger.idx].off_state }}'
+            target:
               device_id: '{{ controller_id }}'
           - service: zwave_js.set_config_parameter # set indicator color
             data:
-              parameter: '{{ (target0.button_id | int) + (color_offset | int) }}'
-              value: "{{ target0.off_color }}"
+              parameter: '{{ (targets[trigger.idx].button_id | int) + (color_offset | int) }}'
+              value: "{{ targets[trigger.idx].off_color }}"
             target:
               device_id: '{{ controller_id }}'
     - conditions: '{{ is_state(trigger.entity_id, ''on'') }}' # switch on
@@ -298,14 +297,14 @@ action:
         - parallel:
           - service: zwave_js.set_config_parameter # turn indicator on/off
             data:
-              parameter: '{{ (target0.button_id | int) + (toggle_offset | int) }}'
-              value: "{{ target0.on_state }}"
+              parameter: '{{ (targets[trigger.idx].button_id | int) + (toggle_offset | int) }}'
+              value: "{{ targets[trigger.idx].on_state }}"
             target: 
               device_id: '{{ controller_id }}'
           - service: zwave_js.set_config_parameter # set indicator color
             data:
-              parameter: '{{ (target0.button_id | int) + (color_offset | int) }}'
-              value: "{{ target0.on_color }}"
+              parameter: '{{ (targets[trigger.idx].button_id | int) + (color_offset | int) }}'
+              value: "{{ targets[trigger.idx].on_color }}"
             target:
               device_id: '{{ controller_id }}'
     - conditions: '{{ is_state(trigger.entity_id, ''unavailable'') }}' # switch unavailable
@@ -313,13 +312,13 @@ action:
         - parallel:
           - service: zwave_js.set_config_parameter # turn indicator on/off
             data:
-              parameter: '{{ (target0.button_id | int) + (toggle_offset | int) }}'
-              value: '{{ target0.unavail_state }}'
+              parameter: '{{ (targets[trigger.idx].button_id | int) + (toggle_offset | int) }}'
+              value: '{{ targets[trigger.idx].unavail_state }}'
             target: 
               device_id: '{{ controller_id }}'
           - service: zwave_js.set_config_parameter # set indicator color
             data:
-              parameter: '{{ (target0.button_id | int) + (color_offset | int) }}'
-              value: '{{ target0.unavail_color }}'
+              parameter: '{{ (targets[trigger.idx].button_id | int) + (color_offset | int) }}'
+              value: '{{ targets[trigger.idx].unavail_color }}'
             target:
               device_id: '{{ controller_id }}'
