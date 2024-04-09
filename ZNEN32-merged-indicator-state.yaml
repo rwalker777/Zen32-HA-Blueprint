@@ -1,6 +1,6 @@
 blueprint:
   name: ZEN32 LED state -- merged
-  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.46
+  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.47
   domain: automation
   input:
     zooz_switch:
@@ -31,7 +31,7 @@ blueprint:
     off_state0:
       name: Off behavior for button 0
       description: Led state when target is off
-      default: Led On
+      default: '3'
       selector:
         select:
           mode: dropdown
@@ -43,7 +43,7 @@ blueprint:
     off_color0:
       name: Off color for button 0
       description: Color for led when target is off (default white)
-      default: White
+      default: '0'
       selector:
         select:
           mode: dropdown
@@ -65,7 +65,7 @@ blueprint:
     on_state0:
       name: On behavior for button 0
       description: Led state when target is off
-      default: Led On
+      default: '2'
       selector:
         select:
           mode: dropdown
@@ -77,7 +77,7 @@ blueprint:
     on_color0:
       name: On color for button 0
       description: Color for led when target is on (default white)
-      default: Blue
+      default: '1'
       selector:
         select:
           mode: dropdown
@@ -99,7 +99,7 @@ blueprint:
     unavail_state0:
       name: Unavailable State for button 0
       description: Led state when target is unavailable
-      default: Led off
+      default: '2'
       selector:
         select:
           mode: dropdown
@@ -111,7 +111,7 @@ blueprint:
     unavail_color0:
       name: Unavailable Color for button 0
       description: Color for led when target is unavailable (default red)
-      default: Red
+      default: '3'
       selector:
         select:
           mode: dropdown
@@ -145,7 +145,7 @@ blueprint:
     off_state1:
       name: Off behavior for button 1
       description: Led state when target is off
-      default: Led On
+      default: '3'
       selector:
         select:
           mode: dropdown
@@ -157,7 +157,7 @@ blueprint:
     off_color1:
       name: Off color for button 1
       description: Color for led when target is off (default white)
-      default: White
+      default: '0'
       selector:
         select:
           mode: dropdown
@@ -179,7 +179,7 @@ blueprint:
     on_state1:
       name: On behavior for button 1
       description: Led state when target is off
-      default: Led On
+      default: '3'
       selector:
         select:
           mode: dropdown
@@ -191,7 +191,7 @@ blueprint:
     on_color1:
       name: On color for button 1
       description: Color for led when target is on (default white)
-      default: Green
+      default: '2'
       selector:
         select:
           mode: dropdown
@@ -213,7 +213,7 @@ blueprint:
     unavail_state1:
       name: Unavailable State for button 1
       description: Led state when target is unavailable
-      default: Led off
+      default: '2'
       selector:
         select:
           mode: dropdown
@@ -225,7 +225,7 @@ blueprint:
     unavail_color1:
       name: Unavailable Color for button 1
       description: Color for led when target is unavailable (default red)
-      default: Red
+      default: '3'
       selector:
         select:
           mode: dropdown
