@@ -859,7 +859,7 @@ trigger:
     platform: event
     event_type: zwave_js_value_notification
     event_data:
-      device_id: '{{ controller_id }}'
+      device_id: !input 'zooz_switch'
   - alias: DeviceStateTrigger0
     id: 'StateTrigger'
     platform: state
