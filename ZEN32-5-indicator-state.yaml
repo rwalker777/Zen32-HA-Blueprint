@@ -1,6 +1,6 @@
 blueprint:
-  name: ZEN32 LED state -- merged
-  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.1
+  name: ZEN32 LED state
+  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.2
   input:
     zooz_switch:
       name: Zooz Switch
@@ -20,13 +20,14 @@ blueprint:
       description: The entity to track
       selector:
         entity:
-          domain:
-            - fan
-            - light
-            - media_player
-            - sensor
-            - switch
           multiple: false
+          filter:
+            domain:
+              - fan
+              - light
+              - media_player
+              - sensor
+              - switch
     off_state0:
       name: Off behavior for button 1
       description: Led state when target is off
@@ -134,13 +135,14 @@ blueprint:
       description: The entity to track
       selector:
         entity:
-          domain:
-            - fan
-            - light
-            - media_player
-            - sensor
-            - switch
           multiple: false
+          filter:
+            domain:
+              - fan
+              - light
+              - media_player
+              - sensor
+              - switch
     off_state1:
       name: Off behavior for button 2
       description: Led state when target is off
@@ -248,13 +250,14 @@ blueprint:
       description: The entity to track
       selector:
         entity:
-          domain:
-            - fan
-            - light
-            - media_player
-            - sensor
-            - switch
           multiple: false
+          filter:
+            domain:
+              - fan
+              - light
+              - media_player
+              - sensor
+              - switch
     off_state2:
       name: Off behavior for button 3
       description: Led state when target is off
@@ -362,13 +365,14 @@ blueprint:
       description: The entity to track
       selector:
         entity:
-          domain:
-            - fan
-            - light
-            - media_player
-            - sensor
-            - switch
           multiple: false
+          filter:
+            domain:
+              - fan
+              - light
+              - media_player
+              - sensor
+              - switch
     off_state3:
       name: Off behavior for button 4
       description: Led state when target is off
@@ -476,13 +480,14 @@ blueprint:
       description: The entity to track
       selector:
         entity:
-          domain:
-            - fan
-            - light
-            - media_player
-            - sensor
-            - switch
           multiple: false
+          filter:
+            domain:
+              - fan
+              - light
+              - media_player
+              - sensor
+              - switch
     off_state4:
       name: Off behavior for button 5
       description: Led state when target is off
