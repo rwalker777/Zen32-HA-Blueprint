@@ -1,6 +1,6 @@
 blueprint:
   name: ZEN32 LED state -- merged
-  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.54
+  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.55
   input:
     zooz_switch:
       name: Zooz Switch
@@ -21,11 +21,11 @@ blueprint:
       selector:
         entity:
           domain:
-          - fan
-          - light
-          - media_player
-          - sensor
-          - switch
+            - fan
+            - light
+            - media_player
+            - sensor
+            - switch
           multiple: false
     off_state0:
       name: Off behavior for button 1
@@ -135,11 +135,11 @@ blueprint:
       selector:
         entity:
           domain:
-          - fan
-          - light
-          - media_player
-          - sensor
-          - switch
+            - fan
+            - light
+            - media_player
+            - sensor
+            - switch
           multiple: false
     off_state1:
       name: Off behavior for button 2
@@ -249,11 +249,11 @@ blueprint:
       selector:
         entity:
           domain:
-          - fan
-          - light
-          - media_player
-          - sensor
-          - switch
+            - fan
+            - light
+            - media_player
+            - sensor
+            - switch
           multiple: false
     off_state2:
       name: Off behavior for button 3
@@ -363,11 +363,11 @@ blueprint:
       selector:
         entity:
           domain:
-          - fan
-          - light
-          - media_player
-          - sensor
-          - switch
+            - fan
+            - light
+            - media_player
+            - sensor
+            - switch
           multiple: false
     off_state3:
       name: Off behavior for button 4
@@ -477,11 +477,11 @@ blueprint:
       selector:
         entity:
           domain:
-          - fan
-          - light
-          - media_player
-          - sensor
-          - switch
+            - fan
+            - light
+            - media_player
+            - sensor
+            - switch
           multiple: false
     off_state4:
       name: Off behavior for button 5
