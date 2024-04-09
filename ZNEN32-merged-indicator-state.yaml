@@ -1,7 +1,6 @@
 blueprint:
   name: ZEN32 LED state -- merged
-  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.49
-  domain: automation
+  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.50
   input:
     zooz_switch:
       name: Zooz Switch
@@ -19,6 +18,7 @@ blueprint:
     input_entity0:
       name: Entity for button 1 (Big button)
       description: The entity to track
+      default:
       selector:
         entity:
           domain:
@@ -133,6 +133,7 @@ blueprint:
     input_entity1:
       name: Entity for button 2 (Top left button)
       description: The entity to track
+      default:
       selector:
         entity:
           domain:
@@ -247,6 +248,7 @@ blueprint:
     input_entity2:
       name: Entity for button 3 (Top right button)
       description: The entity to track
+      default:
       selector:
         entity:
           domain:
@@ -361,6 +363,7 @@ blueprint:
     input_entity3:
       name: Entity for button 4 (Bottom left button)
       description: The entity to track
+      default:
       selector:
         entity:
           domain:
@@ -475,6 +478,7 @@ blueprint:
     input_entity4:
       name: Entity for button 5 (Bottom right button)
       description: The entity to track
+      default:
       selector:
         entity:
           domain:
