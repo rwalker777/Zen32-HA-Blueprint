@@ -878,7 +878,7 @@ trigger:
 ##### Actions ######
 action:
   choose:
-  - alias: 'ButtonPress'
+  - alias: ButtonPress
     condition: '{{  trigger.alias == ''ButtonPress'' }}'
     sequence:
       - variables:
@@ -961,7 +961,7 @@ action:
           sequence: !input 'scene_54'
         - conditions: '{{ property_key_name == ''005'' and value == ''KeyPressed5x'' }}'
           sequence: !input 'scene_55'
-  - alias: 'StateTrigger'
+  - alias: StateTrigger
     condition: '{{  trigger.id > 1 }}'
     choose:
     - conditions: '{{ is_state(trigger.entity_id, ''off'') }}' # switch off
