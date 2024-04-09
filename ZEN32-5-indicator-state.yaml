@@ -1,6 +1,6 @@
 blueprint:
-  name: ZEN32 LED state
-  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.4
+  name: ZEN32 5 LED state
+  description: For Zooz ZEN32. Sets the indicator color when linked entities are off, on or unavailable.  4.2024.5
   input:
     zooz_switch:
       name: Zooz Switch
