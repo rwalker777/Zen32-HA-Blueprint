@@ -25,8 +25,6 @@ blueprint:
             domain:
               - fan
               - light
-              - media_player
-              - sensor
               - switch
     off_state0:
       name: Off behavior for button 1
@@ -140,8 +138,6 @@ blueprint:
             domain:
               - fan
               - light
-              - media_player
-              - sensor
               - switch
     off_state1:
       name: Off behavior for button 2
@@ -255,8 +251,6 @@ blueprint:
             domain:
               - fan
               - light
-              - media_player
-              - sensor
               - switch
     off_state2:
       name: Off behavior for button 3
@@ -370,8 +364,6 @@ blueprint:
             domain:
               - fan
               - light
-              - media_player
-              - sensor
               - switch
     off_state3:
       name: Off behavior for button 4
@@ -485,8 +477,6 @@ blueprint:
             domain:
               - fan
               - light
-              - media_player
-              - sensor
               - switch
     off_state4:
       name: Off behavior for button 5
