@@ -264,7 +264,7 @@ blueprint:
               value: '6'
 #############
     scene_2:
-      name: Scene 2 - Pressed Once
+      name: Top right button - Pressed Once
       description: Action to run when button is pressed once.
       default: []
       selector:
@@ -384,7 +384,7 @@ blueprint:
               value: '6'
 #############
     scene_3:
-      name: Scene 3 - Pressed Once
+      name: Bottom left button - Pressed Once
       description: Action to run when button is pressed once.
       default: []
       selector:
@@ -504,7 +504,7 @@ blueprint:
               value: '6'
 #############
     scene_4:
-      name: Scene 4 - Pressed Once
+      name: Bottom right button - Pressed Once
       description: Action to run when button is pressed once.
       default: []
       selector:
@@ -854,21 +854,6 @@ variables:
 
 ##### Triggers #####
 trigger:
-  - variables:
-      triggerentity0: !input 'input_entity0'
-      sceneentity0: !input scene_5
-      triggerentity1: !input 'input_entity1'
-      sceneentity1: !input scene_1
-      triggerentity2: !input 'input_entity2'
-      sceneentity2: !input scene_2
-      triggerentity3: !input 'input_entity3'
-      sceneentity3: !input scene_3
-      triggerentity4: !input 'input_entity4'
-      sceneentity4: !input scene_4
-      testvar: >
-        {{ triggerentity0 if triggerentity0 | list | count > 0
-           else (sceneentity0.target.entity_id)
-        }}
   - alias: ButtonPress
     platform: event
     event_type: zwave_js_value_notification
