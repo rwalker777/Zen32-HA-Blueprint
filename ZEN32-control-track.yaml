@@ -869,7 +869,7 @@ trigger:
   - alias: DeviceStateTrigger0
     id: 'StateTrigger'
     platform: state
-    entity_id: '{{ states(input_scene5) }}'
+    entity_id: '{{ states(input_scene5.entity_id) }}'
   - alias: DeviceStateTrigger1
     id: 'StateTrigger'
     platform: state
