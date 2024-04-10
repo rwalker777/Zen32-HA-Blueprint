@@ -853,9 +853,10 @@ variables:
       unavail_color: !input 'unavail_color4'
 
 ##### Triggers #####
+trigger_variables:
+  input_scene5: !input 'scene_5'
+
 trigger:
-  variables:
-    input_scene5: !input 'scene_5'
   - alias: ButtonPress
     platform: event
     event_type: zwave_js_value_notification
