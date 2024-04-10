@@ -853,8 +853,18 @@ variables:
       unavail_color: !input 'unavail_color4'
 
 ##### Triggers #####
-# Button press needs to be first since we condition on trigger.id
 trigger:
+  - variables:
+      triggerentity0: !input 'input_entity0'
+      sceneentity0: !input scene_5.target.entity_id
+      triggerentity1: !input 'input_entity1'
+      sceneentity1: !input scene_1.target.entity_id
+      triggerentity2: !input 'input_entity2'
+      sceneentity2: !input scene_2.target.entity_id
+      triggerentity3: !input 'input_entity3'
+      sceneentity3: !input scene_3.target.entity_id
+      triggerentity4: !input 'input_entity4'
+      sceneentity4: !input scene_4.target.entity_id
   - alias: ButtonPress
     platform: event
     event_type: zwave_js_value_notification
@@ -884,7 +894,7 @@ trigger:
 ##### Actions ######
 action:
   choose:
-    - conditions: '{{  trigger.alias == ''ButtonPress'' }}'
+    - conditions: '{{ trigger.alias == ''ButtonPress'' }}'
       alias: 'ButtonPress'
       sequence:
         - variables:
