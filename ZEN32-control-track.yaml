@@ -859,12 +859,12 @@ variables:
       on_color: !input 'on_color4'
       unavail_state: !input 'unavail_state4'
       unavail_color: !input 'unavail_color4'
-  input_scene5: !input 'scene_5'
+  # input_scene5: !input 'scene_5'
 
 ##### Triggers #####
-trigger_variables:
-  tvar_input_scene5: !input 'scene_5'
-  test: '{{ dict.values(tvar_input_scene5[entity_id]) }}'
+# trigger_variables:
+#   tvar_input_scene5: !input 'scene_5'
+#   test: '{{ dict.values(tvar_input_scene5[entity_id]) }}'
 
 trigger:
   - alias: ButtonPress
