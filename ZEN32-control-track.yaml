@@ -2,7 +2,7 @@ blueprint:
   name: ZEN32 Scene and State (Z-Wave JS)
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
-    Version: 2024.4.2
+    Version: 2024.4.3
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -37,12 +37,20 @@ blueprint:
         entity:
           multiple: false
           domain:
+            - alarm_control_panel
+            - binary_sensor
+            - climate
+            - cover
             - fan
+            - input_boolean
             - light
+            - lock
+            - media_player
+            - sensor
             - switch
     off_state0:
       name: Off behavior for button 1
-      description: Led state when target is off
+      description: Led state when target is off, closed, disarmed or locked
       default: '3'
       selector:
         select:
@@ -76,7 +84,7 @@ blueprint:
               value: '6'
     on_state0:
       name: On behavior for button 1
-      description: Led state when target is on
+      description: Led state when target is on, opened, armed or unlocked
       default: '3'
       selector:
         select:
@@ -157,12 +165,20 @@ blueprint:
         entity:
           multiple: false
           domain:
+            - alarm_control_panel
+            - binary_sensor
+            - climate
+            - cover
             - fan
+            - input_boolean
             - light
+            - lock
+            - media_player
+            - sensor
             - switch
     off_state1:
       name: Off behavior for button 2
-      description: Led state when target is off
+      description: Led state when target is off, closed, disarmed or locked
       default: '3'
       selector:
         select:
@@ -196,7 +212,7 @@ blueprint:
               value: '6'
     on_state1:
       name: On behavior for button 2
-      description: Led state when target is on
+      description: Led state when target is on, opened, armed or unlocked
       default: '3'
       selector:
         select:
@@ -277,12 +293,20 @@ blueprint:
         entity:
           multiple: false
           domain:
+            - alarm_control_panel
+            - binary_sensor
+            - climate
+            - cover
             - fan
+            - input_boolean
             - light
+            - lock
+            - media_player
+            - sensor
             - switch
     off_state2:
       name: Off behavior for button 3
-      description: Led state when target is off
+      description: Led state when target is off, closed, disarmed or locked
       default: '3'
       selector:
         select:
@@ -316,7 +340,7 @@ blueprint:
               value: '6'
     on_state2:
       name: On behavior for button 3
-      description: Led state when target is on
+      description: Led state when target is on, opened, armed or unlocked
       default: '3'
       selector:
         select:
@@ -397,12 +421,20 @@ blueprint:
         entity:
           multiple: false
           domain:
+            - alarm_control_panel
+            - binary_sensor
+            - climate
+            - cover
             - fan
+            - input_boolean
             - light
+            - lock
+            - media_player
+            - sensor
             - switch
     off_state3:
       name: Off behavior for button 4
-      description: Led state when target is off
+      description: Led state when target is off, closed, disarmed or locked
       default: '3'
       selector:
         select:
@@ -436,7 +468,7 @@ blueprint:
               value: '6'
     on_state3:
       name: On behavior for button 4
-      description: Led state when target is on
+      description: Led state when target is on, opened, armed or unlocked
       default: '3'
       selector:
         select:
@@ -517,12 +549,20 @@ blueprint:
         entity:
           multiple: false
           domain:
+            - alarm_control_panel
+            - binary_sensor
+            - climate
+            - cover
             - fan
+            - input_boolean
             - light
+            - lock
+            - media_player
+            - sensor
             - switch
     off_state4:
       name: Off behavior for button 5
-      description: Led state when target is off
+      description: Led state when target is off, closed, disarmed or locked
       default: '3'
       selector:
         select:
@@ -556,7 +596,7 @@ blueprint:
               value: '6'
     on_state4:
       name: On behavior for button 5
-      description: Led state when target is on
+      description: Led state when target is on, opened, armed or unlocked
       default: '3'
       selector:
         select:
@@ -859,24 +899,24 @@ trigger:
     event_type: zwave_js_value_notification
     event_data:
       device_id: !input 'zooz_switch'
-  - alias: DeviceStateTrigger0
-    id: 'StateTrigger'
+  - id: DeviceStateTrigger0
+    alias: 'StateTrigger'
     platform: state
     entity_id: !input 'input_entity0'
-  - alias: DeviceStateTrigger1
-    id: 'StateTrigger'
+  - id: DeviceStateTrigger1
+    alias: 'StateTrigger'
     platform: state
     entity_id: !input 'input_entity1'
-  - alias: DeviceStateTrigger2
-    id: 'StateTrigger'
+  - id: DeviceStateTrigger2
+    alias: 'StateTrigger'
     platform: state
     entity_id: !input 'input_entity2'
-  - alias: DeviceStateTrigger3
-    id: 'StateTrigger'
+  - id: DeviceStateTrigger3
+    alias: 'StateTrigger'
     platform: state
     entity_id: !input 'input_entity3'
-  - alias: DeviceStateTrigger4
-    id: 'StateTrigger'
+  - id: DeviceStateTrigger4
+    alias: 'StateTrigger'
     platform: state
     entity_id: !input 'input_entity4'
 
@@ -966,38 +1006,38 @@ action:
             sequence: !input 'scene_54'
           - conditions: '{{ property_key_name == ''005'' and value == ''KeyPressed5x'' }}'
             sequence: !input 'scene_55'
-    - conditions: '{{ trigger.id == ''StateTrigger'' }}'
+    - conditions: '{{ trigger.alias == ''StateTrigger'' }}'
       alias: 'StateTrigger'
       sequence:
         choose:
-        - conditions: '{{ is_state(trigger.entity_id, ''off'') }}' # switch off
+        - conditions: '{{ is_state(trigger.entity_id, ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) }}' # switch off or cover closed
           sequence:
             - parallel:
               - service: zwave_js.set_config_parameter # turn indicator on/off
                 data:
-                  parameter: '{{ (targets[trigger.alias].button_id | int) + (toggle_offset | int) }}'
-                  value: '{{ targets[trigger.alias].off_state }}'
+                  parameter: '{{ (targets[trigger.id].button_id | int) + (toggle_offset | int) }}'
+                  value: '{{ targets[trigger.id].off_state }}'
                 target:
                   device_id: '{{ controller_id }}'
               - service: zwave_js.set_config_parameter # set indicator color
                 data:
-                  parameter: '{{ (targets[trigger.alias].button_id | int) + (color_offset | int) }}'
-                  value: '{{ targets[trigger.alias].off_color }}'
+                  parameter: '{{ (targets[trigger.id].button_id | int) + (color_offset | int) }}'
+                  value: '{{ targets[trigger.id].off_color }}'
                 target:
                   device_id: '{{ controller_id }}'
-        - conditions: '{{ is_state(trigger.entity_id, ''on'') }}' # switch on
+        - conditions: '{{ is_state(trigger.entity_id, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) }}' # switch on or cover open
           sequence:
             - parallel:
               - service: zwave_js.set_config_parameter # turn indicator on/off
                 data:
-                  parameter: '{{ (targets[trigger.alias].button_id | int) + (toggle_offset | int) }}'
-                  value: '{{ targets[trigger.alias].on_state }}'
+                  parameter: '{{ (targets[trigger.id].button_id | int) + (toggle_offset | int) }}'
+                  value: '{{ targets[trigger.id].on_state }}'
                 target: 
                   device_id: '{{ controller_id }}'
               - service: zwave_js.set_config_parameter # set indicator color
                 data:
-                  parameter: '{{ (targets[trigger.alias].button_id | int) + (color_offset | int) }}'
-                  value: '{{ targets[trigger.alias].on_color }}'
+                  parameter: '{{ (targets[trigger.id].button_id | int) + (color_offset | int) }}'
+                  value: '{{ targets[trigger.id].on_color }}'
                 target:
                   device_id: '{{ controller_id }}'
         - conditions: '{{ is_state(trigger.entity_id, ''unavailable'') }}' # switch unavailable
@@ -1005,13 +1045,13 @@ action:
             - parallel:
               - service: zwave_js.set_config_parameter # turn indicator on/off
                 data:
-                  parameter: '{{ (targets[trigger.alias].button_id | int) + (toggle_offset | int) }}'
-                  value: '{{ targets[trigger.alias].unavail_state }}'
+                  parameter: '{{ (targets[trigger.id].button_id | int) + (toggle_offset | int) }}'
+                  value: '{{ targets[trigger.id].unavail_state }}'
                 target: 
                   device_id: '{{ controller_id }}'
               - service: zwave_js.set_config_parameter # set indicator color
                 data:
-                  parameter: '{{ (targets[trigger.alias].button_id | int) + (color_offset | int) }}'
-                  value: '{{ targets[trigger.alias].unavail_color }}'
+                  parameter: '{{ (targets[trigger.id].button_id | int) + (color_offset | int) }}'
+                  value: '{{ targets[trigger.id].unavail_color }}'
                 target:
                   device_id: '{{ controller_id }}'
