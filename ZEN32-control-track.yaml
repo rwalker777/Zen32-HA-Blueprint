@@ -2,7 +2,7 @@ blueprint:
   name: ZEN32 Scene and State (Z-Wave JS)
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
-    Version: 2024.4.4-20
+    Version: 2024.4.4-21
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -893,16 +893,9 @@ variables:
       unavail_color: !input 'unavail_color4'
 
 ##### Triggers #####
-# trigger_variables:
-#   tvar_input_scene5: !input 'scene_5'
-#   test: '{{ dict.values(tvar_input_scene5[target_id].entity_id) }}'
-#   test2: '{{ tvar_input_scene5[target_id] }}'
-
 trigger:
   - variables:
       tvar_input_scene5: !input 'scene_5'
-      #test: '{{ dict.values(tvar_input_scene5[target].entity_id) }}'
-      #test2: '{{ tvar_input_scene5[target.entity_id] }}'
   - alias: ButtonPress
     platform: event
     event_type: zwave_js_value_notification
