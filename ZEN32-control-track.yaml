@@ -892,10 +892,6 @@ variables:
       unavail_state: !input 'unavail_state4'
       unavail_color: !input 'unavail_color4'
 
-trigger_variables:
-  scene5_input: !input 'scene_5'
-  entity0_input: !input 'input_entity0'  
-
 ##### Triggers #####
 trigger:
   - alias: ButtonPress
@@ -905,6 +901,9 @@ trigger:
       device_id: !input 'zooz_switch'
   - alias: DeviceStateTrigger0
     id: 'StateTrigger'
+    variables:
+      scene5_input: !input 'scene_5'
+      entity0_input: !input 'input_entity0'
     platform: state
     entity_id: '{{ entity0_input if entity0_input else scene5_input[0].target.entity_id  }}'
   - alias: DeviceStateTrigger1
