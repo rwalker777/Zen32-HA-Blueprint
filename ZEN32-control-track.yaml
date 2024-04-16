@@ -892,7 +892,7 @@ variables:
       unavail_state: !input 'unavail_state4'
       unavail_color: !input 'unavail_color4'
   var_scene5: !input 'scene_5'
-  test: '{{ var_scene5[target].entity_id }}'
+  #test: '{{ var_scene5[target].entity_id }}'
 
 ##### Triggers #####
 trigger:
