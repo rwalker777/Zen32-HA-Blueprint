@@ -891,7 +891,11 @@ variables:
       on_color: !input 'on_color4'
       unavail_state: !input 'unavail_state4'
       unavail_color: !input 'unavail_color4'
-  scene5_input: !input 'scene_5'
+
+trigger_variables:
+  input_scene5: !input 'scene_5'
+  input_entity0: !input 'input_entity0'
+  trigger_entity0: '{{ input_entity0 if input_entity0 else input_scene5[0].target.entity_id  }}'
 
 ##### Triggers #####
 trigger:
@@ -900,15 +904,16 @@ trigger:
     event_type: zwave_js_value_notification
     event_data:
       device_id: !input 'zooz_switch'
-  - alias: DeviceStateTrigger0
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: '{{ trigger_entity0 }}'
     id: 'StateTrigger'
-    platform: state
-    variables:
-     scene5_input: !input 'scene_5'
-    entity_id: 
-      - if: !input 'input_entity0'
-        then: !input 'input_entity0'
-        else: scene5_input[0].target.entity_id
+    alias: DeviceStateTrigger0
+  # - alias: DeviceStateTrigger0
+  #   id: 'StateTrigger'
+  #   platform: state
+  #   entity_id: !input 'input_entity0'
   - alias: DeviceStateTrigger1
     id: 'StateTrigger'
     platform: state
