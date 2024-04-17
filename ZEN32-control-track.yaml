@@ -33,6 +33,7 @@ blueprint:
       name: Entity for button 1 (Big button)
       description: >
         (Optional) Override the entity to track
+
         Set if the LED is not behaving as expected or to track state of entity not in the scene
       default: []
       selector:
@@ -163,6 +164,7 @@ blueprint:
       name: Entity for button 2 (Top left button)
       description: >
         (Optional) Override the entity to track
+
         Set if the LED is not behaving as expected or to track state of entity not in the scene
       default: []
       selector:
@@ -293,6 +295,7 @@ blueprint:
       name: Entity for button 3 (Top right button)
       description: >
         (Optional) Override the entity to track
+
         Set if the LED is not behaving as expected or to track state of entity not in the scene
       default: []
       selector:
@@ -423,6 +426,7 @@ blueprint:
       name: Entity for button 4 (Bottom left button)
       description: >
         (Optional) Override the entity to track
+
         Set if the LED is not behaving as expected or to track state of entity not in the scene
       default: []
       selector:
@@ -553,6 +557,7 @@ blueprint:
       name: Entity for button 5 (Bottom right button)
       description: >
         (Optional) Override the entity to track
+        
         Set if the LED is not behaving as expected or to track state of entity not in the scene
       default: []
       selector:
