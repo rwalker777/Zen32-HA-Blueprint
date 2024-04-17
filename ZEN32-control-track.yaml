@@ -2,7 +2,7 @@ blueprint:
   name: ZEN32 Scene and State (Z-Wave JS)
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
-    Version: 2024.4.4-18
+    Version: 2024.4.4
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -31,7 +31,9 @@ blueprint:
         action:
     input_entity0:
       name: Entity for button 1 (Big button)
-      description: The entity to track
+      description: >
+        (Optional) Override the entity to track
+        Set if the LED is not behaving as expected or to track state of entity not in the scene
       default: []
       selector:
         entity:
@@ -159,7 +161,9 @@ blueprint:
         action:
     input_entity1:
       name: Entity for button 2 (Top left button)
-      description: The entity to track
+      description: >
+        (Optional) Override the entity to track
+        Set if the LED is not behaving as expected or to track state of entity not in the scene
       default: []
       selector:
         entity:
@@ -287,7 +291,9 @@ blueprint:
         action:
     input_entity2:
       name: Entity for button 3 (Top right button)
-      description: The entity to track
+      description: >
+        (Optional) Override the entity to track
+        Set if the LED is not behaving as expected or to track state of entity not in the scene
       default: []
       selector:
         entity:
@@ -415,7 +421,9 @@ blueprint:
         action:
     input_entity3:
       name: Entity for button 4 (Bottom left button)
-      description: The entity to track
+      description: >
+        (Optional) Override the entity to track
+        Set if the LED is not behaving as expected or to track state of entity not in the scene
       default: []
       selector:
         entity:
@@ -543,7 +551,9 @@ blueprint:
         action:
     input_entity4:
       name: Entity for button 5 (Bottom right button)
-      description: The entity to track
+      description: >
+        (Optional) Override the entity to track
+        Set if the LED is not behaving as expected or to track state of entity not in the scene
       default: []
       selector:
         entity:
@@ -946,26 +956,6 @@ trigger:
       entity_id: '{{ trigger_entity4 }}'
     id: 'StateTrigger'
     alias: DeviceStateTrigger4
-  # - alias: DeviceStateTrigger0
-  #   id: 'StateTrigger'
-  #   platform: state
-  #   entity_id: !input 'input_entity0'
-  # - alias: DeviceStateTrigger1
-  #   id: 'StateTrigger'
-  #   platform: state
-  #   entity_id: !input 'input_entity1'
-  # - alias: DeviceStateTrigger2
-  #   id: 'StateTrigger'
-  #   platform: state
-  #   entity_id: !input 'input_entity2'
-  # - alias: DeviceStateTrigger3
-  #   id: 'StateTrigger'
-  #   platform: state
-  #   entity_id: !input 'input_entity3'
-  # - alias: DeviceStateTrigger4
-  #   id: 'StateTrigger'
-  #   platform: state
-  #   entity_id: !input 'input_entity4'
 
 ##### Actions ######
 action:
