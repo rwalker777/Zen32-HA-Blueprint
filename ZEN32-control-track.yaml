@@ -2,7 +2,7 @@ blueprint:
   name: ZEN32 Scene and State (Z-Wave JS)
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
-    Version: 2024.4.4-14
+    Version: 2024.4.4-15
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -895,19 +895,19 @@ variables:
 trigger_variables:
   input_scene5: !input 'scene_5'
   input_entity0: !input 'input_entity0'
-  trigger_entity0: '{{ input_entity0 if input_entity0 else input_scene5[0].target.entity_id if input_scene5[0].target.entity_id | count > 0 else '' }}'
+  trigger_entity0: '{{ input_entity0 if input_entity0 else input_scene5[0].target.entity_id if input_scene5[0].target.entity_id | count > 0 else input_entity0 }}'
   input_scene1: !input 'scene_1'
   input_entity1: !input 'input_entity1'
-  trigger_entity1: '{{ input_entity1 if input_entity1 else input_scene1[0].target.entity_id if input_scene1[0].target.entity_id | count > 0 else '' }}'
+  trigger_entity1: '{{ input_entity1 if input_entity1 else input_scene1[0].target.entity_id if input_scene1[0].target.entity_id | count > 0 else input_entity1 }}'
   input_scene2: !input 'scene_2'
   input_entity2: !input 'input_entity2'
-  trigger_entity2: '{{ input_entity2 if input_entity2 else input_scene2[0].target.entity_id  if input_scene2[0].target.entity_id | count > 0 else '' }}'
+  trigger_entity2: '{{ input_entity2 if input_entity2 else input_scene2[0].target.entity_id  if input_scene2[0].target.entity_id | count > 0 else input_entity2 }}'
   input_scene3: !input 'scene_5'
   input_entity3: !input 'input_entity3'
-  trigger_entity3: '{{ input_entity3 if input_entity3 else input_scene3[0].target.entity_id  if input_scene3[0].target.entity_id | count > 0 else '' }}'
+  trigger_entity3: '{{ input_entity3 if input_entity3 else input_scene3[0].target.entity_id  if input_scene3[0].target.entity_id | count > 0 else input_entity3 }}'
   input_scene4: !input 'scene_4'
   input_entity4: !input 'input_entity4'
-  trigger_entity4: '{{ input_entity4 if input_entity4 else input_scene4[0].target.entity_id  if input_scene4[0].target.entity_id | count > 0 else '' }}'
+  trigger_entity4: '{{ input_entity4 if input_entity4 else input_scene4[0].target.entity_id  if input_scene4[0].target.entity_id | count > 0 else input_entity4 }}'
 
 ##### Triggers #####
 trigger:
