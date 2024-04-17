@@ -2,7 +2,7 @@ blueprint:
   name: ZEN32 Scene and State (Z-Wave JS)
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
-    Version: 2024.4.4-10
+    Version: 2024.4.4-11
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -896,6 +896,18 @@ trigger_variables:
   input_scene5: !input 'scene_5'
   input_entity0: !input 'input_entity0'
   trigger_entity0: '{{ input_entity0 if input_entity0 else input_scene5[0].target.entity_id  }}'
+  input_scene1: !input 'scene_1'
+  input_entity1: !input 'input_entity1'
+  trigger_entity1: '{{ input_entity1 if input_entity1 else input_scene1[0].target.entity_id  }}'
+  input_scene2: !input 'scene_2'
+  input_entity2: !input 'input_entity2'
+  trigger_entity2: '{{ input_entity2 if input_entity2 else input_scene2[0].target.entity_id  }}'
+  input_scene3: !input 'scene_5'
+  input_entity3: !input 'input_entity3'
+  trigger_entity3: '{{ input_entity3 if input_entity3 else input_scene3[0].target.entity_id  }}'
+  input_scene4: !input 'scene_4'
+  input_entity4: !input 'input_entity4'
+  trigger_entity4: '{{ input_entity4 if input_entity4 else input_scene4[0].target.entity_id  }}'
 
 ##### Triggers #####
 trigger:
@@ -910,26 +922,50 @@ trigger:
       entity_id: '{{ trigger_entity0 }}'
     id: 'StateTrigger'
     alias: DeviceStateTrigger0
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: '{{ trigger_entity1 }}'
+    id: 'StateTrigger'
+    alias: DeviceStateTrigger1
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: '{{ trigger_entity2 }}'
+    id: 'StateTrigger'
+    alias: DeviceStateTrigger2
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: '{{ trigger_entity3 }}'
+    id: 'StateTrigger'
+    alias: DeviceStateTrigger3
+  - platform: event
+    event_type: state_changed
+    event_data:
+      entity_id: '{{ trigger_entity4 }}'
+    id: 'StateTrigger'
+    alias: DeviceStateTrigger4
   # - alias: DeviceStateTrigger0
   #   id: 'StateTrigger'
   #   platform: state
   #   entity_id: !input 'input_entity0'
-  - alias: DeviceStateTrigger1
-    id: 'StateTrigger'
-    platform: state
-    entity_id: !input 'input_entity1'
-  - alias: DeviceStateTrigger2
-    id: 'StateTrigger'
-    platform: state
-    entity_id: !input 'input_entity2'
-  - alias: DeviceStateTrigger3
-    id: 'StateTrigger'
-    platform: state
-    entity_id: !input 'input_entity3'
-  - alias: DeviceStateTrigger4
-    id: 'StateTrigger'
-    platform: state
-    entity_id: !input 'input_entity4'
+  # - alias: DeviceStateTrigger1
+  #   id: 'StateTrigger'
+  #   platform: state
+  #   entity_id: !input 'input_entity1'
+  # - alias: DeviceStateTrigger2
+  #   id: 'StateTrigger'
+  #   platform: state
+  #   entity_id: !input 'input_entity2'
+  # - alias: DeviceStateTrigger3
+  #   id: 'StateTrigger'
+  #   platform: state
+  #   entity_id: !input 'input_entity3'
+  # - alias: DeviceStateTrigger4
+  #   id: 'StateTrigger'
+  #   platform: state
+  #   entity_id: !input 'input_entity4'
 
 ##### Actions ######
 action:
@@ -1021,7 +1057,7 @@ action:
       alias: 'StateTrigger'
       sequence:
         choose:
-        - conditions: '{{ is_state(trigger.entity_id, ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) }}' # switch off or cover closed
+        - conditions: '{{ is_state(trigger.event.data.entity_id, ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) }}' # switch off or cover closed
           sequence:
             - parallel:
               - service: zwave_js.set_config_parameter # turn indicator on/off
@@ -1036,7 +1072,7 @@ action:
                   value: '{{ targets[trigger.alias].off_color }}'
                 target:
                   device_id: '{{ controller_id }}'
-        - conditions: '{{ is_state(trigger.entity_id, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) }}' # switch on or cover open
+        - conditions: '{{ is_state(trigger.event.data.entity_id, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) }}' # switch on or cover open
           sequence:
             - parallel:
               - service: zwave_js.set_config_parameter # turn indicator on/off
@@ -1051,7 +1087,7 @@ action:
                   value: '{{ targets[trigger.alias].on_color }}'
                 target:
                   device_id: '{{ controller_id }}'
-        - conditions: '{{ is_state(trigger.entity_id, ''unavailable'') }}' # switch unavailable
+        - conditions: '{{ is_state(trigger.event.data.entity_id, ''unavailable'') }}' # switch unavailable
           sequence:
             - parallel:
               - service: zwave_js.set_config_parameter # turn indicator on/off
