@@ -9,10 +9,14 @@ blueprint:
       selector:
         device:
           multiple: true
-          integration: zwave_js
-          manufacturer: Zooz
-          model: ZEN37 800LR
-    button_1_1_tap:
+          filter:
+            - integration: zwave_js
+              manufacturer: Zooz
+              model: ZEN37
+            - integration: zwave_js
+              manufacturer: Zooz
+              model: ZEN37 800LR
+        button_1_1_tap:
       name: Button 1 - 1 Tap (Up/On press 1x)
       description: "Action to run, when the button is pressed one time."
       default: []
