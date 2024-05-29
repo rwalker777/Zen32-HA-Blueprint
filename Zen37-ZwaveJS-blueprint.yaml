@@ -198,11 +198,15 @@ blueprint:
 
 mode: !input automation_mode
 max_exceeded: silent
+variables:
+  remotes: !input zen37lr
+condition:
+  - platform: template
+    value_template: "{{ trigger.event.data.device_id in remotes }}"
 trigger:
   - platform: event
     event_type: zwave_js_value_notification
     event_data:
-      device_id: !input zen37lr
       command_class_name: "Central Scene"
 action:
   - variables:
