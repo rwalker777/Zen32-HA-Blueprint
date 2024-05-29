@@ -7,8 +7,8 @@ blueprint:
       name: Zooz ZEN37 wall remote
       description: "List of available Zen37 800LR wall remotes."
       selector:
-        multiple: true
         device:
+          multiple: true
           integration: zwave_js
           manufacturer: Zooz
           model: ZEN37 800LR
