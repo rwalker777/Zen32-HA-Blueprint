@@ -201,7 +201,7 @@ max_exceeded: silent
 variables:
   remotes: !input zen37lr
 condition:
-  - platform: template
+  - condition: template
     value_template: "{{ trigger.event.data.device_id in remotes }}"
 trigger:
   - platform: event
