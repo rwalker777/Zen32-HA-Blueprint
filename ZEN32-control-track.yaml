@@ -28,16 +28,44 @@ blueprint:
 ############
     schedule_start:
       name: Night time LEDs start time
-      description: LEDs are dimmed or turned off at this time.
+      description: LEDs are dimmed or turned off at this time.  To disable leave at 00:00:00 default.
       default: "00:00:00"
       selector:
         time:
+    night_led_brightness:
+      name: Night time LED setting.
+      description: Disable or change brightness of LEDs at start time.
+      default: '1'
+      selector:
+        mode: dropdown
+        options:
+          - label: Led off
+            value: '99'
+          - label: 'Low (30%)'
+            value: '2'
+          - label: 'Medium (60%)'
+            value: '1'
+          - label: 'Bright (100%)'
+            value: '0'
     schedule_stop:
       name: Night time LEDs stop time
-      description: LED tracking is restored.
+      description: LED tracking is restored.  To disable leave at 00:00:00 default.
       default: "00:00:00"
       selector:
         time:
+    day_led_brightness:
+      name: Day time LED setting.
+      description: Brightness of LEDs at stop time.
+      default: '1'
+      selector:
+        mode: dropdown
+        options:
+          - label: 'Low (30%)'
+            value: '2'
+          - label: 'Medium (60%)'
+            value: '1'
+          - label: 'Bright (100%)'
+            value: '0'
 ############
     scene_5:
       name: Big button - Pressed Once
@@ -879,6 +907,9 @@ mode: parallel
 max: 10
 variables:
   controller_id: !input 'zooz_switch'
+  night_led_brightness: !input 'night_led_brightness'
+  schedule_start: !input 'schedule_start'
+  schedule_stop: !input 'schedule_stop'
   toggle_offset: 1
   color_offset: 6
   targets:
@@ -947,6 +978,10 @@ trigger:
     event_type: zwave_js_value_notification
     event_data:
       device_id: !input 'zooz_switch'
+  - alias: NightTime
+    id: 'NightTime'
+    platform: time
+    at: !input 'schedule_start'
   - platform: event
     event_type: state_changed
     event_data:
@@ -1064,6 +1099,77 @@ action:
             sequence: !input 'scene_54'
           - conditions: '{{ property_key_name == ''005'' and value == ''KeyPressed5x'' }}'
             sequence: !input 'scene_55'
+    # At night time turn off LEDs or change brightness if not set to defaults
+    - conditions: '{{ trigger.id == ''NightTime'' and ( schedule_start != ''00:00:00'' and schedule_stop != ''00:00:00'' ) }}'
+      alias: 'NightTimeTrigger'
+      sequence:
+        choose:
+        - conditions: '{{ night_led_brightness == ''99'' }}' # If 99 turn off LEDs
+          sequence:
+            - parallel:
+              - service: zwave_js.set_config_parameter # turn indicator off
+                data:
+                  parameter: '1'
+                  value: '2'
+                target:
+                  device_id: '{{ controller_id }}'
+              - service: zwave_js.set_config_parameter # turn indicator off
+                data:
+                  parameter: '2'
+                  value: '2'
+                target:
+                  device_id: '{{ controller_id }}'
+              - service: zwave_js.set_config_parameter # turn indicator off
+                data:
+                  parameter: '3'
+                  value: '2'
+                target:
+                  device_id: '{{ controller_id }}'
+              - service: zwave_js.set_config_parameter # turn indicator off
+                data:
+                  parameter: '4'
+                  value: '2'
+                target:
+                  device_id: '{{ controller_id }}'
+              - service: zwave_js.set_config_parameter # turn indicator off
+                data:
+                  parameter: '5'
+                  value: '2'
+                target:
+                  device_id: '{{ controller_id }}'
+        - conditions: '{{ night_led_brightness != ''99'' }}' # Else set brightness
+          sequence:
+            - parallel:
+              - service: zwave_js.set_config_parameter # set brightness
+                data:
+                  parameter: '11'
+                  value: '{{ night_led_brightness }}'
+                target: 
+                  device_id: '{{ controller_id }}'
+              - service: zwave_js.set_config_parameter # set brightness
+                data:
+                  parameter: '12'
+                  value: '{{ night_led_brightness }}'
+                target: 
+                  device_id: '{{ controller_id }}'
+              - service: zwave_js.set_config_parameter # set brightness
+                data:
+                  parameter: '13'
+                  value: '{{ night_led_brightness }}'
+                target: 
+                  device_id: '{{ controller_id }}'
+              - service: zwave_js.set_config_parameter # set brightness
+                data:
+                  parameter: '14'
+                  value: '{{ night_led_brightness }}'
+                target: 
+                  device_id: '{{ controller_id }}'
+              - service: zwave_js.set_config_parameter # set brightness
+                data:
+                  parameter: '15'
+                  value: '{{ night_led_brightness }}'
+                target: 
+                  device_id: '{{ controller_id }}'
     - conditions: '{{ trigger.id == ''StateTrigger'' }}'
       alias: 'StateTrigger'
       sequence:
