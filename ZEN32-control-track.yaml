@@ -37,16 +37,17 @@ blueprint:
       description: Disable or change brightness of LEDs at start time.
       default: '99'
       selector:
-        mode: dropdown
-        options:
-          - label: Led off
-            value: '99'
-          - label: Low
-            value: '2'
-          - label: Medium
-            value: '1'
-          - label: Bright
-            value: '0'
+        select:
+          mode: dropdown
+          options:
+            - label: Led off
+              value: '99'
+            - label: Low
+              value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     schedule_stop:
       name: Night time LEDs stop time
       description: LED tracking is restored.  To disable leave at 00:00:00 default.
@@ -58,14 +59,15 @@ blueprint:
       description: Brightness of LEDs at stop time.
       default: '1'
       selector:
-        mode: dropdown
-        options:
-          - label: Low
-            value: '2'
-          - label: Medium
-            value: '1'
-          - label: Bright
-            value: '0'
+        select:
+          mode: dropdown
+          options:
+            - label: Low
+              value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
 ############
     scene_5:
       name: Big button - Pressed Once
@@ -974,6 +976,7 @@ trigger_variables:
 ##### Triggers #####
 trigger:
   - alias: ButtonPress
+    id: ButtonPress
     platform: event
     event_type: zwave_js_value_notification
     event_data:
