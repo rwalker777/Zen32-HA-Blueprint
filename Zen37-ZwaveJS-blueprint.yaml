@@ -1,0 +1,270 @@
+blueprint:
+  name: "ZEN37 Z-Wave JS Scene Controller"
+  description: Create automations for the Zooz Zen37 800LR 4 button scene controller using the Z-WAVE JS integration.
+  domain: automation
+  input:
+    zen37lr:
+      name: Zooz ZEN37 wall remote
+      description: "List of available Zen37 800LR wall remotes."
+      selector:
+        multiple: true
+        device:
+          integration: zwave_js
+          manufacturer: Zooz
+          model: ZEN37 800LR
+    button_1_1_tap:
+      name: Button 1 - 1 Tap (Up/On press 1x)
+      description: "Action to run, when the button is pressed one time."
+      default: []
+      selector:
+        action: {}
+    button_1_2_tap:
+      name: Button 1 - 2 Taps (Up/On press 2x)
+      description: "Action to run, when the button is pressed two time."
+      default: []
+      selector:
+        action: {}
+    button_1_3_tap:
+      name: Button 1 - 3 Taps (Up/On press 3x)
+      description: "Action to run, when the button is pressed three time."
+      default: []
+      selector:
+        action: {}
+    button_1_4_tap:
+      name: Button 1 - 4 Taps (Up/On press 4x)
+      description: "Action to run, when the button is pressed four time."
+      default: []
+      selector:
+        action: {}
+    button_1_5_tap:
+      name: Button 1 - 5 Taps (Up/On press 5x)
+      description: "Action to run, when the button is pressed five time."
+      default: []
+      selector:
+        action: {}
+    button_1_hold:
+      name: Button 1 - Held down
+      description: "Action to run, when the button is held down."
+      default: []
+      selector:
+        action: {}
+    button_1_released:
+      name: Button 1 - Released
+      description: "Action to run, when the button is released."
+      default: []
+      selector:
+        action: {}
+        
+    button_2_1_tap:
+      name: Button 2 - 1 Tap (Up/On press 1x)
+      description: "Action to run, when the button is pressed one time."
+      default: []
+      selector:
+        action: {}
+    button_2_2_tap:
+      name: Button 2 - 2 Taps (Up/On press 2x)
+      description: "Action to run, when the button is pressed two time."
+      default: []
+      selector:
+        action: {}
+    button_2_3_tap:
+      name: Button 2 - 3 Taps (Up/On press 3x)
+      description: "Action to run, when the button is pressed three time."
+      default: []
+      selector:
+        action: {}
+    button_2_4_tap:
+      name: Button 2 - 4 Taps (Up/On press 4x)
+      description: "Action to run, when the button is pressed four time."
+      default: []
+      selector:
+        action: {}
+    button_2_5_tap:
+      name: Button 2 - 5 Taps (Up/On press 5x)
+      description: "Action to run, when the button is pressed five time."
+      default: []
+      selector:
+        action: {}
+    button_2_hold:
+      name: Button 2 - Held down
+      description: "Action to run, when the button is held down."
+      default: []
+      selector:
+        action: {}
+    button_2_released:
+      name: Button 2 - Released
+      description: "Action to run, when the button is released."
+      default: []
+      selector:
+        action: {}
+        
+    button_3_1_tap:
+      name: Button 3 - 1 Tap (Up/On press 1x)
+      description: "Action to run, when the button is pressed one time."
+      default: []
+      selector:
+        action: {}
+    button_3_2_tap:
+      name: Button 3 - 2 Taps (Up/On press 2x)
+      description: "Action to run, when the button is pressed two time."
+      default: []
+      selector:
+        action: {}
+    button_3_3_tap:
+      name: Button 3 - 3 Taps (Up/On press 3x)
+      description: "Action to run, when the button is pressed three time."
+      default: []
+      selector:
+        action: {}
+    button_3_4_tap:
+      name: Button 3 - 4 Taps (Up/On press 4x)
+      description: "Action to run, when the button is pressed four time."
+      default: []
+      selector:
+        action: {}
+    button_3_5_tap:
+      name: Button 3 - 5 Taps (Up/On press 5x)
+      description: "Action to run, when the button is pressed five time."
+      default: []
+      selector:
+        action: {}
+    button_3_hold:
+      name: Button 3 - Held down
+      description: "Action to run, when the button is held down."
+      default: []
+      selector:
+        action: {}
+    button_3_released:
+      name: Button 3 - Released
+      description: "Action to run, when the button is released."
+      default: []
+      selector:
+        action: {}
+        
+    button_4_1_tap:
+      name: Button 4 - 1 Tap (Up/On press 1x)
+      description: "Action to run, when the button is pressed one time."
+      default: []
+      selector:
+        action: {}
+    button_4_2_tap:
+      name: Button 4 - 2 Taps (Up/On press 2x)
+      description: "Action to run, when the button is pressed two time."
+      default: []
+      selector:
+        action: {}
+    button_4_3_tap:
+      name: Button 4 - 3 Taps (Up/On press 3x)
+      description: "Action to run, when the button is pressed three time."
+      default: []
+      selector:
+        action: {}
+    button_4_4_tap:
+      name: Button 4 - 4 Taps (Up/On press 4x)
+      description: "Action to run, when the button is pressed four time."
+      default: []
+      selector:
+        action: {}
+    button_4_5_tap:
+      name: Button 4 - 5 Taps (Up/On press 5x)
+      description: "Action to run, when the button is pressed five time."
+      default: []
+      selector:
+        action: {}
+    button_4_hold:
+      name: Button 4 - Held down
+      description: "Action to run, when the button is held down."
+      default: []
+      selector:
+        action: {}
+    button_4_released:
+      name: Button 4 - Released
+      description: "Action to run, when the button is released."
+      default: []
+      selector:
+        action: {}
+        
+    automation_mode:
+      name: Automation mode
+      description: See https://www.home-assistant.io/docs/automation/modes/
+      default: single
+      selector:
+        select:
+          options:
+            - single
+            - restart
+            - queued
+            - parallel
+
+mode: !input automation_mode
+max_exceeded: silent
+trigger:
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: !input zen37lr
+      command_class_name: "Central Scene"
+action:
+  - variables:
+      scene_id: "{{ trigger.event.data.property_key }}"
+      action_name: "{{ trigger.event.data.value }}"
+  - choose:
+    - conditions: "{{ scene_id == '001' and action_name == 'KeyPressed' }}"
+      sequence: !input button_1_1_tap
+    - conditions: "{{ scene_id == '001' and action_name == 'KeyPressed2x' }}"
+      sequence: !input button_1_2_tap
+    - conditions: "{{ scene_id == '001' and action_name == 'KeyPressed3x' }}"
+      sequence: !input button_1_3_tap
+    - conditions: "{{ scene_id == '001' and action_name == 'KeyPressed4x' }}"
+      sequence: !input button_1_4_tap
+    - conditions: "{{ scene_id == '001' and action_name == 'KeyPressed5x' }}"
+      sequence: !input button_1_5_tap
+    - conditions: "{{ scene_id == '001' and action_name == 'KeyReleased' }}"
+      sequence: !input button_1_released
+    - conditions: "{{ scene_id == '001' and action_name == 'KeyHeldDown' }}"
+      sequence: !input button_1_hold
+
+    - conditions: "{{ scene_id == '002' and action_name == 'KeyPressed' }}"
+      sequence: !input button_2_1_tap
+    - conditions: "{{ scene_id == '002' and action_name == 'KeyPressed2x' }}"
+      sequence: !input button_2_2_tap
+    - conditions: "{{ scene_id == '002' and action_name == 'KeyPressed3x' }}"
+      sequence: !input button_2_3_tap
+    - conditions: "{{ scene_id == '002' and action_name == 'KeyPressed4x' }}"
+      sequence: !input button_2_4_tap
+    - conditions: "{{ scene_id == '002' and action_name == 'KeyPressed5x' }}"
+      sequence: !input button_2_5_tap
+    - conditions: "{{ scene_id == '002' and action_name == 'KeyReleased' }}"
+      sequence: !input button_2_released
+    - conditions: "{{ scene_id == '002' and action_name == 'KeyHeldDown' }}"
+      sequence: !input button_2_hold
+      
+    - conditions: "{{ scene_id == '003' and action_name == 'KeyPressed' }}"
+      sequence: !input button_3_1_tap
+    - conditions: "{{ scene_id == '003' and action_name == 'KeyPressed2x' }}"
+      sequence: !input button_3_2_tap
+    - conditions: "{{ scene_id == '003' and action_name == 'KeyPressed3x' }}"
+      sequence: !input button_3_3_tap
+    - conditions: "{{ scene_id == '003' and action_name == 'KeyPressed4x' }}"
+      sequence: !input button_3_4_tap
+    - conditions: "{{ scene_id == '003' and action_name == 'KeyPressed5x' }}"
+      sequence: !input button_3_5_tap
+    - conditions: "{{ scene_id == '003' and action_name == 'KeyReleased' }}"
+      sequence: !input button_3_released
+    - conditions: "{{ scene_id == '003' and action_name == 'KeyHeldDown' }}"
+      sequence: !input button_3_hold
+      
+    - conditions: "{{ scene_id == '004' and action_name == 'KeyPressed' }}"
+      sequence: !input button_4_1_tap
+    - conditions: "{{ scene_id == '004' and action_name == 'KeyPressed2x' }}"
+      sequence: !input button_4_2_tap
+    - conditions: "{{ scene_id == '004' and action_name == 'KeyPressed3x' }}"
+      sequence: !input button_4_3_tap
+    - conditions: "{{ scene_id == '004' and action_name == 'KeyPressed4x' }}"
+      sequence: !input button_4_4_tap
+    - conditions: "{{ scene_id == '004' and action_name == 'KeyPressed5x' }}"
+      sequence: !input button_4_5_tap
+    - conditions: "{{ scene_id == '004' and action_name == 'KeyReleased' }}"
+      sequence: !input button_4_released
+    - conditions: "{{ scene_id == '004' and action_name == 'KeyHeldDown' }}"
+      sequence: !input button_4_hold
