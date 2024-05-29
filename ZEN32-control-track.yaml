@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.4.5
+    **Version**: 2024.5.1
 
     **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing
   domain: automation
@@ -25,6 +25,17 @@ blueprint:
               manufacturer: Zooz
               model: ZEN32 800LR
           multiple: false
+############
+    schedule_start:
+      name: Night time LEDs start time
+      description: LEDs are dimmed or turned off at this time.
+      selector:
+        time:
+    schedule_stop:
+      name: Night time LEDs stop time
+      description: LED tracking is restored.
+      selector:
+        time:
 ############
     scene_5:
       name: Big button - Pressed Once
