@@ -1,6 +1,6 @@
 blueprint:
   name: "ZEN37 Z-Wave JS Scene Controller"
-  description: V2 - Create automations for the Zooz Zen37 800LR 4 button scene controller using the Z-WAVE JS integration.
+  description: Create automations for Zooz Zen37 800LR scene controller using Z-WAVE-JS integration.
   domain: automation
   input:
     zen37lr:
