@@ -29,11 +29,13 @@ blueprint:
     schedule_start:
       name: Night time LEDs start time
       description: LEDs are dimmed or turned off at this time.
+      default: "00:00:00"
       selector:
         time:
     schedule_stop:
       name: Night time LEDs stop time
       description: LED tracking is restored.
+      default: "00:00:00"
       selector:
         time:
 ############
