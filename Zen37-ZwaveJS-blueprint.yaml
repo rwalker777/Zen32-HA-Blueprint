@@ -201,6 +201,9 @@ max_exceeded: silent
 trigger:
   - platform: event
     event_type: zwave_js_value_notification
+    condition:
+    - condition: template
+      value_template: "{{ trigger.event.data.device_id in zen37lr }}"
     event_data:
       device_id: !input zen37lr
       command_class_name: "Central Scene"
