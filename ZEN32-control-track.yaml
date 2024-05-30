@@ -804,8 +804,8 @@ action:
                   target:
                     device_id: '{{ controller_id }}'
                 - condition: time
-                  before: '{{ schedule_start }}'
-                  after: '{{ schedule_stop }}'
+                  before: !input 'schedule_start'
+                  after: !input 'schedule_stop'
                   sequence:
                   - service: zwave_js.set_config_parameter # set brightness
                     data:
