@@ -5,7 +5,7 @@ blueprint:
 
     **Version**: 2024.5.1-12
 
-    **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing
+    **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing.  If you disable the relay, enable parameter 20.
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -26,35 +26,6 @@ blueprint:
               model: ZEN32 800LR
           multiple: false
 ############
-    schedule_start:
-      name: Night time LEDs start time
-      description: "LEDs are dimmed or turned off at this time.  To disable leave at 00:00:00 default."
-      default: '00:00:00'
-      selector:
-        time:
-    night_led_brightness:
-      name: Night time LED setting.
-      description: Disable or change brightness of LEDs at start time.
-      default: '99'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
-    schedule_stop:
-      name: Night time LEDs stop time
-      description: "LED tracking is restored.  To disable leave at 00:00:00 default."
-      default: '00:00:00'
-      selector:
-        time:
-############
     scene_5:
       name: Big button - Pressed Once
       description: Action to run when button is pressed once.
@@ -68,7 +39,7 @@ blueprint:
 
         Track different entity or set if LED track is not as expected
       default: []
-      selector:
+      selector: &entity_selector
         entity:
           multiple: false
           domain:
@@ -87,7 +58,7 @@ blueprint:
       name: Off behavior for button 1
       description: Led state when target is off, closed, disarmed or locked
       default: '1'
-      selector:
+      selector: &led_set_selector
         select:
           mode: dropdown
           options:
@@ -103,7 +74,7 @@ blueprint:
       name: Off color for button 1
       description: Color for led when target is off (default white)
       default: '0'
-      selector:
+      selector: &led_color_selector
         select:
           mode: dropdown
           options:
@@ -125,78 +96,22 @@ blueprint:
       name: On behavior for button 1
       description: Led state when target is on, opened, armed or unlocked
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     on_color0:
       name: On color for button 1
       description: Color for led when target is on (default white)
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
     unavail_state0:
       name: Unavailable State for button 1
       description: Led state when target is unavailable
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     unavail_color0:
       name: Unavailable Color for button 1
       description: Color for led when target is unavailable (default red)
       default: '3'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
 #############
     scene_1:
       name: Top left button - Pressed Once
@@ -211,135 +126,37 @@ blueprint:
 
         Track different entity or set if LED track is not as expected
       default: []
-      selector:
-        entity:
-          multiple: false
-          domain:
-            - alarm_control_panel
-            - binary_sensor
-            - climate
-            - cover
-            - fan
-            - input_boolean
-            - light
-            - lock
-            - media_player
-            - sensor
-            - switch
+      selector: *entity_selector
     off_state1:
       name: Off behavior for button 2
       description: Led state when target is off, closed, disarmed or locked
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     off_color1:
       name: Off color for button 2
       description: Color for led when target is off (default white)
       default: '0'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
     on_state1:
       name: On behavior for button 2
       description: Led state when target is on, opened, armed or unlocked
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     on_color1:
       name: On color for button 2
       description: Color for led when target is on (default white)
       default: '2'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
     unavail_state1:
       name: Unavailable State for button 2
       description: Led state when target is unavailable
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     unavail_color1:
       name: Unavailable Color for button 2
       description: Color for led when target is unavailable (default red)
       default: '3'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
 #############
     scene_2:
       name: Top right button - Pressed Once
@@ -354,135 +171,37 @@ blueprint:
 
         Track different entity or set if LED track is not as expected
       default: []
-      selector:
-        entity:
-          multiple: false
-          domain:
-            - alarm_control_panel
-            - binary_sensor
-            - climate
-            - cover
-            - fan
-            - input_boolean
-            - light
-            - lock
-            - media_player
-            - sensor
-            - switch
+      selector: *entity_selector
     off_state2:
       name: Off behavior for button 3
       description: Led state when target is off, closed, disarmed or locked
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     off_color2:
       name: Off color for button 3
       description: Color for led when target is off (default white)
       default: '0'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
     on_state2:
       name: On behavior for button 3
       description: Led state when target is on, opened, armed or unlocked
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     on_color2:
       name: On color for button 3
       description: Color for led when target is on (default white)
       default: '2'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
     unavail_state2:
       name: Unavailable State for button 3
       description: Led state when target is unavailable
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     unavail_color2:
       name: Unavailable Color for button 3
       description: Color for led when target is unavailable (default red)
       default: '3'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
 #############
     scene_3:
       name: Bottom left button - Pressed Once
@@ -497,135 +216,37 @@ blueprint:
 
         Track different entity or set if LED track is not as expected
       default: []
-      selector:
-        entity:
-          multiple: false
-          domain:
-            - alarm_control_panel
-            - binary_sensor
-            - climate
-            - cover
-            - fan
-            - input_boolean
-            - light
-            - lock
-            - media_player
-            - sensor
-            - switch
+      selector: *entity_selector
     off_state3:
       name: Off behavior for button 4
       description: Led state when target is off, closed, disarmed or locked
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     off_color3:
       name: Off color for button 4
       description: Color for led when target is off (default white)
       default: '0'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
     on_state3:
       name: On behavior for button 4
       description: Led state when target is on, opened, armed or unlocked
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     on_color3:
       name: On color for button 4
       description: Color for led when target is on (default white)
       default: '2'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
     unavail_state3:
       name: Unavailable State for button 4
       description: Led state when target is unavailable
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     unavail_color3:
       name: Unavailable Color for button 4
       description: Color for led when target is unavailable (default red)
       default: '3'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
 #############
     scene_4:
       name: Bottom right button - Pressed Once
@@ -640,135 +261,37 @@ blueprint:
 
         Track different entity or set if LED track is not as expected
       default: []
-      selector:
-        entity:
-          multiple: false
-          domain:
-            - alarm_control_panel
-            - binary_sensor
-            - climate
-            - cover
-            - fan
-            - input_boolean
-            - light
-            - lock
-            - media_player
-            - sensor
-            - switch
+      selector: *entity_selector
     off_state4:
       name: Off behavior for button 5
       description: Led state when target is off, closed, disarmed or locked
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     off_color4:
       name: Off color for button 5
       description: Color for led when target is off (default white)
       default: '0'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
     on_state4:
       name: On behavior for button 5
       description: Led state when target is on, opened, armed or unlocked
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     on_color4:
       name: On color for button 5
       description: Color for led when target is on (default white)
       default: '2'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
     unavail_state4:
       name: Unavailable State for button 5
       description: Led state when target is unavailable
       default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     unavail_color4:
       name: Unavailable Color for button 5
       description: Color for led when target is unavailable (default red)
       default: '3'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
+      selector: *led_color_selector
 #############
     scene_5h:
       name: Scene 5 - Held
@@ -951,6 +474,24 @@ blueprint:
       selector:
         action:
 #############
+    schedule_start:
+      name: Night time LEDs start time
+      description: "LEDs are dimmed or turned off at this time.  To disable leave at 00:00:00 default."
+      default: '00:00:00'
+      selector:
+        time:
+    night_led_brightness:
+      name: Night time LED setting.
+      description: Disable or change brightness of LEDs at start time.
+      default: '99'
+      selector: *led_set_selector
+    schedule_stop:
+      name: Night time LEDs stop time
+      description: "LED tracking is restored.  To disable leave at 00:00:00 default."
+      default: '00:00:00'
+      selector:
+        time:
+#############
 mode: parallel
 max: 10
 variables:
@@ -1032,6 +573,10 @@ trigger:
     id: 'NightTime'
     platform: time
     at: !input 'schedule_start'
+  - alias: 'DayTime'
+    id: 'DayTime'
+    platform: time
+    at: !input 'schedule_stop'
   - platform: event
     event_type: state_changed
     event_data:
