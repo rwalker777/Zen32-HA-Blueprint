@@ -34,7 +34,7 @@ blueprint:
         time:
     night_led_brightness:
       name: Night time LED setting.
-      description: Disable or change brightness of LEDs at start time.
+      description: Disable or override brightness of LEDs between schedule times.
       default: '99'
       selector: &led_set_selector
         select:
@@ -573,10 +573,10 @@ trigger:
     id: 'NightTime'
     platform: time
     at: !input 'schedule_start'
-  - alias: 'DayTime'
-    id: 'DayTime'
-    platform: time
-    at: !input 'schedule_stop'
+  # - alias: 'DayTime'
+  #   id: 'DayTime'
+  #   platform: time
+  #   at: !input 'schedule_stop'
   - platform: event
     event_type: state_changed
     event_data:
@@ -766,13 +766,14 @@ action:
                   value: '{{ night_led_brightness }}'
                 target: 
                   device_id: '{{ controller_id }}'
-    # If track entity state changes update LEDs outside of night time
-    - conditions: 
-        - condition: trigger
-          id: 'StateTrigger'
-        - condition: time
-          before: !input 'schedule_start'
-          after: !input 'schedule_stop'
+    # If track entity state changes update LEDs if NOT -Nighttime AND LEDs set to off-
+    # If Nightime with LED brightness set we still update but ignore brightness setting
+    - conditions:
+      - condition: trigger
+        id: 'StateTrigger'
+      - condition: time
+        before: !input 'schedule_start'
+        after: !input 'schedule_stop'
       alias: 'StateAction'
       sequence:
         choose:
@@ -796,18 +797,22 @@ action:
                     value: '3'
                   target:
                     device_id: '{{ controller_id }}'
-                - service: zwave_js.set_config_parameter # set brightness
-                  data:
-                    parameter: '{{ (targets[trigger.alias].button_id | int) + (brightness_offset | int) }}'
-                    value: '{{ targets[trigger.alias].off_state }}'
-                  target:
-                    device_id: '{{ controller_id }}'
                 - service: zwave_js.set_config_parameter # set indicator color
                   data:
                     parameter: '{{ (targets[trigger.alias].button_id | int) + (color_offset | int) }}'
                     value: '{{ targets[trigger.alias].off_color }}'
                   target:
                     device_id: '{{ controller_id }}'
+                - condition: time
+                  before: '{{ schedule_start }}'
+                  after: '{{ schedule_stop }}'
+                  sequence:
+                  - service: zwave_js.set_config_parameter # set brightness
+                    data:
+                      parameter: '{{ (targets[trigger.alias].button_id | int) + (brightness_offset | int) }}'
+                      value: '{{ targets[trigger.alias].off_state }}'
+                    target:
+                      device_id: '{{ controller_id }}'
         - conditions: '{{ trigger.event.data.new_state.state in ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1] }}' # switch on or cover open
           sequence:
             choose:
