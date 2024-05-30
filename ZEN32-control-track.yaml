@@ -25,6 +25,35 @@ blueprint:
               manufacturer: Zooz
               model: ZEN32 800LR
           multiple: false
+#############
+    schedule_start:
+      name: Night time LEDs start time
+      description: "LEDs are dimmed or turned off at this time.  To disable leave at 00:00:00 default."
+      default: '00:00:00'
+      selector:
+        time:
+    night_led_brightness:
+      name: Night time LED setting.
+      description: Disable or change brightness of LEDs at start time.
+      default: '99'
+      selector: &led_set_selector
+        select:
+          mode: dropdown
+          options:
+            - label: Led off
+              value: '99'
+            - label: Low
+              value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
+    schedule_stop:
+      name: Night time LEDs stop time
+      description: "LED tracking is restored.  To disable leave at 00:00:00 default."
+      default: '00:00:00'
+      selector:
+        time:
 ############
     scene_5:
       name: Big button - Pressed Once
@@ -58,18 +87,7 @@ blueprint:
       name: Off behavior for button 1
       description: Led state when target is off, closed, disarmed or locked
       default: '1'
-      selector: &led_set_selector
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
+      selector: *led_set_selector
     off_color0:
       name: Off color for button 1
       description: Color for led when target is off (default white)
@@ -473,24 +491,6 @@ blueprint:
       default: []
       selector:
         action:
-#############
-    schedule_start:
-      name: Night time LEDs start time
-      description: "LEDs are dimmed or turned off at this time.  To disable leave at 00:00:00 default."
-      default: '00:00:00'
-      selector:
-        time:
-    night_led_brightness:
-      name: Night time LED setting.
-      description: Disable or change brightness of LEDs at start time.
-      default: '99'
-      selector: *led_set_selector
-    schedule_stop:
-      name: Night time LEDs stop time
-      description: "LED tracking is restored.  To disable leave at 00:00:00 default."
-      default: '00:00:00'
-      selector:
-        time:
 #############
 mode: parallel
 max: 10
