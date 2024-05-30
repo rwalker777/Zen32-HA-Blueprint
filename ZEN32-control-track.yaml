@@ -1222,7 +1222,7 @@ action:
                 target: 
                   device_id: '{{ controller_id }}'
     # If track entity state changes update LEDs outside of night time
-    - conditions: 
+    - condition: 
       - condition: trigger
         id: 'StateTrigger'
       - condition: time
