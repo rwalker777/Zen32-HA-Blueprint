@@ -1223,7 +1223,8 @@ action:
                   device_id: '{{ controller_id }}'
     # If track entity state changes update LEDs outside of night time
     - conditions: 
-      - condition: '{{ trigger.id == ''StateTrigger'' }}'
+      - condition: trigger
+        id: ''StateTrigger''
       - condition: time
         before: !input 'schedule_start'
         after: !input 'schedule_stop'
