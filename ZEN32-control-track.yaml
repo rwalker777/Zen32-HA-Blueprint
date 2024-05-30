@@ -611,7 +611,7 @@ trigger:
 ##### Actions ######
 action:
   choose:
-    ight_led_brightness: !input 'night_led_brightness'
+    night_led_brightness: !input 'night_led_brightness'
     schedule_start: !input 'schedule_start'
     schedule_stop: !input 'schedule_stop'
     # If button was pressed run scene
