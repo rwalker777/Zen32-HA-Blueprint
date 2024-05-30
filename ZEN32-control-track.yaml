@@ -54,20 +54,6 @@ blueprint:
       default: "00:00:00"
       selector:
         time:
-    day_led_brightness:
-      name: Day time LED setting.
-      description: Brightness of LEDs at stop time.
-      default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
 ############
     scene_5:
       name: Big button - Pressed Once
@@ -100,15 +86,19 @@ blueprint:
     off_state0:
       name: Off behavior for button 1
       description: Led state when target is off, closed, disarmed or locked
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     off_color0:
       name: Off color for button 1
       description: Color for led when target is off (default white)
@@ -134,15 +124,19 @@ blueprint:
     on_state0:
       name: On behavior for button 1
       description: Led state when target is on, opened, armed or unlocked
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     on_color0:
       name: On color for button 1
       description: Color for led when target is on (default white)
@@ -168,15 +162,19 @@ blueprint:
     unavail_state0:
       name: Unavailable State for button 1
       description: Led state when target is unavailable
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     unavail_color0:
       name: Unavailable Color for button 1
       description: Color for led when target is unavailable (default red)
@@ -231,15 +229,19 @@ blueprint:
     off_state1:
       name: Off behavior for button 2
       description: Led state when target is off, closed, disarmed or locked
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     off_color1:
       name: Off color for button 2
       description: Color for led when target is off (default white)
@@ -265,15 +267,19 @@ blueprint:
     on_state1:
       name: On behavior for button 2
       description: Led state when target is on, opened, armed or unlocked
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     on_color1:
       name: On color for button 2
       description: Color for led when target is on (default white)
@@ -299,15 +305,19 @@ blueprint:
     unavail_state1:
       name: Unavailable State for button 2
       description: Led state when target is unavailable
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     unavail_color1:
       name: Unavailable Color for button 2
       description: Color for led when target is unavailable (default red)
@@ -362,15 +372,19 @@ blueprint:
     off_state2:
       name: Off behavior for button 3
       description: Led state when target is off, closed, disarmed or locked
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     off_color2:
       name: Off color for button 3
       description: Color for led when target is off (default white)
@@ -396,15 +410,19 @@ blueprint:
     on_state2:
       name: On behavior for button 3
       description: Led state when target is on, opened, armed or unlocked
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     on_color2:
       name: On color for button 3
       description: Color for led when target is on (default white)
@@ -430,15 +448,19 @@ blueprint:
     unavail_state2:
       name: Unavailable State for button 3
       description: Led state when target is unavailable
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     unavail_color2:
       name: Unavailable Color for button 3
       description: Color for led when target is unavailable (default red)
@@ -493,15 +515,19 @@ blueprint:
     off_state3:
       name: Off behavior for button 4
       description: Led state when target is off, closed, disarmed or locked
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     off_color3:
       name: Off color for button 4
       description: Color for led when target is off (default white)
@@ -527,15 +553,19 @@ blueprint:
     on_state3:
       name: On behavior for button 4
       description: Led state when target is on, opened, armed or unlocked
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     on_color3:
       name: On color for button 4
       description: Color for led when target is on (default white)
@@ -561,15 +591,19 @@ blueprint:
     unavail_state3:
       name: Unavailable State for button 4
       description: Led state when target is unavailable
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     unavail_color3:
       name: Unavailable Color for button 4
       description: Color for led when target is unavailable (default red)
@@ -624,15 +658,19 @@ blueprint:
     off_state4:
       name: Off behavior for button 5
       description: Led state when target is off, closed, disarmed or locked
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     off_color4:
       name: Off color for button 5
       description: Color for led when target is off (default white)
@@ -658,15 +696,19 @@ blueprint:
     on_state4:
       name: On behavior for button 5
       description: Led state when target is on, opened, armed or unlocked
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     on_color4:
       name: On color for button 5
       description: Color for led when target is on (default white)
@@ -692,15 +734,19 @@ blueprint:
     unavail_state4:
       name: Unavailable State for button 5
       description: Led state when target is unavailable
-      default: '3'
+      default: '1'
       selector:
         select:
           mode: dropdown
           options:
-            - label: Led On
-              value: '3'
-            - label: Led Off
+            - label: Led off
+              value: '99'
+            - label: Low
               value: '2'
+            - label: Medium
+              value: '1'
+            - label: Bright
+              value: '0'
     unavail_color4:
       name: Unavailable Color for button 5
       description: Color for led when target is unavailable (default red)
@@ -914,6 +960,7 @@ variables:
   schedule_stop: !input 'schedule_stop'
   toggle_offset: 1
   color_offset: 6
+  brightness_offset: 11
   targets:
     DeviceStateTrigger0:
       button_id: 0
@@ -1178,11 +1225,27 @@ action:
       sequence:
         choose:
         - conditions: '{{ trigger.event.data.new_state.state in ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"] }}' # switch off or cover closed
-          sequence:
-            - parallel:
-              - service: zwave_js.set_config_parameter # turn indicator on/off
+          choose:
+          - conditions: '{{ targets[trigger.alias].off_state == ''99'' }}' # If 99 turn off LEDs
+            sequence:
+              - service: zwave_js.set_config_parameter
                 data:
                   parameter: '{{ (targets[trigger.alias].button_id | int) + (toggle_offset | int) }}'
+                  value: '2'
+                target:
+                  device_id: '{{ controller_id }}'
+          - conditions: '{{ targets[trigger.alias].off_state != ''99'' }}' # Else turn on, set brightness and color
+            sequence:
+            - parallel:
+              - service: zwave_js.set_config_parameter # turn indicator on
+                data:
+                  parameter: '{{ (targets[trigger.alias].button_id | int) + (toggle_offset | int) }}'
+                  value: '3'
+                target:
+                  device_id: '{{ controller_id }}'
+              - service: zwave_js.set_config_parameter # set brightness
+                data:
+                  parameter: '{{ (targets[trigger.alias].button_id | int) + (brightness_offset | int) }}'
                   value: '{{ targets[trigger.alias].off_state }}'
                 target:
                   device_id: '{{ controller_id }}'
@@ -1193,13 +1256,29 @@ action:
                 target:
                   device_id: '{{ controller_id }}'
         - conditions: '{{ trigger.event.data.new_state.state in ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1] }}' # switch on or cover open
-          sequence:
-            - parallel:
-              - service: zwave_js.set_config_parameter # turn indicator on/off
+          choose:
+          - conditions: '{{ targets[trigger.alias].on_state == ''99'' }}' # If 99 turn off LEDs
+            sequence:
+              - service: zwave_js.set_config_parameter
                 data:
                   parameter: '{{ (targets[trigger.alias].button_id | int) + (toggle_offset | int) }}'
+                  value: '2'
+                target:
+                  device_id: '{{ controller_id }}'
+          - conditions: '{{ targets[trigger.alias].on_state != ''99'' }}' # Else turn on, set brightness and color
+            sequence:
+            - parallel:
+              - service: zwave_js.set_config_parameter # turn indicator on
+                data:
+                  parameter: '{{ (targets[trigger.alias].button_id | int) + (toggle_offset | int) }}'
+                  value: '3'
+                target:
+                  device_id: '{{ controller_id }}'
+              - service: zwave_js.set_config_parameter # set brightness
+                data:
+                  parameter: '{{ (targets[trigger.alias].button_id | int) + (brightness_offset | int) }}'
                   value: '{{ targets[trigger.alias].on_state }}'
-                target: 
+                target:
                   device_id: '{{ controller_id }}'
               - service: zwave_js.set_config_parameter # set indicator color
                 data:
@@ -1208,13 +1287,29 @@ action:
                 target:
                   device_id: '{{ controller_id }}'
         - conditions: '{{ trigger.event.data.new_state.state == "unavailable" }}' # switch unavailable
-          sequence:
-            - parallel:
-              - service: zwave_js.set_config_parameter # turn indicator on/off
+          choose:
+          - conditions: '{{ targets[trigger.alias].unavail_state == ''99'' }}' # If 99 turn off LEDs
+            sequence:
+              - service: zwave_js.set_config_parameter
                 data:
                   parameter: '{{ (targets[trigger.alias].button_id | int) + (toggle_offset | int) }}'
+                  value: '2'
+                target:
+                  device_id: '{{ controller_id }}'
+          - conditions: '{{ targets[trigger.alias].unavail_state != ''99'' }}' # Else turn on, set brightness and color
+            sequence:
+            - parallel:
+              - service: zwave_js.set_config_parameter # turn indicator on
+                data:
+                  parameter: '{{ (targets[trigger.alias].button_id | int) + (toggle_offset | int) }}'
+                  value: '3'
+                target:
+                  device_id: '{{ controller_id }}'
+              - service: zwave_js.set_config_parameter # set brightness
+                data:
+                  parameter: '{{ (targets[trigger.alias].button_id | int) + (brightness_offset | int) }}'
                   value: '{{ targets[trigger.alias].unavail_state }}'
-                target: 
+                target:
                   device_id: '{{ controller_id }}'
               - service: zwave_js.set_config_parameter # set indicator color
                 data:
