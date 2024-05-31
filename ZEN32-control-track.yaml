@@ -610,10 +610,6 @@ trigger:
 
 ##### Actions ######
 action:
-variables:
-  night_led_brightness: !input 'night_led_brightness'
-  schedule_start: !input 'schedule_start'
-  schedule_stop: !input 'schedule_stop'
   choose:
     # If button was pressed run scene
     - conditions: '{{ trigger.alias == ''ButtonPress'' }}'
