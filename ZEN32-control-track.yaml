@@ -768,8 +768,9 @@ action:
                   device_id: '{{ controller_id }}'
     # If track entity state changes update LEDs if NOT -Nighttime AND LEDs set to off-
     # If Nightime with LED brightness set we still update but ignore brightness setting
-    - conditions:  template
-      value_template: conditions:  "{{ trigger.id == ''StateTrigger'' and ( today_at(schedule_stop) <= now() < today_at(schedule_start) and night_led_brightness != ''99'' ) }}"
+    - conditions:  
+      - condition: template
+        value_template: conditions:  "{{ trigger.id == ''StateTrigger'' and ( today_at(schedule_stop) <= now() < today_at(schedule_start) and night_led_brightness != ''99'' ) }}"
       alias: 'StateAction'
       sequence:
         choose:
