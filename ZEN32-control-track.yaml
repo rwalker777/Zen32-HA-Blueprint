@@ -770,7 +770,7 @@ action:
     # If Nightime with LED brightness set we still update but ignore brightness setting
     - conditions:  
       - condition: template
-        value_template: conditions:  "{{ trigger.id == ''StateTrigger'' and ( today_at(schedule_stop) <= now() < today_at(schedule_start) and night_led_brightness != ''99'' ) }}"
+        value_template: conditions:  "{{ trigger.id == ''StateTrigger'' and not ( today_at(schedule_start) <= now() < today_at(schedule_stop) and night_led_brightness = ''99'' ) }}"
       alias: 'StateAction'
       sequence:
         choose:
