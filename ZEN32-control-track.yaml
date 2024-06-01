@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.5.1-26
+    **Version**: 2024.5.1-27
 
     **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing.  If you disable the relay, enable parameter 20.
   domain: automation
@@ -781,7 +781,7 @@ action:
           - 4
         sequence:
           choose:
-          - conditions: '{{ is_state(trigger_entity ~ repeat.item in ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) }}' # switch off or cover closed
+          - conditions: '{{ is_state((trigger_entity ~ repeat.item) in ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) }}' # switch off or cover closed
             sequence:
               choose:
               - conditions: '{{ targets[DeviceStateTrigger ~ repeat.item].off_state == ''99'' }}' # If 99 turn off LEDs
@@ -813,7 +813,7 @@ action:
                       value: '{{ targets[DeviceStateTrigger ~ repeat.item].off_state }}'
                     target:
                       device_id: '{{ controller_id }}'
-          - conditions: '{{ is_state(trigger_entity ~ repeat.item in ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) }}' # switch on or cover open
+          - conditions: '{{ is_state((trigger_entity ~ repeat.item) in ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) }}' # switch on or cover open
             sequence:
               choose:
               - conditions: '{{ targets[DeviceStateTrigger ~ repeat.item].on_state == ''99'' }}' # If 99 turn off LEDs
@@ -845,7 +845,7 @@ action:
                       value: '{{ targets[DeviceStateTrigger ~ repeat.item].on_state }}'
                     target:
                       device_id: '{{ controller_id }}'
-          - conditions: '{{ is_state(trigger_entity ~ repeat.item == "unavailable" ) }}' # switch unavailable
+          - conditions: '{{ is_state((trigger_entity ~ repeat.item) == "unavailable" ) }}' # switch unavailable
             sequence:
               choose:
               - conditions: '{{ targets[DeviceStateTrigger ~ repeat.item].unavail_state == ''99'' }}' # If 99 turn off LEDs
