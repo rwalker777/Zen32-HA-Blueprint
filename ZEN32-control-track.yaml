@@ -774,7 +774,7 @@ action:
       alias: 'DayTimeAction'
       repeat:
         for_each:
-          - entity: '{{ trigger_entity0 }}'
+          - entity: !input 'input_entity0'
             target: DeviceStateTrigger0
           # - entity: '{{ trigger_entity1 }}'
           #   target: DeviceStateTrigger1
