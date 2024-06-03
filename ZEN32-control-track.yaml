@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.4.5
+    **Version**: 2024.6.1
 
     **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing
   domain: automation
@@ -920,7 +920,7 @@ trigger_variables:
   input_scene2: !input 'scene_2'
   input_entity2: !input 'input_entity2'
   trigger_entity2: '{{ input_entity2 if input_entity2 else input_scene2[0].target.entity_id if input_scene2 | count > 0 else input_entity2 }}'
-  input_scene3: !input 'scene_5'
+  input_scene3: !input 'scene_3'
   input_entity3: !input 'input_entity3'
   trigger_entity3: '{{ input_entity3 if input_entity3 else input_scene3[0].target.entity_id if input_scene3 | count > 0 else input_entity3 }}'
   input_scene4: !input 'scene_4'
