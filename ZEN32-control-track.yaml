@@ -530,8 +530,8 @@ variables:
     on_color: !input 'on_color2'
     unavail_state: !input 'unavail_state2'
     unavail_color: !input 'unavail_color2'
-    input_scene: !input 'scene_2'
-    input_entity: !input 'input_entity2'
+    scene: !input 'scene_2'
+    entity: !input 'input_entity2'
     trigger_entity: '{{ inputs[2].entity if inputs[2].entity else inputs[2].scene[0].target.entity_id if inputs[2].scene | count > 0 else inputs[2].entity }}'
   - button_id: 3
     off_state: !input 'off_state3'
@@ -540,8 +540,8 @@ variables:
     on_color: !input 'on_color3'
     unavail_state: !input 'unavail_state3'
     unavail_color: !input 'unavail_color3'
-    input_scene: !input 'scene_3'
-    input_entity: !input 'input_entity3'
+    scene: !input 'scene_3'
+    entity: !input 'input_entity3'
     trigger_entity: '{{ inputs[3].entity if inputs[3].entity else inputs[3].scene[0].target.entity_id if inputs[3].scene | count > 0 else inputs[3].entity }}'
   - button_id: 4
     off_state: !input 'off_state4'
@@ -550,8 +550,8 @@ variables:
     on_color: !input 'on_color4'
     unavail_state: !input 'unavail_state4'
     unavail_color: !input 'unavail_color4'
-    input_scene: !input 'scene_4'
-    input_entity: !input 'input_entity4'
+    scene: !input 'scene_4'
+    entity: !input 'input_entity4'
     trigger_entity: '{{ inputs[4].entity if inputs[4].entity else inputs[4].scene[0].target.entity_id if inputs[4].scene | count > 0 else inputs[4].entity }}'
 
 # Track override entry if set, else get first entity in scene, if neither set to empty
