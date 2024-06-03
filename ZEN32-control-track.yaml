@@ -789,120 +789,122 @@ action:
             - entity: '{{ trigger_entity4 }}'
               target: DeviceStateTrigger4
           sequence:
-            choose:
-            # switch off or cover closed
-            - conditions: '{{ is_state(repeat.item.entity, ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) }}'
-              sequence:
-                choose:
-                # If 99 turn off LEDs
-                - conditions: '{{ targets[repeat.item.target].off_state == ''99'' }}'
-                  sequence:
-                    - service: zwave_js.set_config_parameter
-                      data:
-                        parameter: '{{ (targets[repeat.item.target].button_id | int) + (toggle_offset | int) }}'
-                        value: '2'
-                      target:
-                        device_id: '{{ controller_id }}'
-                # Else turn on, set brightness and color
-                - conditions: '{{ targets[repeat.item.target].off_state != ''99'' }}'
-                  sequence:
-                  - parallel:
-                    # turn indicator on
-                    - service: zwave_js.set_config_parameter
-                      data:
-                        parameter: '{{ (targets[repeat.item.target].button_id | int) + (toggle_offset | int) }}'
-                        value: '3'
-                      target:
-                        device_id: '{{ controller_id }}'
-                    # set indicator color
-                    - service: zwave_js.set_config_parameter
-                      data:
-                        parameter: '{{ (targets[repeat.item.target].button_id | int) + (color_offset | int) }}'
-                        value: '{{ targets[repeat.item.target].off_color }}'
-                      target:
-                        device_id: '{{ controller_id }}'
-                    # set brightness
-                    - service: zwave_js.set_config_parameter
-                      data:
-                        parameter: '{{ (targets[repeat.item.target].button_id | int) + (brightness_offset | int) }}'
-                        value: '{{ targets[repeat.item.target].off_state }}'
-                      target:
-                        device_id: '{{ controller_id }}'
-            - conditions: '{{ is_state(repeat.item.entity, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) }}' # switch on or cover open
-              sequence:
-                choose:
-                # If 99 turn off LEDs
-                - conditions: '{{ targets[repeat.item.target].on_state == ''99'' }}'
-                  sequence:
-                    - service: zwave_js.set_config_parameter
-                      data:
-                        parameter: '{{ (targets[repeat.item.target].button_id | int) + (toggle_offset | int) }}'
-                        value: '2'
-                      target:
-                        device_id: '{{ controller_id }}'
-                # Else turn on, set brightness and color
-                - conditions: '{{ targets[repeat.item.target].on_state != ''99'' }}'
-                  sequence:
-                  - parallel:
-                    # turn indicator on
-                    - service: zwave_js.set_config_parameter
-                      data:
-                        parameter: '{{ (targets[repeat.item.target].button_id | int) + (toggle_offset | int) }}'
-                        value: '3'
-                      target:
-                        device_id: '{{ controller_id }}'
-                    # set indicator color
-                    - service: zwave_js.set_config_parameter
-                      data:
-                        parameter: '{{ (targets[repeat.item.target].button_id | int) + (color_offset | int) }}'
-                        value: '{{ targets[repeat.item.target].on_color }}'
-                      target:
-                        device_id: '{{ controller_id }}'
-                    # set brightness
-                    - service: zwave_js.set_config_parameter
-                      data:
-                        parameter: '{{ (targets[repeat.item.target].button_id | int) + (brightness_offset | int) }}'
-                        value: '{{ targets[repeat.item.target].on_state }}'
-                      target:
-                        device_id: '{{ controller_id }}'
-            # switch unavailable
-            - conditions: '{{ is_state(repeat.item.entity,"unavailable" ) }}'
-              sequence:
-                choose:
-                # If 99 turn off LEDs
-                - conditions: '{{ targets[repeat.item.target].unavail_state == ''99'' }}'
-                  sequence:
-                    - service: zwave_js.set_config_parameter
-                      data:
-                        parameter: '{{ (targets[repeat.item.target].button_id | int) + (toggle_offset | int) }}'
-                        value: '2'
-                      target:
-                        device_id: '{{ controller_id }}'
-                # Else turn on, set brightness and color
-                - conditions: '{{ targets[repeat.item.target].unavail_state != ''99'' }}'
-                  sequence:
-                  - parallel:
-                    # turn indicator on
-                    - service: zwave_js.set_config_parameter
-                      data:
-                        parameter: '{{ (targets[repeat.item.target].button_id | int) + (toggle_offset | int) }}'
-                        value: '3'
-                      target:
-                        device_id: '{{ controller_id }}'
-                    # set indicator color
-                    - service: zwave_js.set_config_parameter
-                      data:
-                        parameter: '{{ (targets[repeat.item.target].button_id | int) + (color_offset | int) }}'
-                        value: '{{ targets[repeat.item.target].unavail_color }}'
-                      target:
-                        device_id: '{{ controller_id }}'
-                    # set brightness
-                    - service: zwave_js.set_config_parameter
-                      data:
-                        parameter: '{{ (targets[repeat.item.target].button_id | int) + (brightness_offset | int) }}'
-                        value: '{{ targets[repeat.item.target].unavail_state }}'
-                      target:
-                        device_id: '{{ controller_id }}'
+            if: '{{ repeat.item.entity }}'
+            then:
+              choose:
+              # switch off or cover closed
+              - conditions: '{{ is_state(repeat.item.entity, ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) }}'
+                sequence:
+                  choose:
+                  # If 99 turn off LEDs
+                  - conditions: '{{ targets[repeat.item.target].off_state == ''99'' }}'
+                    sequence:
+                      - service: zwave_js.set_config_parameter
+                        data:
+                          parameter: '{{ (targets[repeat.item.target].button_id | int) + (toggle_offset | int) }}'
+                          value: '2'
+                        target:
+                          device_id: '{{ controller_id }}'
+                  # Else turn on, set brightness and color
+                  - conditions: '{{ targets[repeat.item.target].off_state != ''99'' }}'
+                    sequence:
+                    - parallel:
+                      # turn indicator on
+                      - service: zwave_js.set_config_parameter
+                        data:
+                          parameter: '{{ (targets[repeat.item.target].button_id | int) + (toggle_offset | int) }}'
+                          value: '3'
+                        target:
+                          device_id: '{{ controller_id }}'
+                      # set indicator color
+                      - service: zwave_js.set_config_parameter
+                        data:
+                          parameter: '{{ (targets[repeat.item.target].button_id | int) + (color_offset | int) }}'
+                          value: '{{ targets[repeat.item.target].off_color }}'
+                        target:
+                          device_id: '{{ controller_id }}'
+                      # set brightness
+                      - service: zwave_js.set_config_parameter
+                        data:
+                          parameter: '{{ (targets[repeat.item.target].button_id | int) + (brightness_offset | int) }}'
+                          value: '{{ targets[repeat.item.target].off_state }}'
+                        target:
+                          device_id: '{{ controller_id }}'
+              - conditions: '{{ is_state(repeat.item.entity, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) }}' # switch on or cover open
+                sequence:
+                  choose:
+                  # If 99 turn off LEDs
+                  - conditions: '{{ targets[repeat.item.target].on_state == ''99'' }}'
+                    sequence:
+                      - service: zwave_js.set_config_parameter
+                        data:
+                          parameter: '{{ (targets[repeat.item.target].button_id | int) + (toggle_offset | int) }}'
+                          value: '2'
+                        target:
+                          device_id: '{{ controller_id }}'
+                  # Else turn on, set brightness and color
+                  - conditions: '{{ targets[repeat.item.target].on_state != ''99'' }}'
+                    sequence:
+                    - parallel:
+                      # turn indicator on
+                      - service: zwave_js.set_config_parameter
+                        data:
+                          parameter: '{{ (targets[repeat.item.target].button_id | int) + (toggle_offset | int) }}'
+                          value: '3'
+                        target:
+                          device_id: '{{ controller_id }}'
+                      # set indicator color
+                      - service: zwave_js.set_config_parameter
+                        data:
+                          parameter: '{{ (targets[repeat.item.target].button_id | int) + (color_offset | int) }}'
+                          value: '{{ targets[repeat.item.target].on_color }}'
+                        target:
+                          device_id: '{{ controller_id }}'
+                      # set brightness
+                      - service: zwave_js.set_config_parameter
+                        data:
+                          parameter: '{{ (targets[repeat.item.target].button_id | int) + (brightness_offset | int) }}'
+                          value: '{{ targets[repeat.item.target].on_state }}'
+                        target:
+                          device_id: '{{ controller_id }}'
+              # switch unavailable
+              - conditions: '{{ is_state(repeat.item.entity,"unavailable" ) }}'
+                sequence:
+                  choose:
+                  # If 99 turn off LEDs
+                  - conditions: '{{ targets[repeat.item.target].unavail_state == ''99'' }}'
+                    sequence:
+                      - service: zwave_js.set_config_parameter
+                        data:
+                          parameter: '{{ (targets[repeat.item.target].button_id | int) + (toggle_offset | int) }}'
+                          value: '2'
+                        target:
+                          device_id: '{{ controller_id }}'
+                  # Else turn on, set brightness and color
+                  - conditions: '{{ targets[repeat.item.target].unavail_state != ''99'' }}'
+                    sequence:
+                    - parallel:
+                      # turn indicator on
+                      - service: zwave_js.set_config_parameter
+                        data:
+                          parameter: '{{ (targets[repeat.item.target].button_id | int) + (toggle_offset | int) }}'
+                          value: '3'
+                        target:
+                          device_id: '{{ controller_id }}'
+                      # set indicator color
+                      - service: zwave_js.set_config_parameter
+                        data:
+                          parameter: '{{ (targets[repeat.item.target].button_id | int) + (color_offset | int) }}'
+                          value: '{{ targets[repeat.item.target].unavail_color }}'
+                        target:
+                          device_id: '{{ controller_id }}'
+                      # set brightness
+                      - service: zwave_js.set_config_parameter
+                        data:
+                          parameter: '{{ (targets[repeat.item.target].button_id | int) + (brightness_offset | int) }}'
+                          value: '{{ targets[repeat.item.target].unavail_state }}'
+                        target:
+                          device_id: '{{ controller_id }}'
     # If track entity state changes update LEDs if NOT -Nighttime AND LEDs set to off-
     # If Nightime with LED brightness set we still update but ignore brightness setting
     - conditions: 
