@@ -700,7 +700,7 @@ action:
           - conditions: '{{ property_key_name == ''005'' and value == ''KeyPressed5x'' }}'
             sequence: !input 'scene_55'
     # At night time turn off LEDs or change brightness if time set
-    - conditions: '{{ trigger.id == ''NightTime'' and not ( schedule_start != ''00:00:00'' and schedule_stop != ''00:00:00'' ) }}'
+    - conditions: '{{ trigger.id == ''NightTime'' and ( schedule_start != ''00:00:00'' and schedule_stop != ''00:00:00'' ) }}'
       alias: 'NightTimeAction'
       sequence:
         choose:
@@ -771,7 +771,7 @@ action:
                 target: 
                   device_id: '{{ controller_id }}'
     # At day time update LEDs for all buttons if not default time
-    - conditions: '{{ trigger.id == ''DayTime'' and not ( schedule_start != ''00:00:00'' and schedule_stop != ''00:00:00'' ) }}'
+    - conditions: '{{ trigger.id == ''DayTime'' and ( schedule_start != ''00:00:00'' and schedule_stop != ''00:00:00'' ) }}'
       alias: 'DayTimeAction'
       sequence:
         repeat:
