@@ -544,6 +544,7 @@ variables:
       unavail_state: !input 'unavail_state4'
       unavail_color: !input 'unavail_color4'
 
+# Track override entry if set, else get first entity in scene, if neither set to empty
 trigger_variables:
   night_led_brightness: !input 'night_led_brightness'
   schedule_start: !input 'schedule_start'
