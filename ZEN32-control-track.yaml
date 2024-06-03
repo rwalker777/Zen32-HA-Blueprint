@@ -824,7 +824,7 @@ action:
       sequence:
         repeat:
           for_each: >
-            {{ inputs | reject('trigger_entity', 'eq', []) | list }}
+            {{ inputs | rejectattr('trigger_entity', 'eq', []) | list }}
           sequence:
             choose:
             # switch off or cover closed
