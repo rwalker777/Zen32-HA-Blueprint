@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.5.1-40
+    **Version**: 2024.5.1-41
 
     **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing.  If you disable the relay, enable parameter 20.
   domain: automation
@@ -965,30 +965,30 @@ action:
           sequence:
             choose:
             # If 99 turn off LEDs
-            - conditions: '{{ inputs[trigger.alias].off_state == ''99'' }}'
+            - conditions: '{{ inputs[trigger.alias | int].off_state == ''99'' }}'
               sequence:
                 - service: zwave_js.set_config_parameter
                   data:
-                    parameter: '{{ (inputs[trigger.alias].button_id | int) + (toggle_offset | int) }}'
+                    parameter: '{{ (inputs[trigger.alias | int].button_id | int) + (toggle_offset | int) }}'
                     value: '2'
                   target:
                     device_id: '{{ controller_id }}'
             # Else turn on, set brightness and color
-            - conditions: '{{ inputs[trigger.alias].off_state != ''99'' }}'
+            - conditions: '{{ inputs[trigger.alias | int].off_state != ''99'' }}'
               sequence:
               - parallel:
                 # turn indicator on
                 - service: zwave_js.set_config_parameter
                   data:
-                    parameter: '{{ (inputs[trigger.alias].button_id | int) + (toggle_offset | int) }}'
+                    parameter: '{{ (inputs[trigger.alias | int].button_id | int) + (toggle_offset | int) }}'
                     value: '3'
                   target:
                     device_id: '{{ controller_id }}'
                 # set indicator color
                 - service: zwave_js.set_config_parameter
                   data:
-                    parameter: '{{ (inputs[trigger.alias].button_id | int) + (color_offset | int) }}'
-                    value: '{{ inputs[trigger.alias].off_color }}'
+                    parameter: '{{ (inputs[trigger.alias | int].button_id | int) + (color_offset | int) }}'
+                    value: '{{ inputs[trigger.alias | int].off_color }}'
                   target:
                     device_id: '{{ controller_id }}'
                 # Make sure we are not in night time
@@ -1001,38 +1001,38 @@ action:
                     # set brightness
                     - service: zwave_js.set_config_parameter
                       data:
-                        parameter: '{{ (inputs[trigger.alias].button_id | int) + (brightness_offset | int) }}'
-                        value: '{{ inputs[trigger.alias].off_state }}'
+                        parameter: '{{ (inputs[trigger.alias | int].button_id | int) + (brightness_offset | int) }}'
+                        value: '{{ inputs[trigger.alias | int].off_state }}'
                       target:
                         device_id: '{{ controller_id }}'
         - conditions: '{{ trigger.event.data.new_state.state in ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1] }}' # switch on or cover open
           sequence:
             choose:
             # If 99 turn off LEDs
-            - conditions: '{{ inputs[trigger.alias].on_state == ''99'' }}'
+            - conditions: '{{ inputs[trigger.alias | int].on_state == ''99'' }}'
               sequence:
                 - service: zwave_js.set_config_parameter
                   data:
-                    parameter: '{{ (inputs[trigger.alias].button_id | int) + (toggle_offset | int) }}'
+                    parameter: '{{ (inputs[trigger.alias | int].button_id | int) + (toggle_offset | int) }}'
                     value: '2'
                   target:
                     device_id: '{{ controller_id }}'
             # Else turn on, set brightness and color
-            - conditions: '{{ inputs[trigger.alias].on_state != ''99'' }}'
+            - conditions: '{{ inputs[trigger.alias | int].on_state != ''99'' }}'
               sequence:
               - parallel:
                 # turn indicator on
                 - service: zwave_js.set_config_parameter
                   data:
-                    parameter: '{{ (inputs[trigger.alias].button_id | int) + (toggle_offset | int) }}'
+                    parameter: '{{ (inputs[trigger.alias | int].button_id | int) + (toggle_offset | int) }}'
                     value: '3'
                   target:
                     device_id: '{{ controller_id }}'
                 # set indicator color
                 - service: zwave_js.set_config_parameter
                   data:
-                    parameter: '{{ (inputs[trigger.alias].button_id | int) + (color_offset | int) }}'
-                    value: '{{ inputs[trigger.alias].on_color }}'
+                    parameter: '{{ (inputs[trigger.alias | int].button_id | int) + (color_offset | int) }}'
+                    value: '{{ inputs[trigger.alias | int].on_color }}'
                   target:
                     device_id: '{{ controller_id }}'
                 # Make sure we are not in night time
@@ -1045,8 +1045,8 @@ action:
                     # set brightness
                     - service: zwave_js.set_config_parameter
                       data:
-                        parameter: '{{ (inputs[trigger.alias].button_id | int) + (brightness_offset | int) }}'
-                        value: '{{ inputs[trigger.alias].on_state }}'
+                        parameter: '{{ (inputs[trigger.alias | int].button_id | int) + (brightness_offset | int) }}'
+                        value: '{{ inputs[trigger.alias | int].on_state }}'
                       target:
                         device_id: '{{ controller_id }}'
         # switch unavailable
@@ -1054,30 +1054,30 @@ action:
           sequence:
             choose:
             # If 99 turn off LEDs
-            - conditions: '{{ inputs[trigger.alias].unavail_state == ''99'' }}'
+            - conditions: '{{ inputs[trigger.alias | int].unavail_state == ''99'' }}'
               sequence:
                 - service: zwave_js.set_config_parameter
                   data:
-                    parameter: '{{ (inputs[trigger.alias].button_id | int) + (toggle_offset | int) }}'
+                    parameter: '{{ (inputs[trigger.alias | int].button_id | int) + (toggle_offset | int) }}'
                     value: '2'
                   target:
                     device_id: '{{ controller_id }}'
             # Else turn on, set brightness and color
-            - conditions: '{{ inputs[trigger.alias].unavail_state != ''99'' }}'
+            - conditions: '{{ inputs[trigger.alias | int].unavail_state != ''99'' }}'
               sequence:
               - parallel:
                 # turn indicator on
                 - service: zwave_js.set_config_parameter
                   data:
-                    parameter: '{{ (inputs[trigger.alias].button_id | int) + (toggle_offset | int) }}'
+                    parameter: '{{ (inputs[trigger.alias | int].button_id | int) + (toggle_offset | int) }}'
                     value: '3'
                   target:
                     device_id: '{{ controller_id }}'
                 # set indicator color
                 - service: zwave_js.set_config_parameter
                   data:
-                    parameter: '{{ (inputs[trigger.alias].button_id | int) + (color_offset | int) }}'
-                    value: '{{ inputs[trigger.alias].unavail_color }}'
+                    parameter: '{{ (inputs[trigger.alias | int].button_id | int) + (color_offset | int) }}'
+                    value: '{{ inputs[trigger.alias | int].unavail_color }}'
                   target:
                     device_id: '{{ controller_id }}'
                 # Make sure we are not in night time
@@ -1090,7 +1090,7 @@ action:
                     # set brightness
                     - service: zwave_js.set_config_parameter
                       data:
-                        parameter: '{{ (inputs[trigger.alias].button_id | int) + (brightness_offset | int) }}'
-                        value: '{{ inputs[trigger.alias].unavail_state }}'
+                        parameter: '{{ (inputs[trigger.alias | int].button_id | int) + (brightness_offset | int) }}'
+                        value: '{{ inputs[trigger.alias | int].unavail_state }}'
                       target:
                         device_id: '{{ controller_id }}'
