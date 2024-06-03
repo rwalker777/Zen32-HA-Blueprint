@@ -915,8 +915,8 @@ action:
                 - condition: and
                   conditions:
                     - condition: time
-                      after: !input 'schedule_start'
-                      before: !input 'schedule_stop'
+                      after: '{{ schedule_start }}'
+                      before: '{{ schedule_stop }}'
                     - condition: template
                       value_template: '{{ night_led_brightness == ''99'' }}'
       alias: 'StateAction'
@@ -957,8 +957,8 @@ action:
                 - choose:
                   - conditions:
                     - condition: time
-                      before: !input 'schedule_start'
-                      after: !input 'schedule_stop'
+                      before: '{{ schedule_start }}'
+                      after: '{{ schedule_stop }}'
                     sequence:
                     # set brightness
                     - service: zwave_js.set_config_parameter
@@ -1001,8 +1001,8 @@ action:
                 - choose:
                   - conditions:
                     - condition: time
-                      before: !input 'schedule_start'
-                      after: !input 'schedule_stop'
+                      before: '{{ schedule_start }}'
+                      after: '{{ schedule_stop }}'
                     sequence:
                     # set brightness
                     - service: zwave_js.set_config_parameter
@@ -1046,8 +1046,8 @@ action:
                 - choose:
                   - conditions:
                     - condition: time
-                      before: !input 'schedule_start'
-                      after: !input 'schedule_stop'
+                      before: '{{ schedule_start }}'
+                      after: '{{ schedule_stop }}'
                     sequence:
                     # set brightness
                     - service: zwave_js.set_config_parameter
