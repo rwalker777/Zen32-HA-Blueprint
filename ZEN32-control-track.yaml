@@ -821,7 +821,7 @@ action:
                 target: 
                   device_id: '{{ controller_id }}'
     # At day time update LEDs for all buttons if not default time
-    - conditions: '{{ trigger.id == ''DayTime'' and schedule_Set }}'
+    - conditions: '{{ trigger.id == ''DayTime'' and schedule_set }}'
       alias: 'DayTimeAction'
       sequence:
         repeat:
