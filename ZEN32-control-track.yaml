@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.5.1-67
+    **Version**: 2024.5.1-68
 
     **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing.  If you disable the relay, enable parameter 20.
   domain: automation
@@ -836,22 +836,22 @@ action:
             {{ inputs | rejectattr('trigger_entity', 'eq', []) | list }}
           sequence:
           - variables:
-            current: >
-              {{ repeat.item }}
-            condition: >
-              {% if is_state(repeat.item.trigger_entity, ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) %}
-                {{ dict(state=current.off_state, color=current.off_color) }}
-              {% elif is_state(repeat.item.trigger_entity, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) %}
-                {{ dict(state=current.on_state, color=current.on_color) }}
-              {% elif is_state(repeat.item.trigger_entity, "unavailable") %}
-                {{ dict(state=current.unavail_state, color=current.unavail_color) }}
-              {% else %}
-                {{ dict(state=None, color=None) }}
-              {% endif %}
-            parameter:
-              toggle: "{{ current.button_id | int + toggle_offset | int }}"
-              color: "{{ current.button_id | int + color_offset | int }}"
-              brightness: "{{ current.button_id | int + brightness_offset | int }}"
+              current: >
+                {{ repeat.item }}
+              condition: >
+                {% if is_state(repeat.item.trigger_entity, ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) %}
+                  {{ dict(state=current.off_state, color=current.off_color) }}
+                {% elif is_state(repeat.item.trigger_entity, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) %}
+                  {{ dict(state=current.on_state, color=current.on_color) }}
+                {% elif is_state(repeat.item.trigger_entity, "unavailable") %}
+                  {{ dict(state=current.unavail_state, color=current.unavail_color) }}
+                {% else %}
+                  {{ dict(state=None, color=None) }}
+                {% endif %}
+              parameter:
+                toggle: "{{ current.button_id | int + toggle_offset | int }}"
+                color: "{{ current.button_id | int + color_offset | int }}"
+                brightness: "{{ current.button_id | int + brightness_offset | int }}"
           - choose:
             # If 99 turn off LEDs
             - conditions: '{{ condition.state == ''99'' }}'
