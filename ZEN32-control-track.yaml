@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.5.1-59
+    **Version**: 2024.5.1-60
 
     **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing.  If you disable the relay, enable parameter 20.
   domain: automation
@@ -503,6 +503,7 @@ variables:
   schedule_start: !input 'schedule_start'
   schedule_stop: !input 'schedule_stop'
   schedule_set: '{{ schedule_start != ''00:00:00'' or schedule_stop != ''00:00:00'' }}'
+  in_nighttime: '{{ today_at(schedule_start) <= now() or now() <= today_at(schedule_stop }}'
   # input_scene5: !input 'scene_5'
   # input_entity0: !input 'input_entity0'
   # input_scene1: !input 'scene_1'
@@ -941,7 +942,7 @@ action:
                         device_id: '{{ controller_id }}'
     # If track entity state changes update LEDs if NOT -Nighttime AND LEDs set to off-
     # If Nightime with LED brightness set we still update but ignore brightness setting
-    - conditions: '{{ trigger.id == ''DayTime'' and not ((today_at(schedule_start) <= now() or now() <= today_at(schedule_stop)) and night_led_brightness == ''99'') }}'
+    - conditions: '{{ trigger.id == ''DayTime'' and not ( schedule_set and in_nighttime and night_led_brightness == ''99'') }}'
       #   - condition: and
       #     conditions:
       #       - condition: trigger
@@ -1004,7 +1005,7 @@ action:
                 device_id: '{{ controller_id }}'
             # Make sure we are not in night time
             - choose:
-              - conditions: '{{ not today_at(schedule_stop) <= now() <= today_at(schedule_start) }}'
+              - conditions: '{{ not in_nighttime }}'
                 sequence:
                 # set brightness
                 - service: zwave_js.set_config_parameter
