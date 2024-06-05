@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.5.1-56
+    **Version**: 2024.5.1-57
 
     **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing.  If you disable the relay, enable parameter 20.
   domain: automation
@@ -558,7 +558,7 @@ variables:
 # Track override entry if set, else get first entity in scene, if neither set to empty
 trigger_variables:
   in_nighttime:
-    - condition:
+    - condition: time
       after: !input 'schedule_start'
       before: !input 'schedule_stop'
   input_scene5: !input 'scene_5'
