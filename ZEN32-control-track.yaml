@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.5.1-55
+    **Version**: 2024.5.1-56
 
     **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing.  If you disable the relay, enable parameter 20.
   domain: automation
@@ -503,65 +503,6 @@ variables:
   schedule_start: !input 'schedule_start'
   schedule_stop: !input 'schedule_stop'
   schedule_set: '{{ schedule_start != ''00:00:00'' or schedule_stop != ''00:00:00'' }}'
-  input_scene5: !input 'scene_5'
-  input_entity0: !input 'input_entity0'
-  input_scene1: !input 'scene_1'
-  input_entity1: !input 'input_entity1'
-  input_scene2: !input 'scene_2'
-  input_entity2: !input 'input_entity2'
-  input_scene3: !input 'scene_3'
-  input_entity3: !input 'input_entity3'
-  input_scene4: !input 'scene_4'
-  input_entity4: !input 'input_entity4'
-  inputs:
-  - button_id: 0
-    off_state: !input 'off_state0'
-    off_color: !input 'off_color0'
-    on_state: !input 'on_state0'
-    on_color: !input 'on_color0'
-    unavail_state: !input 'unavail_state0'
-    unavail_color: !input 'unavail_color0'
-    trigger_entity: '{{ input_entity0 if input_entity0 else input_scene5[0].target.entity_id if input_scene5 | count > 0 else input_entity0 }}'
-  - button_id: 1
-    off_state: !input 'off_state1'
-    off_color: !input 'off_color1'
-    on_state: !input 'on_state1'
-    on_color: !input 'on_color1'
-    unavail_state: !input 'unavail_state1'
-    unavail_color: !input 'unavail_color1'
-    trigger_entity: '{{ input_entity1 if input_entity1 else input_scene1[0].target.entity_id if input_scene1 | count > 0 else input_entity1 }}'
-  - button_id: 2
-    off_state: !input 'off_state2'
-    off_color: !input 'off_color2'
-    on_state: !input 'on_state2'
-    on_color: !input 'on_color2'
-    unavail_state: !input 'unavail_state2'
-    unavail_color: !input 'unavail_color2'
-    trigger_entity: '{{ input_entity2 if input_entity2 else input_scene2[0].target.entity_id if input_scene2 | count > 0 else input_entity2 }}'
-  - button_id: 3
-    off_state: !input 'off_state3'
-    off_color: !input 'off_color3'
-    on_state: !input 'on_state3'
-    on_color: !input 'on_color3'
-    unavail_state: !input 'unavail_state3'
-    unavail_color: !input 'unavail_color3'
-    trigger_entity: '{{ input_entity3 if input_entity3 else input_scene3[0].target.entity_id if input_scene3 | count > 0 else input_entity3 }}'
-  - button_id: 4
-    off_state: !input 'off_state4'
-    off_color: !input 'off_color4'
-    on_state: !input 'on_state4'
-    on_color: !input 'on_color4'
-    unavail_state: !input 'unavail_state4'
-    unavail_color: !input 'unavail_color4'
-    trigger_entity: '{{ input_entity4 if input_entity4 else input_scene4[0].target.entity_id if input_scene4 | count > 0 else input_entity4 }}'
-
-# Track override entry if set, else get first entity in scene, if neither set to empty
-trigger_variables:
-  # night_led_brightness: !input 'night_led_brightness'
-  in_nighttime:
-    - condition:
-      after: !input 'schedule_start'
-      before: !input 'schedule_stop'
   # input_scene5: !input 'scene_5'
   # input_entity0: !input 'input_entity0'
   # input_scene1: !input 'scene_1'
@@ -613,6 +554,64 @@ trigger_variables:
   #   unavail_state: !input 'unavail_state4'
   #   unavail_color: !input 'unavail_color4'
   #   trigger_entity: '{{ input_entity4 if input_entity4 else input_scene4[0].target.entity_id if input_scene4 | count > 0 else input_entity4 }}'
+
+# Track override entry if set, else get first entity in scene, if neither set to empty
+trigger_variables:
+  in_nighttime:
+    - condition:
+      after: !input 'schedule_start'
+      before: !input 'schedule_stop'
+  input_scene5: !input 'scene_5'
+  input_entity0: !input 'input_entity0'
+  input_scene1: !input 'scene_1'
+  input_entity1: !input 'input_entity1'
+  input_scene2: !input 'scene_2'
+  input_entity2: !input 'input_entity2'
+  input_scene3: !input 'scene_3'
+  input_entity3: !input 'input_entity3'
+  input_scene4: !input 'scene_4'
+  input_entity4: !input 'input_entity4'
+  inputs:
+  - button_id: 0
+    off_state: !input 'off_state0'
+    off_color: !input 'off_color0'
+    on_state: !input 'on_state0'
+    on_color: !input 'on_color0'
+    unavail_state: !input 'unavail_state0'
+    unavail_color: !input 'unavail_color0'
+    trigger_entity: '{{ input_entity0 if input_entity0 else input_scene5[0].target.entity_id if input_scene5 | count > 0 else input_entity0 }}'
+  - button_id: 1
+    off_state: !input 'off_state1'
+    off_color: !input 'off_color1'
+    on_state: !input 'on_state1'
+    on_color: !input 'on_color1'
+    unavail_state: !input 'unavail_state1'
+    unavail_color: !input 'unavail_color1'
+    trigger_entity: '{{ input_entity1 if input_entity1 else input_scene1[0].target.entity_id if input_scene1 | count > 0 else input_entity1 }}'
+  - button_id: 2
+    off_state: !input 'off_state2'
+    off_color: !input 'off_color2'
+    on_state: !input 'on_state2'
+    on_color: !input 'on_color2'
+    unavail_state: !input 'unavail_state2'
+    unavail_color: !input 'unavail_color2'
+    trigger_entity: '{{ input_entity2 if input_entity2 else input_scene2[0].target.entity_id if input_scene2 | count > 0 else input_entity2 }}'
+  - button_id: 3
+    off_state: !input 'off_state3'
+    off_color: !input 'off_color3'
+    on_state: !input 'on_state3'
+    on_color: !input 'on_color3'
+    unavail_state: !input 'unavail_state3'
+    unavail_color: !input 'unavail_color3'
+    trigger_entity: '{{ input_entity3 if input_entity3 else input_scene3[0].target.entity_id if input_scene3 | count > 0 else input_entity3 }}'
+  - button_id: 4
+    off_state: !input 'off_state4'
+    off_color: !input 'off_color4'
+    on_state: !input 'on_state4'
+    on_color: !input 'on_color4'
+    unavail_state: !input 'unavail_state4'
+    unavail_color: !input 'unavail_color4'
+    trigger_entity: '{{ input_entity4 if input_entity4 else input_scene4[0].target.entity_id if input_scene4 | count > 0 else input_entity4 }}'
 
 ##### Triggers #####
 trigger:
