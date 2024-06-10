@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.5.1-71
+    **Version**: 2024.6.1-71
 
     **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing.  If you disable the relay, enable parameter 20.
   domain: automation
@@ -698,11 +698,11 @@ action:
             sequence: !input 'scene_54'
           - conditions: '{{ property_key_name == ''005'' and value == ''KeyPressed5x'' }}'
             sequence: !input 'scene_55'
-    # If track entity state changes update LEDs if state changed (not just an attribute, like cover position) and NOT -Nighttime AND LEDs set to off-
+    # If track entity state changes update LEDs, if state changed (not just an attribute, like cover position) and NOT -Nighttime AND LEDs set to off-
     # If Nightime with LED brightness set we still update but ignore brightness setting
-    - conditions: '{{ trigger.id == ''StateTrigger'' and ( trigger.event.data.new_state.state != trigger.event.data.old_state.state ) and not ( schedule_set and in_nighttime and night_led_brightness == ''99'') }}'
+    - conditions: '{{ trigger.id == ''StateTrigger'' and (trigger.event.data.new_state.state != trigger.event.data.old_state.state) and not (schedule_set and in_nighttime and night_led_brightness == ''99'') }}'
       alias: 'StateAction'
-      sequence: 
+      sequence:
       - variables:
           current: >
             {{ inputs[trigger.alias | int] }}
