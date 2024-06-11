@@ -63,7 +63,7 @@ blueprint:
         action:
     track_relay0:
       name: LED Track relay
-      description: Set to have the LED state track the relay.
+      description: Set to have the LED state track the relay.  This disables nightime for the big button.
       default: '0'
       selector:
         select:
@@ -784,7 +784,8 @@ action:
           sequence:
             - parallel:
               - if: 
-                  - conditions: '{{ inputs[0].track_relay == ''99'' }}'
+                  - condition: template
+                    value_template: '{{ inputs[0].track_relay == ''99'' }}'
                 then:
                   - service: zwave_js.set_config_parameter
                     data:
@@ -821,7 +822,8 @@ action:
           sequence:
             - parallel:
               - if:
-                  - conditions: '{{ inputs[0].track_relay == ''99'' }}'
+                  - condition: template
+                    value_template: '{{ inputs[0].track_relay == ''99'' }}'
                 then:
                   - service: zwave_js.set_config_parameter
                     data:
