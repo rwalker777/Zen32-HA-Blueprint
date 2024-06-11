@@ -63,7 +63,7 @@ blueprint:
         action:
     track_relay0:
       name: LED Track relay
-      description: Set to have the LED state track the relay.  This disables nightime for the big button.
+      description: Set to have the LED state track the relay.  Disable to have LED track action or over-ride entity and follow nighttime.
       default: '0'
       selector:
         select:
