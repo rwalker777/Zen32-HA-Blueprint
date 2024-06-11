@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.1-71
+    **Version**: 2024.6.1-72
 
     **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing.  If you disable the relay, enable parameter 20.
   domain: automation
@@ -61,6 +61,20 @@ blueprint:
       default: []
       selector:
         action:
+    track_relay0:
+      name: LED Track relay
+      description: Set to have the LED state track the relay.
+      default: '99'
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - label: On when load is off
+              value: '0'
+            - label: On when load is on
+              value: '1'
+            - label: Disabled
+              value: '99'
     input_entity0:
       name: Entity for button 1 (Big button)
       description: >
@@ -519,6 +533,7 @@ trigger_variables:
   input_entity4: !input 'input_entity4'
   inputs:
   - button_id: 0
+    track_relay: !input 'track_relay0'
     off_state: !input 'off_state0'
     off_color: !input 'off_color0'
     on_state: !input 'on_state0'
@@ -768,12 +783,14 @@ action:
         - conditions: '{{ night_led_brightness == ''99'' }}'
           sequence:
             - parallel:
-              - service: zwave_js.set_config_parameter
-                data:
-                  parameter: '1'
-                  value: '2'
-                target:
-                  device_id: '{{ controller_id }}'
+              - if: '{{ inputs[0].track_relay != ''99'' }}'
+                sequence:
+                  - service: zwave_js.set_config_parameter
+                    data:
+                      parameter: '1'
+                      value: '2'
+                    target:
+                      device_id: '{{ controller_id }}'
               - service: zwave_js.set_config_parameter
                 data:
                   parameter: '2'
@@ -802,12 +819,14 @@ action:
         - conditions: '{{ night_led_brightness != ''99'' }}'
           sequence:
             - parallel:
-              - service: zwave_js.set_config_parameter
-                data:
-                  parameter: '11'
-                  value: '{{ night_led_brightness }}'
-                target: 
-                  device_id: '{{ controller_id }}'
+              - if: '{{ inputs[0].track_relay != ''99'' }}'
+                sequence:
+                  - service: zwave_js.set_config_parameter
+                    data:
+                      parameter: '11'
+                      value: '{{ night_led_brightness }}'
+                    target: 
+                      device_id: '{{ controller_id }}'
               - service: zwave_js.set_config_parameter
                 data:
                   parameter: '12'
