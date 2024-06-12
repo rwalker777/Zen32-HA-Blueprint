@@ -96,7 +96,7 @@ blueprint:
       selector:
         action:
     track_relay0:
-      name: LED Track relay
+      name: Big button - LED Track relay
       description: Set to have the LED state track the relay.  Disable to have LED track scene or over-ride entity and follow nighttime.
       default: '0'
       selector:
@@ -825,6 +825,7 @@ action:
         - conditions: '{{ night_led_brightness == ''99'' }}'
           sequence:
             - parallel:
+              # If the relay tracking is disabled - turn off the LED
               - if: 
                   - condition: template
                     value_template: '{{ inputs[0].track_relay == ''99'' }}'
@@ -863,6 +864,7 @@ action:
         - conditions: '{{ night_led_brightness == ''99'' }}'
           sequence:
             - parallel:
+              # If the relay tracking is disabled - change brightness
               - if:
                   - condition: template
                     value_template: '{{ inputs[0].track_relay == ''99'' }}'
