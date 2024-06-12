@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.1-75
+    **Version**: 2024.6.1-76
 
     **Recommended** to disable parameter 23 on your Zen32 - this stops the green flashing.  If you disable the relay, enable parameter 20.
   domain: automation
@@ -25,6 +25,42 @@ blueprint:
               manufacturer: Zooz
               model: ZEN32 800LR
           multiple: false
+    p19_relay_control:
+      name: Parameter 19 - Enable or Disable relay control
+      description: Disable if there is no load attached to the relay or you want the button to be a scene only
+      default: '1'
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - label: Local control disabled
+              value: '0'
+            - label: Local and Z-Wave control enabled
+              value: '1'
+            - label: 	Local and Z-Wave control disabled
+              value: '2'
+    p20_relay_led_report:
+      name: Paramter 20 - Enable or Disable reporting and LED toggle if relay is disabled
+      description: Disable this if you have the relay disabled
+      default: '1'
+      selector: &selector_enable_disable
+        select:
+          mode: dropdown
+          options:
+            - label: Enable
+              value: '0'
+            - label: Disable
+              value: '1'
+    p23_setting_led_flash:
+      name: Parameter 23 - Enable or Disable LED flash on setting change
+      description: This should be disabled or you will get LED flashes on state changes
+      default: '1'
+      selector: *selector_enable_disable
+    p24_relay_scene_control:
+      name: Parameter 24 - Enable or disable scene control on the relay button.
+      description: If scene control is disabled, the slight delay for physical press will be reduced but the relay button will no longer send central scene events.
+      default: '0'
+      selector: *selector_enable_disable
 #############
     schedule_start:
       name: Night time LEDs start time
@@ -63,7 +99,7 @@ blueprint:
         action:
     track_relay0:
       name: LED Track relay
-      description: Set to have the LED state track the relay.  Disable to have LED track action or over-ride entity and follow nighttime.
+      description: Set to have the LED state track the relay.  Disable to have LED track scene or over-ride entity and follow nighttime.
       default: '0'
       selector:
         select:
@@ -510,6 +546,10 @@ mode: parallel
 max: 10
 variables:
   controller_id: !input 'zooz_switch'
+  input_p19: !input 'p19_relay_control'
+  input_p20: !input 'p20_relay_led_report'
+  input_p23: !input 'p23_setting_led_flash'
+  input_p24: !input 'p24_relay_scene_control'
   toggle_offset: 1
   color_offset: 6
   brightness_offset: 11
@@ -625,6 +665,10 @@ trigger:
       entity_id: '{{ inputs[4].trigger_entity }}'
     id: 'StateTrigger'
     alias: '4'
+  - platform: event
+    event_type: automation_reloaded
+    id: AutomationUpdate
+    alias: AutomationUpdate
 
 ##### Actions ######
 action:
@@ -919,3 +963,31 @@ action:
                         value: '{{ condition.state }}'
                       target:
                         device_id: '{{ controller_id }}'
+    # When automation is update, update parameters
+    - conditions: '{{ trigger.id == ''AutomationUpdate'' }}'
+      alias: 'AutomationUpdateAction'
+      sequence:
+        - service: zwave_js.set_config_parameter
+          data:
+            parameter: '19'
+            value: '{{ input_p19 }}'
+          target:
+            device_id: '{{ controller_id }}'
+        - service: zwave_js.set_config_parameter
+          data:
+            parameter: '20'
+            value: '{{ input_p20 }}'
+          target:
+            device_id: '{{ controller_id }}'
+        - service: zwave_js.set_config_parameter
+          data:
+            parameter: '23'
+            value: '{{ input_p23 }}'
+          target:
+            device_id: '{{ controller_id }}'
+        - service: zwave_js.set_config_parameter
+          data:
+            parameter: '24'
+            value: '{{ input_p24 }}'
+          target:
+            device_id: '{{ controller_id }}'
