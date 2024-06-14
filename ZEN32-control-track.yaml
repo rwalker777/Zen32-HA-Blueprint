@@ -3,62 +3,66 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.1-79
+    **Version**: 2024.6.1-80
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
-    min_version: 2024.4.0
+    min_version: 2024.6.0
 
   input:
-    zooz_switch:
-      name: Zooz Switch
-      description: List of available Zooz ZEN32 switches.
-      selector:
-        device:
-          filter:
-            - integration: zwave_js
-              manufacturer: Zooz
-              model: ZEN32
-            - integration: zwave_js
-              manufacturer: Zooz
-              model: ZEN32 800LR
-          multiple: false
-    p19_relay_control:
-      name: Parameter 19 - Enable or Disable relay control
-      description: Disable if there is no load attached to the relay or you want the button to be a scene only
-      default: '1'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: Local control disabled
-              value: '0'
-            - label: Local and Z-Wave control enabled
-              value: '1'
-            - label: 	Local and Z-Wave control disabled
-              value: '2'
-    p20_relay_led_report:
-      name: Parameter 20 - Enable or Disable reporting and LED toggle if relay is disabled
-      description: Disable this if you have the relay disabled - should probably always be disabled..
-      default: '1'
-      selector: &selector_enable_disable
-        select:
-          mode: dropdown
-          options:
-            - label: Enable
-              value: '0'
-            - label: Disable
-              value: '1'
-    p23_setting_led_flash:
-      name: Parameter 23 - Enable or Disable LED flash on setting change
-      description: This should be disabled or you will get LED flashes on state changes
-      default: '1'
-      selector: *selector_enable_disable
-    p24_relay_scene_control:
-      name: Parameter 24 - Enable or disable scene control on the relay button.
-      description: If scene control is disabled, the slight delay for physical press will be reduced but the relay button will no longer send central scene events.
-      default: '0'
-      selector: *selector_enable_disable
+    Switch_params:
+      name: Switch and Paramters
+      description: Switch and parameters
+      input:
+        zooz_switch:
+          name: Zooz Switch
+          description: List of available Zooz ZEN32 switches.
+          selector:
+            device:
+              filter:
+                - integration: zwave_js
+                  manufacturer: Zooz
+                  model: ZEN32
+                - integration: zwave_js
+                  manufacturer: Zooz
+                  model: ZEN32 800LR
+              multiple: false
+        p19_relay_control:
+          name: Parameter 19 - Enable or Disable relay control
+          description: Disable if there is no load attached to the relay or you want the button to be a scene only
+          default: '1'
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: Local control disabled
+                  value: '0'
+                - label: Local and Z-Wave control enabled
+                  value: '1'
+                - label: 	Local and Z-Wave control disabled
+                  value: '2'
+        p20_relay_led_report:
+          name: Parameter 20 - Enable or Disable reporting and LED toggle if relay is disabled
+          description: Disable this if you have the relay disabled - should probably always be disabled..
+          default: '1'
+          selector: &selector_enable_disable
+            select:
+              mode: dropdown
+              options:
+                - label: Enable
+                  value: '0'
+                - label: Disable
+                  value: '1'
+        p23_setting_led_flash:
+          name: Parameter 23 - Enable or Disable LED flash on setting change
+          description: This should be disabled or you will get LED flashes on state changes
+          default: '1'
+          selector: *selector_enable_disable
+        p24_relay_scene_control:
+          name: Parameter 24 - Enable or disable scene control on the relay button.
+          description: If scene control is disabled, the slight delay for physical press will be reduced but the relay button will no longer send central scene events.
+          default: '0'
+          selector: *selector_enable_disable
 #############
     schedule_start:
       name: Night time LEDs start time
