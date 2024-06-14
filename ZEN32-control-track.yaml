@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.1-82
+    **Version**: 2024.6.1-83
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -64,37 +64,37 @@ blueprint:
           selector: *selector_enable_disable
 #############
     nightime:
-    name: Nighttime settings
-    collapsed: true
-    input:
-      schedule_start:
-        name: Night time LEDs start time
-        description: "LEDs are dimmed or turned off at this time.  Scenes will still run.  To disable leave at 00:00:00 default."
-        default: '00:00:00'
-        selector:
-          time:
-      night_led_brightness:
-        name: Night time LED setting.
-        description: Disable or override brightness of LEDs between schedule times.
-        default: '99'
-        selector: &led_set_selector
-          select:
-            mode: dropdown
-            options:
-              - label: Led off
-                value: '99'
-              - label: Low
-                value: '2'
-              - label: Medium
-                value: '1'
-              - label: Bright
-                value: '0'
-      schedule_stop:
-        name: Night time LEDs stop time
-        description: "LED tracking is restored.  To disable leave at 00:00:00 default."
-        default: '00:00:00'
-        selector:
-          time:
+      name: Nighttime settings
+      collapsed: true
+      input:
+        schedule_start:
+          name: Night time LEDs start time
+          description: "LEDs are dimmed or turned off at this time.  Scenes will still run.  To disable leave at 00:00:00 default."
+          default: '00:00:00'
+          selector:
+            time:
+        night_led_brightness:
+          name: Night time LED setting.
+          description: Disable or override brightness of LEDs between schedule times.
+          default: '99'
+          selector: &led_set_selector
+            select:
+              mode: dropdown
+              options:
+                - label: Led off
+                  value: '99'
+                - label: Low
+                  value: '2'
+                - label: Medium
+                  value: '1'
+                - label: Bright
+                  value: '0'
+        schedule_stop:
+          name: Night time LEDs stop time
+          description: "LED tracking is restored.  To disable leave at 00:00:00 default."
+          default: '00:00:00'
+          selector:
+            time:
 ############
     button0:
       name: Relay button - big button
