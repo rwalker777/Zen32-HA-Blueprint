@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.1-81
+    **Version**: 2024.6.1-82
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -188,22 +188,46 @@ blueprint:
           description: Color for led when target is unavailable (default red)
           default: '3'
           selector: *led_color_selector
-        multipress:
-          name: Multipress
-          collapsed: true
-          input:
-            scene_5h:
-              name: Scene 5 - Held
-              description: Action to run when button is held.
-              default: []
-              selector:
-                action:
-            scene_5r:
-              name: Scene 5 - Released
-              description: Action to run when button is released.
-              default: []
-              selector:
-                action:
+      button0_multipress:
+        name: Big button Multipress
+        collapsed: true
+        input:
+          scene_5h:
+            name: Scene 5 - Held
+            description: Action to run when button is held.
+            default: []
+            selector:
+              action:
+          scene_5r:
+            name: Scene 5 - Released
+            description: Action to run when button is released.
+            default: []
+            selector:
+              action:
+          scene_52:
+            name: Scene 5 - Pressed 2x
+            description: Action to run when button is pressed twice.
+            default: []
+            selector:
+              action:
+          scene_53:
+            name: Scene 5 - Pressed 3x
+            description: Action to run when button is pressed three times.
+            default: []
+            selector:
+              action:
+          scene_54:
+            name: Scene 5 - Pressed 4x
+            description: Action to run when button is pressed four times.
+            default: []
+            selector:
+              action:
+          scene_55:
+            name: Scene 5 - Pressed 5x
+            description: Action to run when button is pressed five times.
+            default: []
+            selector:
+              action:
 #############
     scene_1:
       name: Top left button - Pressed Once
@@ -435,12 +459,7 @@ blueprint:
       default: []
       selector:
         action:
-    scene_52:
-      name: Scene 5 - Pressed 2x
-      description: Action to run when button is pressed twice.
-      default: []
-      selector:
-        action:
+
     scene_12:
       name: Scene 1 - Pressed 2x
       description: Action to run when button is pressed twice.
@@ -465,12 +484,7 @@ blueprint:
       default: []
       selector:
         action:
-    scene_53:
-      name: Scene 5 - Pressed 3x
-      description: Action to run when button is pressed three times.
-      default: []
-      selector:
-        action:
+
     scene_13:
       name: Scene 1 - Pressed 3x
       description: Action to run when button is pressed three times.
@@ -495,12 +509,7 @@ blueprint:
       default: []
       selector:
         action:
-    scene_54:
-      name: Scene 5 - Pressed 4x
-      description: Action to run when button is pressed four times.
-      default: []
-      selector:
-        action:
+
     scene_14:
       name: Scene 1 - Pressed 4x
       description: Action to run when button is pressed four times.
@@ -525,12 +534,7 @@ blueprint:
       default: []
       selector:
         action:
-    scene_55:
-      name: Scene 5 - Pressed 5x
-      description: Action to run when button is pressed five times.
-      default: []
-      selector:
-        action:
+
     scene_15:
       name: Scene 1 - Pressed 5x
       description: Action to run when button is pressed five times.
