@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.1-80
+    **Version**: 2024.6.1-81
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -12,7 +12,6 @@ blueprint:
   input:
     Switch_params:
       name: Switch and Paramters
-      description: Switch and parameters
       input:
         zooz_switch:
           name: Zooz Switch
@@ -64,124 +63,147 @@ blueprint:
           default: '0'
           selector: *selector_enable_disable
 #############
-    schedule_start:
-      name: Night time LEDs start time
-      description: "LEDs are dimmed or turned off at this time.  Scenes will still run.  To disable leave at 00:00:00 default."
-      default: '00:00:00'
-      selector:
-        time:
-    night_led_brightness:
-      name: Night time LED setting.
-      description: Disable or override brightness of LEDs between schedule times.
-      default: '99'
-      selector: &led_set_selector
-        select:
-          mode: dropdown
-          options:
-            - label: Led off
-              value: '99'
-            - label: Low
-              value: '2'
-            - label: Medium
-              value: '1'
-            - label: Bright
-              value: '0'
-    schedule_stop:
-      name: Night time LEDs stop time
-      description: "LED tracking is restored.  To disable leave at 00:00:00 default."
-      default: '00:00:00'
-      selector:
-        time:
+    nightime:
+    name: Nighttime settings
+    collapsed: true
+    input:
+      schedule_start:
+        name: Night time LEDs start time
+        description: "LEDs are dimmed or turned off at this time.  Scenes will still run.  To disable leave at 00:00:00 default."
+        default: '00:00:00'
+        selector:
+          time:
+      night_led_brightness:
+        name: Night time LED setting.
+        description: Disable or override brightness of LEDs between schedule times.
+        default: '99'
+        selector: &led_set_selector
+          select:
+            mode: dropdown
+            options:
+              - label: Led off
+                value: '99'
+              - label: Low
+                value: '2'
+              - label: Medium
+                value: '1'
+              - label: Bright
+                value: '0'
+      schedule_stop:
+        name: Night time LEDs stop time
+        description: "LED tracking is restored.  To disable leave at 00:00:00 default."
+        default: '00:00:00'
+        selector:
+          time:
 ############
-    track_relay0:
-      name: Big button - LED Track relay
-      description: Set to have the LED state track the relay.  Disable to have LED track scene or over-ride entity and follow nighttime.
-      default: '0'
-      selector:
-        select:
-          mode: dropdown
-          options:
-            - label: On when load is off
-              value: '0'
-            - label: On when load is on
-              value: '1'
-            - label: Disabled
-              value: '99'
-    scene_5:
-      name: Big button - Pressed Once
-      description: Action to run when button is pressed once.
-      default: []
-      selector:
-        action:
-    input_entity0:
-      name: Entity for button 1 (Big button)
-      description: >
-        (Optional) Override the entity to track
+    button0:
+      name: Relay button - big button
+      input:
+        track_relay0:
+          name: Big button - LED Track relay
+          description: Set to have the LED state track the relay.  Disable to have LED track scene or over-ride entity and follow nighttime.
+          default: '0'
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: On when load is off
+                  value: '0'
+                - label: On when load is on
+                  value: '1'
+                - label: Disabled
+                  value: '99'
+        scene_5:
+          name: Big button - Pressed Once
+          description: Action to run when button is pressed once.
+          default: []
+          selector:
+            action:
+        input_entity0:
+          name: Entity for button 1 (Big button)
+          description: >
+            (Optional) Override the entity to track
 
-        Track different entity or set if LED track is not as expected
-      default: []
-      selector: &entity_selector
-        entity:
-          multiple: false
-          domain:
-            - alarm_control_panel
-            - binary_sensor
-            - climate
-            - cover
-            - fan
-            - input_boolean
-            - light
-            - lock
-            - media_player
-            - sensor
-            - switch
-    off_state0:
-      name: Off behavior for button 1
-      description: Led state when target is off, closed, disarmed or locked
-      default: '1'
-      selector: *led_set_selector
-    off_color0:
-      name: Off color for button 1
-      description: Color for led when target is off (default white)
-      default: '0'
-      selector: &led_color_selector
-        select:
-          mode: dropdown
-          options:
-            - label: White
-              value: '0'
-            - label: Blue
-              value: '1'
-            - label: Green
-              value: '2'
-            - label: Red
-              value: '3'
-            - label: Magenta
-              value: '4'
-            - label: Yellow
-              value: '5'
-            - label: Cyan
-              value: '6'
-    on_state0:
-      name: On behavior for button 1
-      description: Led state when target is on, opened, armed or unlocked
-      default: '1'
-      selector: *led_set_selector
-    on_color0:
-      name: On color for button 1
-      description: Color for led when target is on (default white)
-      default: '1'
-      selector: *led_color_selector
-    unavail_state0:
-      name: Unavailable State for button 1
-      description: Led state when target is unavailable
-      default: '1'
-      selector: *led_set_selector
-    unavail_color0:
-      name: Unavailable Color for button 1
-      description: Color for led when target is unavailable (default red)
-      default: '3'
-      selector: *led_color_selector
+            Track different entity or set if LED track is not as expected
+          default: []
+          selector: &entity_selector
+            entity:
+              multiple: false
+              domain:
+                - alarm_control_panel
+                - binary_sensor
+                - climate
+                - cover
+                - fan
+                - input_boolean
+                - light
+                - lock
+                - media_player
+                - sensor
+                - switch
+        off_state0:
+          name: Off behavior for button 1
+          description: Led state when target is off, closed, disarmed or locked
+          default: '1'
+          selector: *led_set_selector
+        off_color0:
+          name: Off color for button 1
+          description: Color for led when target is off (default white)
+          default: '0'
+          selector: &led_color_selector
+            select:
+              mode: dropdown
+              options:
+                - label: White
+                  value: '0'
+                - label: Blue
+                  value: '1'
+                - label: Green
+                  value: '2'
+                - label: Red
+                  value: '3'
+                - label: Magenta
+                  value: '4'
+                - label: Yellow
+                  value: '5'
+                - label: Cyan
+                  value: '6'
+        on_state0:
+          name: On behavior for button 1
+          description: Led state when target is on, opened, armed or unlocked
+          default: '1'
+          selector: *led_set_selector
+        on_color0:
+          name: On color for button 1
+          description: Color for led when target is on (default white)
+          default: '1'
+          selector: *led_color_selector
+        unavail_state0:
+          name: Unavailable State for button 1
+          description: Led state when target is unavailable
+          default: '1'
+          selector: *led_set_selector
+        unavail_color0:
+          name: Unavailable Color for button 1
+          description: Color for led when target is unavailable (default red)
+          default: '3'
+          selector: *led_color_selector
+        multipress:
+          name: Multipress
+          collapsed: true
+          input:
+            scene_5h:
+              name: Scene 5 - Held
+              description: Action to run when button is held.
+              default: []
+              selector:
+                action:
+            scene_5r:
+              name: Scene 5 - Released
+              description: Action to run when button is released.
+              default: []
+              selector:
+                action:
 #############
     scene_1:
       name: Top left button - Pressed Once
@@ -363,12 +385,7 @@ blueprint:
       default: '3'
       selector: *led_color_selector
 #############
-    scene_5h:
-      name: Scene 5 - Held
-      description: Action to run when button is held.
-      default: []
-      selector:
-        action:
+
     scene_1h:
       name: Scene 1 - Held
       description: Action to run when button is held.
@@ -393,12 +410,7 @@ blueprint:
       default: []
       selector:
         action:
-    scene_5r:
-      name: Scene 5 - Released
-      description: Action to run when button is released.
-      default: []
-      selector:
-        action:
+
     scene_1r:
       name: Scene 1 - Released
       description: Action to run when button is released.
