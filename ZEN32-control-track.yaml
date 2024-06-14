@@ -188,46 +188,46 @@ blueprint:
           description: Color for led when target is unavailable (default red)
           default: '3'
           selector: *led_color_selector
-      button0_multipress:
-        name: Big button Multipress
-        collapsed: true
-        input:
-          scene_5h:
-            name: Scene 5 - Held
-            description: Action to run when button is held.
-            default: []
-            selector:
-              action:
-          scene_5r:
-            name: Scene 5 - Released
-            description: Action to run when button is released.
-            default: []
-            selector:
-              action:
-          scene_52:
-            name: Scene 5 - Pressed 2x
-            description: Action to run when button is pressed twice.
-            default: []
-            selector:
-              action:
-          scene_53:
-            name: Scene 5 - Pressed 3x
-            description: Action to run when button is pressed three times.
-            default: []
-            selector:
-              action:
-          scene_54:
-            name: Scene 5 - Pressed 4x
-            description: Action to run when button is pressed four times.
-            default: []
-            selector:
-              action:
-          scene_55:
-            name: Scene 5 - Pressed 5x
-            description: Action to run when button is pressed five times.
-            default: []
-            selector:
-              action:
+    button0_multipress:
+      name: Big button Multipress
+      collapsed: true
+      input:
+        scene_5h:
+          name: Scene 5 - Held
+          description: Action to run when button is held.
+          default: []
+          selector:
+            action:
+        scene_5r:
+          name: Scene 5 - Released
+          description: Action to run when button is released.
+          default: []
+          selector:
+            action:
+        scene_52:
+          name: Scene 5 - Pressed 2x
+          description: Action to run when button is pressed twice.
+          default: []
+          selector:
+            action:
+        scene_53:
+          name: Scene 5 - Pressed 3x
+          description: Action to run when button is pressed three times.
+          default: []
+          selector:
+            action:
+        scene_54:
+          name: Scene 5 - Pressed 4x
+          description: Action to run when button is pressed four times.
+          default: []
+          selector:
+            action:
+        scene_55:
+          name: Scene 5 - Pressed 5x
+          description: Action to run when button is pressed five times.
+          default: []
+          selector:
+            action:
 #############
     scene_1:
       name: Top left button - Pressed Once
