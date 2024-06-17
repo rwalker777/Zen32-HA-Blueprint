@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.3-8
+    **Version**: 2024.6.3-9
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -715,7 +715,8 @@ trigger_variables:
     unavail_state: !input 'unavail_state0'
     unavail_color: !input 'unavail_color0'
     unavail_brightness: !input 'unavail_brightness0'
-    trigger_entity: '{{ input_entity0 if input_entity0 else input_scene5[0].target.entity_id if input_scene5 | count > 0 else input_entity0 }}'
+    trigger_entity: '{{ input_entity0 }}'
+    #trigger_entity: '{{ input_entity0 if input_entity0 else input_scene5[0].target.entity_id if input_scene5 | count > 0 else input_entity0 }}'
   - button_id: 1
     off_state: !input 'off_state1'
     off_color: !input 'off_color1'
@@ -726,7 +727,8 @@ trigger_variables:
     unavail_state: !input 'unavail_state1'
     unavail_color: !input 'unavail_color1'
     unavail_brightness: !input 'unavail_brightness1'
-    trigger_entity: '{{ input_entity1 if input_entity1 else input_scene1[0].target.entity_id if input_scene1 | count > 0 else input_entity1 }}'
+    trigger_entity: '{{ input_entity1 }}'
+    #trigger_entity: '{{ input_entity1 if input_entity1 else input_scene1[0].target.entity_id if input_scene1 | count > 0 else input_entity1 }}'
   - button_id: 2
     off_state: !input 'off_state2'
     off_color: !input 'off_color2'
@@ -737,7 +739,8 @@ trigger_variables:
     unavail_state: !input 'unavail_state2'
     unavail_color: !input 'unavail_color2'
     unavail_brightness: !input 'unavail_brightness2'
-    trigger_entity: '{{ input_entity2 if input_entity2 else input_scene2[0].target.entity_id if input_scene2 | count > 0 else input_entity2 }}'
+    trigger_entity: '{{ input_entity2 }}'
+    #trigger_entity: '{{ input_entity2 if input_entity2 else input_scene2[0].target.entity_id if input_scene2 | count > 0 else input_entity2 }}'
   - button_id: 3
     off_state: !input 'off_state3'
     off_color: !input 'off_color3'
@@ -748,7 +751,8 @@ trigger_variables:
     unavail_state: !input 'unavail_state3'
     unavail_color: !input 'unavail_color3'
     unavail_brightness: !input 'unavail_brightness3'
-    trigger_entity: '{{ input_entity3 if input_entity3 else input_scene3[0].target.entity_id if input_scene3 | count > 0 else input_entity3 }}'
+    trigger_entity: '{{ input_entity3 }}'
+    #trigger_entity: '{{ input_entity3 if input_entity3 else input_scene3[0].target.entity_id if input_scene3 | count > 0 else input_entity3 }}'
   - button_id: 4
     off_state: !input 'off_state4'
     off_color: !input 'off_color4'
@@ -759,7 +763,8 @@ trigger_variables:
     unavail_state: !input 'unavail_state4'
     unavail_color: !input 'unavail_color4'
     unavail_brightness: !input 'unavail_brightness4'
-    trigger_entity: '{{ input_entity4 if input_entity4 else input_scene4[0].target.entity_id if input_scene4 | count > 0 else input_entity4 }}'
+    trigger_entity: '{{ input_entity4 }}'
+    #trigger_entity: '{{ input_entity4 if input_entity4 else input_scene4[0].target.entity_id if input_scene4 | count > 0 else input_entity4 }}'
 
 ##### Triggers #####
 trigger:
