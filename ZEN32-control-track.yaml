@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.3-4
+    **Version**: 2024.6.3-5
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -995,7 +995,7 @@ action:
                 - service: zwave_js.set_config_parameter
                   data:
                     parameter: '{{ parameter.brightness }}'
-                    value: '{{ night_led_brightness ]}'
+                    value: '{{ night_led_brightness }}'
                   target:
                     device_id: '{{ controller_id }}'
     # At day time if schedule set or Home Assistant startup and not nighttime update LEDs for all buttons
