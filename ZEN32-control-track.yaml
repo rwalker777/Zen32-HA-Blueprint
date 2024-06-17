@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.3-14
+    **Version**: 2024.6.3-15
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -951,7 +951,7 @@ action:
               - service: zwave_js.set_config_parameter
                 data:
                   parameter: '{{ parameter.brightness }}'
-                  value: '{{ condition.brightness if not (night_led_brightness == ''99'' and in_nighttime and schedule_set) else night_led_brightness }}'
+                  value: '{{ condition.brightness if not (night_led_brightness != ''99'' and in_nighttime and schedule_set) else night_led_brightness }}'
                 target:
                   device_id: '{{ controller_id }}'
     # At night time turn off LEDs or change brightness if time set
@@ -1025,13 +1025,14 @@ action:
                 toggle: "{{ current.button_id | int + toggle_offset | int }}"
                 color: "{{ current.button_id | int + color_offset | int }}"
                 brightness: "{{ current.button_id | int + brightness_offset | int }}"
+          # Check if button is set to 99 and schedule set and in nightime - do nothing - else set
           - if: 
               - condition: template
                 value_template: '{{ not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
             then:
               sequence:
                 - parallel:
-                  # turn indicator on
+                  # set indicator
                   - service: zwave_js.set_config_parameter
                     data:
                       parameter: '{{ parameter.toggle }}'
@@ -1049,7 +1050,7 @@ action:
                   - service: zwave_js.set_config_parameter
                     data:
                       parameter: '{{ parameter.brightness }}'
-                      value: '{{ condition.brightness if not (night_led_brightness == ''99'' and in_nighttime and schedule_set) else night_led_brightness }}'
+                      value: '{{ condition.brightness if not (night_led_brightness != ''99'' and in_nighttime and schedule_set) else night_led_brightness }}'
                     target:
                       device_id: '{{ controller_id }}'
     # When automation is update, update parameters
