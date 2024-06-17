@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.3-13
+    **Version**: 2024.6.3-14
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -1014,7 +1014,7 @@ action:
               condition: >
                 {% if is_state(repeat.item.trigger_entity, ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) %}
                   {{ dict(state=current.off_state, color=current.off_color, brightness=current.off_brightness) }}
-                {% elif is_state(repeat.item.trigger_entity, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1] %}
+                {% elif is_state(repeat.item.trigger_entity, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) %}
                   {{ dict(state=current.on_state, color=current.on_color, brightness=current.on_brightness) }}
                 {% elif is_state(repeat.item.trigger_entity, "unavailable") %}
                   {{ dict(state=current.unavail_state, color=current.unavail_color, brightness=current.unavail_brightness) }}
