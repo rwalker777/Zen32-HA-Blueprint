@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.4-22
+    **Version**: 2024.6.4-23
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -793,7 +793,7 @@ trigger:
     event_data:
       entity_id: '{{ input_scene5[0].target.entity_id }}'
     enabled: '{{ input_entity0 == [] and input_scene5 | count > 0 }}'
-    id: 'StateTrigger'
+    id: 'StateChangeTrigger'
     alias: '0'
   - platform: state
     not_to:
@@ -806,7 +806,7 @@ trigger:
     event_data:
       entity_id: '{{ input_scene1[0].target.entity_id }}'
     enabled: '{{ input_entity1 == [] and input_scene1 | count > 0 }}'
-    id: 'StateTrigger'
+    id: 'StateChangeTrigger'
     alias: '1'
   - platform: state
     not_to:
@@ -819,7 +819,7 @@ trigger:
     event_data:
       entity_id: '{{ input_scene2[0].target.entity_id }}'
     enabled: '{{ input_entity2 == [] and input_scene2 | count > 0 }}'
-    id: 'StateTrigger'
+    id: 'StateChangeTrigger'
     alias: '2'
   - platform: state
     not_to:
@@ -832,7 +832,7 @@ trigger:
     event_data:
       entity_id: '{{ input_scene3[0].target.entity_id }}'
     enabled: '{{ input_entity3 == [] and input_scene3 | count > 0 }}'
-    id: 'StateTrigger'
+    id: 'StateChangeTrigger'
     alias: '3'
   - platform: state
     not_to:
@@ -845,7 +845,7 @@ trigger:
     event_data:
       entity_id: '{{ input_scene4[0].target.entity_id }}'
     enabled: '{{ input_entity4 == [] and input_scene4 | count > 0 }}'
-    id: 'StateTrigger'
+    id: 'StateChangeTrigger'
     alias: '4'
   - platform: event
     event_type: automation_reloaded
@@ -940,7 +940,7 @@ action:
           - conditions: '{{ property_key_name == ''005'' and value == ''KeyPressed5x'' }}'
             sequence: !input 'scene_55'
     # If track entity state changes update LEDs, if state changed (not just an attribute, like cover position) - might be able to remove if the state change null filter works
-    - conditions: '{{ trigger.id == ''StateTrigger'' and (trigger.event.data.new_state.state != trigger.event.data.old_state.state) }}'
+    - conditions: '{{ trigger.id == ''StateTrigger'' or ( trigger.id == 'StateChangeTrigger' and trigger.event.data.new_state.state != trigger.event.data.old_state.state) }}'
       alias: 'StateAction'
       sequence:
       - variables:
