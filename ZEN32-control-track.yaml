@@ -42,8 +42,8 @@ blueprint:
                   value: '2'
         p20_relay_led_report:
           name: Parameter 20 - Enable or Disable reporting and LED toggle if relay is disabled
-          description: Disable this if you have the relay disabled - should probably always be disabled..
-          default: '1'
+          description: Enable this if you have the relay disabled.
+          default: '0'
           selector: &selector_enable_disable
             select:
               mode: dropdown
