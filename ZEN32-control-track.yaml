@@ -678,6 +678,9 @@ variables:
 
 # Track override entry if set, else get first entity in scene, if neither set to empty
 trigger_variables:
+  schedule_start: !input 'schedule_start'
+  schedule_stop: !input 'schedule_stop'
+  schedule_set: '{{ schedule_start != schedule_stop }}'
   input_scene5: !input 'scene_5'
   input_entity0: !input 'input_entity0'
   input_scene1: !input 'scene_1'
