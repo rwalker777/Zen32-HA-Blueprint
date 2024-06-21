@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.6-1
+    **Version**: 2024.6.6-2
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -671,9 +671,6 @@ variables:
   color_offset: 6
   brightness_offset: 11
   night_led_brightness: !input 'night_led_brightness'
-  schedule_start: !input 'schedule_start'
-  schedule_stop: !input 'schedule_stop'
-  schedule_set: '{{ schedule_start != schedule_stop }}'
   in_nighttime: '{{ today_at(schedule_start) <= now() or now() < today_at(schedule_stop) }}'
 
 # Track override entry if set, else get first entity in scene, if neither set to empty
@@ -681,16 +678,6 @@ trigger_variables:
   schedule_start: !input 'schedule_start'
   schedule_stop: !input 'schedule_stop'
   schedule_set: '{{ schedule_start != schedule_stop }}'
-  input_scene5: !input 'scene_5'
-  input_entity0: !input 'input_entity0'
-  input_scene1: !input 'scene_1'
-  input_entity1: !input 'input_entity1'
-  input_scene2: !input 'scene_2'
-  input_entity2: !input 'input_entity2'
-  input_scene3: !input 'scene_3'
-  input_entity3: !input 'input_entity3'
-  input_scene4: !input 'scene_4'
-  input_entity4: !input 'input_entity4'
   inputs:
   - button_id: 0
     track_relay: !input 'track_relay0'
