@@ -122,7 +122,7 @@ blueprint:
         input_entity0:
           name: Entity for button 1 (Big button)
           description: Choose entity for LED state to track
-          default: ''
+          default: []
           selector: &entity_selector
             entity:
               multiple: false
@@ -271,7 +271,7 @@ blueprint:
         input_entity1:
           name: Entity for button 2 (Top left button)
           description: Choose entity for LED state to track
-          default: ''
+          default: []
           selector: *entity_selector
         off_state1:
           name: Off behavior for button 2
@@ -371,7 +371,7 @@ blueprint:
         input_entity2:
           name: Entity for button 3 (Top right button)
           description: Choose entity for LED state to track
-          default: ''
+          default: []
           selector: *entity_selector
         off_state2:
           name: Off behavior for button 3
@@ -471,7 +471,7 @@ blueprint:
         input_entity3:
           name: Entity for button 4 (Bottom left button)
           description: Choose entity for LED state to track
-          default: ''
+          default: []
           selector: *entity_selector
         off_state3:
           name: Off behavior for button 4
@@ -571,7 +571,7 @@ blueprint:
         input_entity4:
           name: Entity for button 5 (Bottom right button)
           description: Choose entity for LED state to track
-          default: ''
+          default: []
           selector: *entity_selector
         off_state4:
           name: Off behavior for button 5
@@ -761,31 +761,31 @@ trigger:
   - platform: state
     not_to:
     entity_id: !input 'input_entity0'
-    enabled: "{{ inputs[0].trigger_entity != '' }}"
+    enabled: "{{ inputs[0].trigger_entity != [] }}"
     id: 'StateTrigger'
     alias: '0'
   - platform: state
     not_to:
     entity_id: !input 'input_entity1'
-    enabled: "{{ inputs[1].trigger_entity != '' }}"
+    enabled: "{{ inputs[1].trigger_entity != [] }}"
     id: 'StateTrigger'
     alias: '1'
   - platform: state
     not_to:
     entity_id: !input 'input_entity2'
-    enabled: "{{ inputs[2].trigger_entity != '' }}"
+    enabled: "{{ inputs[2].trigger_entity != [] }}"
     id: 'StateTrigger'
     alias: '2'
   - platform: state
     not_to:
     entity_id: !input 'input_entity3'
-    enabled: "{{ inputs[3].trigger_entity != '' }}"
+    enabled: "{{ inputs[3].trigger_entity != [] }}"
     id: 'StateTrigger'
     alias: '3'
   - platform: state
     not_to:
     entity_id: !input 'input_entity4'
-    enabled: "{{ inputs[4].trigger_entity != '' }}"
+    enabled: "{{ inputs[4].trigger_entity != [] }}"
     id: 'StateTrigger'
     alias: '4'
   - platform: event
@@ -936,7 +936,7 @@ action:
         repeat:
           # All inputs that dont have empty trigger_entity or track_relay set to 0 or 1
           for_each: >
-            {{ inputs | rejectattr('trigger_entity', 'eq', '') | rejectattr('track_relay', 'in', ['0', '1']) | list }}
+            {{ inputs | rejectattr('trigger_entity', 'eq', []) | rejectattr('track_relay', 'in', ['0', '1']) | list }}
           sequence:
           - variables:
               condition: >
@@ -979,7 +979,7 @@ action:
         repeat:
           # All inputs that dont have empty trigger_entity or track_relay set to 0 or 1
           for_each: >
-            {{ inputs | rejectattr('trigger_entity', 'eq', '') | rejectattr('track_relay', 'in', ['0', '1']) | list }}
+            {{ inputs | rejectattr('trigger_entity', 'eq', []) | rejectattr('track_relay', 'in', ['0', '1']) | list }}
           sequence:
           - variables:
               condition: >
