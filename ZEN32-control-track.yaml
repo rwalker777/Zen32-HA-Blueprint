@@ -895,16 +895,16 @@ action:
             {% elif trigger.to_state.state == "unavailable" %}
               {{ dict(state=current.unavail_state, color=current.unavail_color, brightness=current.unavail_brightness) }}
             {% else %}
-              {{ dict(state=None, color=None) }}
+              {{ dict(state=None, color=None, brightness=None) }}
             {% endif %}
           parameter:
             toggle: "{{ current.button_id | int + toggle_offset | int }}"
             color: "{{ current.button_id | int + color_offset | int }}"
             brightness: "{{ current.button_id | int + brightness_offset | int }}"
-      # Check if we are set to 99 and schedule set and in nighttime - if so we don't do anything
+      # Make sure we got a valid state and check if we are set to 99 and schedule set and in nighttime - if so we don't do anything
       - if: 
         - condition: template
-          value_template: '{{ not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
+          value_template: '{{ condition.state != ''None'' and not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
         then:
           sequence:
             - parallel:
