@@ -996,10 +996,10 @@ action:
                 toggle: "{{ repeat.item.button_id | int + toggle_offset | int }}"
                 color: "{{ repeat.item.button_id | int + color_offset | int }}"
                 brightness: "{{ repeat.item.button_id | int + brightness_offset | int }}"
-          # Check if button is set to 99 and schedule set and in nightime - do nothing - else set
+          # Make sure we got a valid state and check if we are set to 99 and schedule set and in nighttime - if so we don't do anything
           - if: 
               - condition: template
-                value_template: '{{ not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
+                value_template: '{{ condition.state != ''None'' and not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
             then:
               sequence:
                 - parallel:
