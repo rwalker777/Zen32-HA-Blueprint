@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.6.6
+    **Version**: 2024.7.2
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -761,31 +761,31 @@ trigger:
   - platform: state
     not_to:
     entity_id: !input 'input_entity0'
-    enabled: '{{ inputs[0].trigger_entity != [] }}'
+    enabled: "{{ inputs[0].trigger_entity != [] }}"
     id: 'StateTrigger'
     alias: '0'
   - platform: state
     not_to:
     entity_id: !input 'input_entity1'
-    enabled: '{{ inputs[1].trigger_entity != [] }}'
+    enabled: "{{ inputs[1].trigger_entity != [] }}"
     id: 'StateTrigger'
     alias: '1'
   - platform: state
     not_to:
     entity_id: !input 'input_entity2'
-    enabled: '{{ inputs[2].trigger_entity != [] }}'
+    enabled: "{{ inputs[2].trigger_entity != [] }}"
     id: 'StateTrigger'
     alias: '2'
   - platform: state
     not_to:
     entity_id: !input 'input_entity3'
-    enabled: '{{ inputs[3].trigger_entity != [] }}'
+    enabled: "{{ inputs[3].trigger_entity != [] }}"
     id: 'StateTrigger'
     alias: '3'
   - platform: state
     not_to:
     entity_id: !input 'input_entity4'
-    enabled: '{{ inputs[4].trigger_entity != [] }}'
+    enabled: "{{ inputs[4].trigger_entity != [] }}"
     id: 'StateTrigger'
     alias: '4'
   - platform: event
@@ -895,16 +895,16 @@ action:
             {% elif trigger.to_state.state == "unavailable" %}
               {{ dict(state=current.unavail_state, color=current.unavail_color, brightness=current.unavail_brightness) }}
             {% else %}
-              {{ dict(state=None, color=None) }}
+              {{ dict(state=None, color=None, brightness=None) }}
             {% endif %}
           parameter:
             toggle: "{{ current.button_id | int + toggle_offset | int }}"
             color: "{{ current.button_id | int + color_offset | int }}"
             brightness: "{{ current.button_id | int + brightness_offset | int }}"
-      # Check if we are set to 99 and schedule set and in nighttime - if so we don't do anything
+      # Make sure we got a valid state and check if we are set to 99 and schedule set and in nighttime - if so we don't do anything
       - if: 
         - condition: template
-          value_template: '{{ not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
+          value_template: '{{ condition.state != ''None'' and not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
         then:
           sequence:
             - parallel:
@@ -996,10 +996,10 @@ action:
                 toggle: "{{ repeat.item.button_id | int + toggle_offset | int }}"
                 color: "{{ repeat.item.button_id | int + color_offset | int }}"
                 brightness: "{{ repeat.item.button_id | int + brightness_offset | int }}"
-          # Check if button is set to 99 and schedule set and in nightime - do nothing - else set
+          # Make sure we got a valid state and check if we are set to 99 and schedule set and in nighttime - if so we don't do anything
           - if: 
               - condition: template
-                value_template: '{{ not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
+                value_template: '{{ condition.state != ''None'' and not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
             then:
               sequence:
                 - parallel:
