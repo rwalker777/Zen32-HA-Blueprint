@@ -1,0 +1,610 @@
+blueprint:
+  name: Zooz ZEN71 scene blueprint
+  description: >
+    Scene control and LED track for Zooz ZEN71
+
+    **Version**: 2024.9.1-1
+  domain: automation
+  source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN71-scene-blueprint.yaml
+  homeassistant:
+    min_version: 2024.6.0
+
+  input:
+    Switch_params:
+      name: Switch and Parameters
+      input:
+        zooz_switch:
+          name: Zooz Switch
+          description: List of available Zooz ZEN71.  You may select multiple for 3 and 4 way setups.
+          selector:
+            device:
+              filter:
+                - integration: zwave_js
+                  manufacturer: Zooz
+                  model: ZEN71
+                - integration: zwave_js
+                  manufacturer: Zooz
+                  model: ZEN71 800LR
+              multiple: true
+        led_track:
+          name: LED follows relay
+          description: Set to have the LED state track the relay.  Disable to have LED track scene or over-ride entity and follow nighttime.
+          default: '0'
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: On when load is off
+                  value: '0'
+                - label: On when load is on
+                  value: '1'
+                - label: Disabled
+                  value: '99'
+        input_entity0:
+          name: Entity for LED
+          description: Choose entity for LED state to track
+          default: []
+          selector: &entity_selector
+            entity:
+              multiple: false
+              domain:
+                - alarm_control_panel
+                - binary_sensor
+                - climate
+                - cover
+                - fan
+                - input_boolean
+                - light
+                - lock
+                - media_player
+                - sensor
+                - switch
+        off_state0:
+          name: Off behavior
+          description: Led state when target is off, closed, disarmed or locked
+          default: '99'
+          selector: &led_set_selector
+            select:
+              mode: dropdown
+              options:
+                - label: Always off
+                  value: '2'
+                - label: Always on
+                  value: '3'
+                - label: On during daytime
+                  value: '99'
+        off_color0:
+          name: Off color
+          description: Color for led when target is off (default white)
+          default: '0'
+          selector: &led_color_selector
+            select:
+              mode: dropdown
+              options:
+                - label: White
+                  value: '0'
+                - label: Blue
+                  value: '1'
+                - label: Green
+                  value: '2'
+                - label: Red
+                  value: '3'
+        off_brightness0:
+          name: Off Brightness
+          description: LED brightness when entity is off.
+          default: '1'
+          selector: &brightness_set_selector
+            select:
+              mode: dropdown
+              options:
+                - label: Low
+                  value: '2'
+                - label: Medium
+                  value: '1'
+                - label: Bright
+                  value: '0'
+        on_state0:
+          name: On behavior
+          description: Led state when target is on, opened, armed or unlocked
+          default: '3'
+          selector: *led_set_selector
+        on_color0:
+          name: On color
+          description: Color for led when target is on (default white)
+          default: '1'
+          selector: *led_color_selector
+        on_brightness0:
+          name: On Brightness
+          description: LED brightness when entity is on.
+          default: '1'
+          selector: *brightness_set_selector
+        unavail_state0:
+          name: Unavailable behavior
+          description: Led state when target is unavailable
+          default: '3'
+          selector: *led_set_selector
+        unavail_color0:
+          name: Unavailable Color
+          description: Color for led when target is unavailable (default red)
+          default: '3'
+          selector: *led_color_selector
+        unavail_brightness0:
+          name: Unavailable brightness
+          description: LED brightness when entity is unavailable
+          default: '1'
+          selector: *brightness_set_selector
+        Parameters:
+          name: Z-wave parameters
+          collapsed: true
+          input:
+            p9_scene_control:
+              name: Parameter 9 - Enable or disable scene control
+              description: Leave enabled - provided for troubleshooting only.
+              default: '1'
+              selector: &selector_disable_enable
+                select:
+                  mode: dropdown
+                  options:
+                    - label: Disable
+                      value: '0'
+                    - label: Enable
+                      value: '1'
+            p11_relay_control:
+              name: Parameter 11 - Smart bulb mode - Enable or Disable relay control
+              description: Disable if there is no load attached to the relay or for smart-bulb/scene mode.
+              default: '1'
+              selector:
+                select:
+                  mode: dropdown
+                  options:
+                    - label: Local control disabled
+                      value: '0'
+                    - label: Local and Z-Wave control enabled
+                      value: '1'
+                    - label: Local and Z-Wave control disabled
+                      value: '2'
+            p13_zwave_reporting:
+              name: Parameter 13 - Reporting when physical control disabled
+              description: Leave enabled - provided for troubleshooting only.
+              default: '0'
+              selector: &selector_enable_disable
+                select:
+                  mode: dropdown
+                  options:
+                    - label: Enable
+                      value: '0'
+                    - label: Disable
+                      value: '1'
+            p18_3way_scene_control:
+              name: Parameter 18 - Enable or disable scene control for momentary 3 way switch
+              description: Enable this if you have 3 way set to momentary and want to enable sceen control
+              default: '0'
+              selector: *selector_disable_enable
+            p19_setting_led_flash:
+              name: Parameter 19 - Enable or Disable LED flash on setting change
+              description: This should be disabled or you will get LED flashes on state changes
+              default: '1'
+              selector: *selector_enable_disable
+#############
+    nightime:
+      name: Nighttime settings
+      collapsed: true
+      input:
+        schedule_start:
+          name: Night time LEDs start time
+          description: "LEDs are dimmed or turned off at this time.  Scenes will still run.  To disable leave at 00:00:00 default."
+          default: '00:00:00'
+          selector:
+            time:
+        night_led_brightness:
+          name: Night time brightness setting.
+          description: Override brightness of LEDs between schedule times.
+          default: '99'
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: No change
+                  value: '99'
+                - label: Low
+                  value: '2'
+                - label: Medium
+                  value: '1'
+                - label: Bright
+                  value: '0'
+        schedule_stop:
+          name: Night time LEDs stop time
+          description: "LED tracking is restored.  To disable leave at 00:00:00 default."
+          default: '00:00:00'
+          selector:
+            time:
+############
+    switch_up:
+      name: Top button
+      input:
+        scene_1:
+          name: Pressed Once
+          description: Action to run when button is pressed once.
+          default: []
+          selector:
+            action:
+        scene_12:
+          name: ressed 2x
+          description: Action to run when button is pressed twice.
+          default: []
+          selector:
+            action:
+        scene_13:
+          name: Pressed 3x
+          description: Action to run when button is pressed three times.
+          default: []
+          selector:
+            action:
+        scene_14:
+          name: Pressed 4x
+          description: Action to run when button is pressed four times.
+          default: []
+          selector:
+            action:
+        scene_15:
+          name: Pressed 5x
+          description: Action to run when button is pressed five times.
+          default: []
+          selector:
+            action:
+        scene_1h:
+          name: Held
+          description: Action to run when button is held.
+          default: []
+          selector:
+            action:
+        scene_1r:
+          name: Released
+          description: Action to run when button is released.
+          default: []
+          selector:
+            action:
+#############
+    switch_down:
+      name: Bottom button
+      input:
+        scene_2:
+          name: Pressed Once
+          description: Action to run when button is pressed once.
+          default: []
+          selector:
+            action:
+        scene_22:
+          name: ressed 2x
+          description: Action to run when button is pressed twice.
+          default: []
+          selector:
+            action:
+        scene_23:
+          name: Pressed 3x
+          description: Action to run when button is pressed three times.
+          default: []
+          selector:
+            action:
+        scene_24:
+          name: Pressed 4x
+          description: Action to run when button is pressed four times.
+          default: []
+          selector:
+            action:
+        scene_25:
+          name: Pressed 5x
+          description: Action to run when button is pressed five times.
+          default: []
+          selector:
+            action:
+        scene_2h:
+          name: Held
+          description: Action to run when button is held.
+          default: []
+          selector:
+            action:
+        scene_2r:
+          name: Released
+          description: Action to run when button is released.
+          default: []
+          selector:
+            action:
+#############
+mode: parallel
+max: 10
+variables:
+  controller_id: !input 'zooz_switch'
+  input_p9: !input p9_scene_control
+  input_p11: !input p11_relay_control
+  input_p13: !input p13_zwave_reporting
+  input_p18: !input p18_3way_scene_control
+  input_p19: !input p19_setting_led_flash
+  night_led_brightness: !input 'night_led_brightness'
+  in_nighttime: '{{ schedule_set and (today_at(schedule_start) <= now() or now() < today_at(schedule_stop)) }}'
+
+# Track override entry if set, else get first entity in scene, if neither set to empty
+trigger_variables:
+  schedule_start: !input 'schedule_start'
+  schedule_stop: !input 'schedule_stop'
+  schedule_set: '{{ schedule_start != schedule_stop }}'
+  inputs:
+  - button_id: 0
+    track_relay: !input 'led_track'
+    off_state: !input 'off_state0'
+    off_color: !input 'off_color0'
+    off_brightness: !input 'off_brightness0'
+    on_state: !input 'on_state0'
+    on_color: !input 'on_color0'
+    on_brightness: !input 'on_brightness0'
+    unavail_state: !input 'unavail_state0'
+    unavail_color: !input 'unavail_color0'
+    unavail_brightness: !input 'unavail_brightness0'
+    trigger_entity: !input 'input_entity0'
+
+##### Triggers #####
+trigger:
+  - alias: 'ButtonPress'
+    id: 'ButtonPress'
+    platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: !input 'zooz_switch'
+  - alias: 'NightTime'
+    id: 'NightTime'
+    platform: time
+    at: !input 'schedule_start'
+    enabled: '{{ schedule_set }}'
+  - alias: 'DayTime'
+    id: 'DayTime'
+    platform: time
+    at: !input 'schedule_stop'
+    enabled: '{{ schedule_set }}'
+  - alias: 'HassStart'
+    id: 'HassStart'
+    platform: homeassistant
+    event: start
+  - platform: state
+    not_to:
+    entity_id: !input 'input_entity0'
+    enabled: "{{ inputs[0].trigger_entity != [] }}"
+    id: 'StateTrigger'
+    alias: '0'
+  - platform: event
+    event_type: automation_reloaded
+    id: AutomationUpdate
+    alias: AutomationUpdate
+
+##### Actions ######
+action:
+  choose:
+    # If button was pressed run scene
+    - conditions: '{{ trigger.alias == ''ButtonPress'' }}'
+      alias: 'ButtonPressAction'
+      sequence:
+        - variables:
+            property_key_name: '{{ trigger.event.data.property_key_name }}'
+            label: '{{ trigger.event.data.label }}'
+            command_class_name: '{{ trigger.event.data.command_class_name }}'
+            value: '{{ trigger.event.data.value }}'
+        - service: logbook.log
+          data:
+            name: 'Z-Wave JS'
+            message: 'received event: {{ command_class_name }} - {{ value }} - {{ label }}'
+        - choose:
+          - conditions: '{{ property_key_name == ''001'' and value == ''KeyPressed'' }}'
+            sequence: !input 'scene_1'
+          - conditions: '{{ property_key_name == ''001'' and value == ''KeyHeldDown'' }}'
+            sequence: !input 'scene_1h'
+          - conditions: '{{ property_key_name == ''001'' and value == ''KeyReleased'' }}'
+            sequence: !input 'scene_1r'
+          - conditions: '{{ property_key_name == ''001'' and value == ''KeyPressed2x'' }}'
+            sequence: !input 'scene_12'
+          - conditions: '{{ property_key_name == ''001'' and value == ''KeyPressed3x'' }}'
+            sequence: !input 'scene_13'
+          - conditions: '{{ property_key_name == ''001'' and value == ''KeyPressed4x'' }}'
+            sequence: !input 'scene_14'
+          - conditions: '{{ property_key_name == ''001'' and value == ''KeyPressed5x'' }}'
+            sequence: !input 'scene_15'
+          - conditions: '{{ property_key_name == ''002'' and value == ''KeyPressed'' }}'
+            sequence: !input 'scene_2'
+          - conditions: '{{ property_key_name == ''002'' and value == ''KeyHeldDown'' }}'
+            sequence: !input 'scene_2h'
+          - conditions: '{{ property_key_name == ''002'' and value == ''KeyReleased'' }}'
+            sequence: !input 'scene_2r'
+          - conditions: '{{ property_key_name == ''002'' and value == ''KeyPressed2x'' }}'
+            sequence: !input 'scene_22'
+          - conditions: '{{ property_key_name == ''002'' and value == ''KeyPressed3x'' }}'
+            sequence: !input 'scene_23'
+          - conditions: '{{ property_key_name == ''002'' and value == ''KeyPressed4x'' }}'
+            sequence: !input 'scene_24'
+          - conditions: '{{ property_key_name == ''002'' and value == ''KeyPressed5x'' }}'
+            sequence: !input 'scene_25'
+    # If track entity state changes update LEDs
+    - conditions: '{{ trigger.id == ''StateTrigger'' }}'
+      alias: 'StateAction'
+      sequence:
+      - variables:
+          current: >
+            {{ inputs[trigger.alias | int] }}
+          condition: >
+            {% if trigger.to_state.state in ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"] %}
+              {{ dict(state=current.off_state, color=current.off_color, brightness=current.off_brightness) }}
+            {% elif trigger.to_state.state in ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1] %}
+              {{ dict(state=current.on_state, color=current.on_color, brightness=current.on_brightness) }}
+            {% elif trigger.to_state.state == "unavailable" %}
+              {{ dict(state=current.unavail_state, color=current.unavail_color, brightness=current.unavail_brightness) }}
+            {% else %}
+              {{ dict(state=None, color=None, brightness=None) }}
+            {% endif %}
+          parameter:
+            toggle: '2'
+            color: '14'
+            brightness: '15'
+      # Make sure we got a valid state and check if we are set to 99 and schedule set and in nighttime - if so we don't do anything
+      - if:
+        - condition: template
+          value_template: '{{ condition.state != ''None'' and not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
+        then:
+          sequence:
+            - parallel:
+              # turn indicator on
+              - service: zwave_js.set_config_parameter
+                data:
+                  parameter: '{{ parameter.toggle }}'
+                  value: '{{ condition.state if condition.state != ''99'' else ''3'' }}'
+                target:
+                  device_id: '{{ controller_id }}'
+              # set indicator color
+              - service: zwave_js.set_config_parameter
+                data:
+                  parameter: '{{ parameter.color }}'
+                  value: '{{ condition.color }}'
+                target:
+                  device_id: '{{ controller_id }}'
+              # set brightness
+              - service: zwave_js.set_config_parameter
+                data:
+                  parameter: '{{ parameter.brightness }}'
+                  value: '{{ condition.brightness if not (night_led_brightness != ''99'' and in_nighttime and schedule_set) else night_led_brightness }}'
+                target:
+                  device_id: '{{ controller_id }}'
+    # At night time turn off LEDs or change brightness if time set
+    - conditions: '{{ trigger.id == ''NightTime'' and schedule_set }}'
+      alias: 'NightTimeAction'
+      sequence:
+        repeat:
+          # All inputs that dont have empty trigger_entity or track_relay set to 0 or 1
+          for_each: >
+            {{ inputs | rejectattr('trigger_entity', 'eq', []) | rejectattr('track_relay', 'in', ['0', '1']) | list }}
+          sequence:
+          - variables:
+              condition: >
+                {% if is_state(repeat.item.trigger_entity, ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) %}
+                  {{ dict(state=repeat.item.off_state, color=repeat.item.off_color, brightness=repeat.item.off_brightness) }}
+                {% elif is_state(repeat.item.trigger_entity, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) %}
+                  {{ dict(state=repeat.item.on_state, color=repeat.item.on_color, brightness=repeat.item.on_brightness) }}
+                {% elif is_state(repeat.item.trigger_entity, "unavailable") %}
+                  {{ dict(state=repeat.item.unavail_state, color=repeat.item.unavail_color, brightness=repeat.item.unavail_brightness) }}
+                {% else %}
+                  {{ dict(state=None, color=None) }}
+                {% endif %}
+              parameter:
+                toggle: "{{ repeat.item.button_id | int + toggle_offset | int }}"
+                color: "{{ repeat.item.button_id | int + color_offset | int }}"
+                brightness: "{{ repeat.item.button_id | int + brightness_offset | int }}"
+          - choose:
+            # turn indicator off if set to 99 or None
+            - conditions: '{{ condition.state == ''99'' or condition.state == ''None'' }}'
+              sequence:
+                - service: zwave_js.set_config_parameter
+                  data:
+                    parameter: '{{ parameter.toggle }}'
+                    value: '2'
+                  target:
+                    device_id: '{{ controller_id }}'
+            # set brightness if night_led_brightness not 99
+            - conditions: '{{ night_led_brightness != ''99'' }}'
+              sequence:
+                - service: zwave_js.set_config_parameter
+                  data:
+                    parameter: '{{ parameter.brightness }}'
+                    value: '{{ night_led_brightness }}'
+                  target:
+                    device_id: '{{ controller_id }}'
+    # At day time if schedule set or Home Assistant startup and not nighttime update LEDs for all buttons
+    - conditions: '{{ (trigger.id == ''DayTime'' and schedule_set) or (trigger.id == ''HassStart'') }}'
+      alias: 'RefreshLEDAction'
+      sequence:
+        repeat:
+          # All inputs that dont have empty trigger_entity or track_relay set to 0 or 1
+          for_each: >
+            {{ inputs | rejectattr('trigger_entity', 'eq', []) | rejectattr('track_relay', 'in', ['0', '1']) | list }}
+          sequence:
+          - variables:
+              condition: >
+                {% if is_state(repeat.item.trigger_entity, ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) %}
+                  {{ dict(state=repeat.item.off_state, color=repeat.item.off_color, brightness=repeat.item.off_brightness) }}
+                {% elif is_state(repeat.item.trigger_entity, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) %}
+                  {{ dict(state=repeat.item.on_state, color=repeat.item.on_color, brightness=repeat.item.on_brightness) }}
+                {% elif is_state(repeat.item.trigger_entity, "unavailable") %}
+                  {{ dict(state=repeat.item.unavail_state, color=repeat.item.unavail_color, brightness=repeat.item.unavail_brightness) }}
+                {% else %}
+                  {{ dict(state=None, color=None) }}
+                {% endif %}
+              parameter:
+                toggle: "{{ repeat.item.button_id | int + toggle_offset | int }}"
+                color: "{{ repeat.item.button_id | int + color_offset | int }}"
+                brightness: "{{ repeat.item.button_id | int + brightness_offset | int }}"
+          # Make sure we got a valid state and check if we are set to 99 and schedule set and in nighttime - if so we don't do anything
+          - if: 
+              - condition: template
+                value_template: '{{ condition.state != ''None'' and not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
+            then:
+              sequence:
+                - parallel:
+                  # set indicator
+                  - service: zwave_js.set_config_parameter
+                    data:
+                      parameter: '{{ parameter.toggle }}'
+                      value: '{{ condition.state if condition.state != ''99'' else ''3'' }}'
+                    target:
+                      device_id: '{{ controller_id }}'
+                  # set indicator color
+                  - service: zwave_js.set_config_parameter
+                    data:
+                      parameter: '{{ parameter.color }}'
+                      value: '{{ condition.color }}'
+                    target:
+                      device_id: '{{ controller_id }}'
+                  # set brightness
+                  - service: zwave_js.set_config_parameter
+                    data:
+                      parameter: '{{ parameter.brightness }}'
+                      value: '{{ condition.brightness if not (night_led_brightness != ''99'' and in_nighttime and schedule_set) else night_led_brightness }}'
+                    target:
+                      device_id: '{{ controller_id }}'
+    # When automation is update, update parameters
+    - conditions: '{{ trigger.id == ''AutomationUpdate'' }}'
+      alias: 'AutomationUpdateAction'
+      sequence:
+        - if:
+            - condition: template
+              value_template: '{{ inputs[0].track_relay != ''99'' }}'
+          then:
+            - service: zwave_js.set_config_parameter
+              data:
+                parameter: '1'
+                value: '{{ inputs[0].track_relay }}'
+              target: 
+                device_id: '{{ controller_id }}'
+        - service: zwave_js.set_config_parameter
+          data:
+            parameter: '9'
+            value: '{{ input_p9 }}'
+          target:
+            device_id: '{{ controller_id }}'
+        - service: zwave_js.set_config_parameter
+          data:
+            parameter: '11'
+            value: '{{ input_p11 }}'
+          target:
+            device_id: '{{ controller_id }}'
+        - service: zwave_js.set_config_parameter
+          data:
+            parameter: '13'
+            value: '{{ input_p13 }}'
+          target:
+            device_id: '{{ controller_id }}'
+        - service: zwave_js.set_config_parameter
+          data:
+            parameter: '18'
+            value: '{{ input_p18 }}'
+          target:
+            device_id: '{{ controller_id }}'
+        - service: zwave_js.set_config_parameter
+          data:
+            parameter: '19'
+            value: '{{ input_p19 }}'
+          target:
+            device_id: '{{ controller_id }}'
