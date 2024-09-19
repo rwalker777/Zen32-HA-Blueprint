@@ -11,7 +11,7 @@ blueprint:
 
   input:
     Switch_params:
-      name: Switch and Parameters
+      name: Switch settings
       input:
         zooz_switch:
           name: Zooz Switch
@@ -133,58 +133,58 @@ blueprint:
           description: LED brightness when entity is unavailable
           default: '1'
           selector: *brightness_set_selector
-        Parameters:
-          name: Z-wave parameters
-          collapsed: true
-          input:
-            p9_scene_control:
-              name: Parameter 9 - Enable or disable scene control
-              description: Leave enabled - provided for troubleshooting only.
-              default: '1'
-              selector: &selector_disable_enable
-                select:
-                  mode: dropdown
-                  options:
-                    - label: Disable
-                      value: '0'
-                    - label: Enable
-                      value: '1'
-            p11_relay_control:
-              name: Parameter 11 - Smart bulb mode - Enable or Disable relay control
-              description: Disable if there is no load attached to the relay or for smart-bulb/scene mode.
-              default: '1'
-              selector:
-                select:
-                  mode: dropdown
-                  options:
-                    - label: Local control disabled
-                      value: '0'
-                    - label: Local and Z-Wave control enabled
-                      value: '1'
-                    - label: Local and Z-Wave control disabled
-                      value: '2'
-            p13_zwave_reporting:
-              name: Parameter 13 - Reporting when physical control disabled
-              description: Leave enabled - provided for troubleshooting only.
-              default: '0'
-              selector: &selector_enable_disable
-                select:
-                  mode: dropdown
-                  options:
-                    - label: Enable
-                      value: '0'
-                    - label: Disable
-                      value: '1'
-            p18_3way_scene_control:
-              name: Parameter 18 - Enable or disable scene control for momentary 3 way switch
-              description: Enable this if you have 3 way set to momentary and want to enable sceen control
-              default: '0'
-              selector: *selector_disable_enable
-            p19_setting_led_flash:
-              name: Parameter 19 - Enable or Disable LED flash on setting change
-              description: This should be disabled or you will get LED flashes on state changes
-              default: '1'
-              selector: *selector_enable_disable
+    Parameters:
+      name: Z-wave parameters
+      collapsed: true
+      input:
+        p9_scene_control:
+          name: Parameter 9 - Enable or disable scene control
+          description: Leave enabled - provided for troubleshooting only.
+          default: '1'
+          selector: &selector_disable_enable
+            select:
+              mode: dropdown
+              options:
+                - label: Disable
+                  value: '0'
+                - label: Enable
+                  value: '1'
+        p11_relay_control:
+          name: Parameter 11 - Smart bulb mode - Enable or Disable relay control
+          description: Disable if there is no load attached to the relay or for smart-bulb/scene mode.
+          default: '1'
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: Local control disabled
+                  value: '0'
+                - label: Local and Z-Wave control enabled
+                  value: '1'
+                - label: Local and Z-Wave control disabled
+                  value: '2'
+        p13_zwave_reporting:
+          name: Parameter 13 - Reporting when physical control disabled
+          description: Leave enabled - provided for troubleshooting only.
+          default: '0'
+          selector: &selector_enable_disable
+            select:
+              mode: dropdown
+              options:
+                - label: Enable
+                  value: '0'
+                - label: Disable
+                  value: '1'
+        p18_3way_scene_control:
+          name: Parameter 18 - Enable or disable scene control for momentary 3 way switch
+          description: Enable this if you have 3 way set to momentary and want to enable sceen control
+          default: '0'
+          selector: *selector_disable_enable
+        p19_setting_led_flash:
+          name: Parameter 19 - Enable or Disable LED flash on setting change
+          description: This should be disabled or you will get LED flashes on state changes
+          default: '1'
+          selector: *selector_enable_disable
 #############
     nightime:
       name: Nighttime settings
