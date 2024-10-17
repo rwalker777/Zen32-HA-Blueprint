@@ -3,7 +3,7 @@ blueprint:
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32.
 
-    **Version**: 2024.10.1
+    **Version**: 2024.10.2
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -658,13 +658,49 @@ blueprint:
           default: []
           selector:
             action:
-    3way_hold:
-      name: 3 Way hold - Requires 3 way to be set to momentary - Requires 800 series or firmware 10.40+ on 700 series
+    3way_switch:
+      name: 3 Way switch scene control - Requires 3 way to be set to momentary - Requires 800 series or firmware 10.40+ on 700 series
       collapsed: true
       input:
+        scene_6:
+          name: Scene 6 - Pressed Once
+          description: Action to run when 3 way switch is pressed once.
+          default: []
+          selector:
+            action:
         scene_6h:
           name: Scene 6 - Held
           description: Action to run when 3 way switch button is held.
+          default: []
+          selector:
+            action:
+        scene_6r:
+          name: Scene 6 - Released
+          description: Action to run when 3 way switch is released.
+          default: []
+          selector:
+            action:
+        scene_62:
+          name: Scene 6 - Pressed 2x
+          description: Action to run when 3 way switch is pressed twice.
+          default: []
+          selector:
+            action:
+        scene_63:
+          name: Scene 6 - Pressed 3x
+          description: Action to run when 3 way switch is pressed three times.
+          default: []
+          selector:
+            action:
+        scene_64:
+          name: Scene 6 - Pressed 4x
+          description: Action to run when 3 way switch is pressed four times.
+          default: []
+          selector:
+            action:
+        scene_65:
+          name: Scene 6 - Pressed 5x
+          description: Action to run when 3 way switch is pressed five times.
           default: []
           selector:
             action:
@@ -890,8 +926,20 @@ action:
             sequence: !input 'scene_54'
           - conditions: '{{ property_key_name == ''005'' and value == ''KeyPressed5x'' }}'
             sequence: !input 'scene_55'
+          - conditions: '{{ property_key_name == ''006'' and value == ''KeyPressed'' }}'
+            sequence: !input 'scene_6'
           - conditions: '{{ property_key_name == ''006'' and value == ''KeyHeldDown'' }}'
             sequence: !input 'scene_6h'
+          - conditions: '{{ property_key_name == ''006'' and value == ''KeyReleased'' }}'
+            sequence: !input 'scene_6r'
+          - conditions: '{{ property_key_name == ''006'' and value == ''KeyPressed2x'' }}'
+            sequence: !input 'scene_62'
+          - conditions: '{{ property_key_name == ''006'' and value == ''KeyPressed3x'' }}'
+            sequence: !input 'scene_63'
+          - conditions: '{{ property_key_name == ''006'' and value == ''KeyPressed4x'' }}'
+            sequence: !input 'scene_64'
+          - conditions: '{{ property_key_name == ''006'' and value == ''KeyPressed5x'' }}'
+            sequence: !input 'scene_65'
     # If track entity state changes update LEDs
     - conditions: '{{ trigger.id == ''StateTrigger'' }}'
       alias: 'StateAction'
