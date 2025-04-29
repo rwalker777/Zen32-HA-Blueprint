@@ -847,10 +847,24 @@ action:
       alias: 'ButtonPressAction'
       sequence:
         - variables:
+            input_raw_value: '{{ trigger.event.data.value }}'
+            value_to_name:
+              0: KeyPressed
+              1: KeyHeldDown
+              2: KeyReleased
+              3: KeyPressed2x
+              4: KeyPressed3x
+              5: KeyPressed4x
+              6: KeyPressed5x
+            value: >
+              {% if input_raw_value in value_to_name %}
+                {{ value_to_name[input_raw_value|int] }}
+              {% else %}
+                {{ trigger.event.data.value }}
+              {% endif %}
             property_key_name: '{{ trigger.event.data.property_key_name }}'
             label: '{{ trigger.event.data.label }}'
             command_class_name: '{{ trigger.event.data.command_class_name }}'
-            value: '{{ trigger.event.data.value }}'
         - service: logbook.log
           data:
             name: 'Z-Wave JS'
