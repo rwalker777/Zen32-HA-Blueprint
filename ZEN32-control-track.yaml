@@ -1,9 +1,10 @@
 blueprint:
-  name: ZEN32 Scene and State (Z-Wave JS)
+  name: ZEN32 and ZEN35 Scene and State (Z-Wave JS)
   description: >
-    Trigger on button press with LED state tracking for Zooz ZEN32.
+    Trigger on button press with LED state tracking for Zooz ZEN32 or ZEN35.
+    Please configure any other Z-Wave parameters on the device page
 
-    **Version**: 2025.4.0
+    **Version**: 2025.7.0
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -14,8 +15,8 @@ blueprint:
       name: Switch and Paramters
       input:
         zooz_switch:
-          name: Zooz Switch
-          description: List of available Zooz ZEN32 switches.
+          name: Zooz scene controller
+          description: List of available Zooz ZEN32 or ZEN35 switches.
           selector:
             device:
               filter:
@@ -25,16 +26,19 @@ blueprint:
                 - integration: zwave_js
                   manufacturer: Zooz
                   model: ZEN32 800LR
+                - integration: zwave_js
+                  manufacturer: Zooz
+                  model: ZEN35
               multiple: false
         p19_relay_control:
           name: Parameter 19 - Enable or Disable relay control
-          description: Disable if there is no load attached to the relay or you want the button to be a scene only
+          description: Disable for smart bulb mode or if there is no load attached to the relay or you want the button to be scene only
           default: '1'
           selector:
             select:
               mode: dropdown
               options:
-                - label: Local control disabled
+                - label: Local control disabled (Smart bulb mode)
                   value: '0'
                 - label: Local and Z-Wave control enabled
                   value: '1'
@@ -42,7 +46,7 @@ blueprint:
                   value: '2'
         p20_relay_led_report:
           name: Parameter 20 - Enable or Disable reporting and LED toggle if relay is disabled
-          description: It *should* be disabled - but if your relay LED is not behaving then enable it.
+          description: It *should* be disabled
           default: '1'
           selector: &selector_enable_disable
             select:
@@ -52,16 +56,6 @@ blueprint:
                   value: '0'
                 - label: Disable
                   value: '1'
-        p23_setting_led_flash:
-          name: Parameter 23 - Enable or Disable LED flash on setting change
-          description: This should be disabled or you will get LED flashes on state changes
-          default: '1'
-          selector: *selector_enable_disable
-        p24_relay_scene_control:
-          name: Parameter 24 - Enable or disable scene control on the relay button.
-          description: If scene control is disabled, the slight delay for physical press will be reduced but the relay button will no longer send central scene events.
-          default: '0'
-          selector: *selector_enable_disable
 #############
     nightime:
       name: Nighttime settings
@@ -711,8 +705,6 @@ variables:
   controller_id: !input 'zooz_switch'
   input_p19: !input 'p19_relay_control'
   input_p20: !input 'p20_relay_led_report'
-  input_p23: !input 'p23_setting_led_flash'
-  input_p24: !input 'p24_relay_scene_control'
   toggle_offset: 1
   color_offset: 6
   brightness_offset: 11
@@ -1122,17 +1114,5 @@ action:
           data:
             parameter: '20'
             value: '{{ input_p20 }}'
-          target:
-            device_id: '{{ controller_id }}'
-        - service: zwave_js.set_config_parameter
-          data:
-            parameter: '23'
-            value: '{{ input_p23 }}'
-          target:
-            device_id: '{{ controller_id }}'
-        - service: zwave_js.set_config_parameter
-          data:
-            parameter: '24'
-            value: '{{ input_p24 }}'
           target:
             device_id: '{{ controller_id }}'
