@@ -2,6 +2,7 @@ blueprint:
   name: ZEN32 and ZEN35 Scene and State (Z-Wave JS)
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32 or ZEN35.
+    
     Please configure any other Z-Wave parameters on the device page
 
     **Version**: 2025.7.0
