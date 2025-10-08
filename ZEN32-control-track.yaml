@@ -5,7 +5,7 @@ blueprint:
     
     Please configure any other Z-Wave parameters on the device page
 
-    **Version**: 2025.7.0
+    **Version**: 2025.10.0
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
@@ -957,7 +957,7 @@ action:
           condition: >
             {% if trigger.to_state.state in ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"] %}
               {{ dict(state=current.off_state, color=current.off_color, brightness=current.off_brightness) }}
-            {% elif trigger.to_state.state in ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1] %}
+            {% elif trigger.to_state.state in ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_night", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1] %}
               {{ dict(state=current.on_state, color=current.on_color, brightness=current.on_brightness) }}
             {% elif trigger.to_state.state == "unavailable" %}
               {{ dict(state=current.unavail_state, color=current.unavail_color, brightness=current.unavail_brightness) }}
@@ -1117,3 +1117,4 @@ action:
             value: '{{ input_p20 }}'
           target:
             device_id: '{{ controller_id }}'
+
