@@ -968,10 +968,10 @@ action:
             toggle: "{{ current.button_id | int + toggle_offset | int }}"
             color: "{{ current.button_id | int + color_offset | int }}"
             brightness: "{{ current.button_id | int + brightness_offset | int }}"
-      # Make sure we got a valid state and check if we are set to 99 and schedule set and in nighttime - if so we don't do anything
+      # Make sure we got a valid state - allow execution even if night + state 99
       - if: 
         - condition: template
-          value_template: '{{ condition.state != ''None'' and not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
+          value_template: '{{ condition.state != ''None'' }}'
         then:
           sequence:
             - parallel:
@@ -979,7 +979,13 @@ action:
               - service: zwave_js.set_config_parameter
                 data:
                   parameter: '{{ parameter.toggle }}'
-                  value: '{{ condition.state if condition.state != ''99'' else ''3'' }}'
+                  # If state is 99 (Daytime on) AND it is night, send 2 (Always Off). Else send 3 (Always On).
+                  value: >
+                    {% if condition.state == '99' %}
+                      {{ '2' if schedule_set and in_nighttime else '3' }}
+                    {% else %}
+                      {{ condition.state }}
+                    {% endif %}
                 target:
                   device_id: '{{ controller_id }}'
               # set indicator color
@@ -1063,10 +1069,10 @@ action:
                 toggle: "{{ repeat.item.button_id | int + toggle_offset | int }}"
                 color: "{{ repeat.item.button_id | int + color_offset | int }}"
                 brightness: "{{ repeat.item.button_id | int + brightness_offset | int }}"
-          # Make sure we got a valid state and check if we are set to 99 and schedule set and in nighttime - if so we don't do anything
+          # Make sure we got a valid state - allow execution even if night + state 99
           - if: 
               - condition: template
-                value_template: '{{ condition.state != ''None'' and not ( condition.state == ''99'' and schedule_set and in_nighttime ) }}'
+                value_template: '{{ condition.state != ''None'' }}'
             then:
               sequence:
                 - parallel:
@@ -1074,7 +1080,13 @@ action:
                   - service: zwave_js.set_config_parameter
                     data:
                       parameter: '{{ parameter.toggle }}'
-                      value: '{{ condition.state if condition.state != ''99'' else ''3'' }}'
+                      # If state is 99 (Daytime on) AND it is night, send 2 (Always Off). Else send 3 (Always On).
+                      value: >
+                        {% if condition.state == '99' %}
+                          {{ '2' if schedule_set and in_nighttime else '3' }}
+                        {% else %}
+                          {{ condition.state }}
+                        {% endif %}
                     target:
                       device_id: '{{ controller_id }}'
                   # set indicator color
