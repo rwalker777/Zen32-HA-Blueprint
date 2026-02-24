@@ -108,6 +108,30 @@ blueprint:
                   value: '1'
                 - label: Bright
                   value: '0'
+        night_led_color:
+          name: Night time color setting.
+          description: Override color of LEDs between schedule times or when the Night Entity is active.
+          default: '99'
+          selector:
+            select:
+              mode: dropdown
+              options:
+                - label: No change
+                  value: '99'
+                - label: White
+                  value: '0'
+                - label: Blue
+                  value: '1'
+                - label: Green
+                  value: '2'
+                - label: Red
+                  value: '3'
+                - label: Magenta
+                  value: '4'
+                - label: Yellow
+                  value: '5'
+                - label: Cyan
+                  value: '6'
         schedule_stop:
           name: Night time LEDs stop time (Fallback)
           description: "LED tracking is restored. Used ONLY if no Nighttime State Entity is selected. To disable leave at 00:00:00 default."
@@ -768,6 +792,7 @@ variables:
   
   # --- Night Mode Inputs ---
   night_led_brightness: !input 'night_led_brightness'
+  night_led_color: !input 'night_led_color'
   night_entity: !input 'night_entity'
   invert_night_entity: !input 'invert_night_entity'
   
@@ -1135,7 +1160,14 @@ action:
               - service: zwave_js.set_config_parameter
                 data:
                   parameter: '{{ parameter.color }}'
-                  value: '{{ condition.color }}'
+                  # Logic: If a global 'night_led_color' override is set (not '99'),
+                  # and it is currently nighttime, force that color. Otherwise, use normal state color.
+                  value: >
+                    {% if night_led_color != '99' and in_nighttime and schedule_set %}
+                      {{ night_led_color }}
+                    {% else %}
+                      {{ condition.color }}
+                    {% endif %}
                 target: { device_id: '{{ controller_id }}' }
               
               # --- Command 3: LED Brightness ---
