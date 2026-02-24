@@ -17,7 +17,7 @@ This repository contains Home Assistant automation blueprints for controlling an
 ### 1. ZEN32 and ZEN35 Scene and State (Z-Wave JS)
 
 **File:** `ZEN32-control-track.yaml`  
-**Version:** 2025.10.0  
+**Version:** 2026.2.0  
 **Supported Devices:**
 - Zooz ZEN32
 - Zooz ZEN32 800LR
@@ -29,7 +29,10 @@ This repository contains Home Assistant automation blueprints for controlling an
 - Configurable LED colors and brightness per button
 - Multi-press support (1x, 2x, 3x, 4x, 5x) for all buttons
 - Hold and release actions for all buttons
-- Nighttime LED scheduling (dim or turn off LEDs during specified hours)
+- Advanced Nighttime LED Scheduling: Dim, turn off, or override LED colors (e.g., Red for night vision) during specified hours or via entity state.
+- Nighttime Entity Support: Use a toggle, binary sensor, sun, or a template sensor to trigger Night Mode (supports 'on', 'below_horizon', 'true', 'night').
+- Logic Inversion: Toggle to invert night entity logic if you only have a Daytime entity.
+- Untracked LED Silencing: Optionally force LEDs of buttons with no assigned entity to "Always Off."
 - Relay control configuration (Parameter 19)
 - LED reporting configuration (Parameter 20)
 - Support for 3-way switch scene control (Scene 6) - requires 800 series or firmware 10.40+ on 700 series
@@ -42,6 +45,10 @@ This repository contains Home Assistant automation blueprints for controlling an
   - Media players
   - Binary sensors
   - Input booleans
+  - Automations
+  - scripts
+  - people
+  - device trackers
 
 **Button Layout:**
 - Button 0: Relay button (big button) - Scene 5
@@ -63,7 +70,8 @@ Each button can be configured with:
 
 **Nighttime Settings:**
 - Configure start and stop times for nighttime LED behavior
-- LEDs can be dimmed or turned off during nighttime hours
+- Optional Nighttime State Entity: Use an entity to override time-based scheduling.
+- Global Night Overrides: Force a specific color and brightness level for all active LEDs during Night Mode.
 - Scenes continue to work during nighttime
 - Entity state changes are properly handled during nighttime transitions
 
@@ -116,10 +124,11 @@ Each button can be configured with:
 1. Create a new automation using the blueprint
 2. Select your Zooz ZEN32 or ZEN35 device
 3. Configure relay control parameters (Parameter 19 and 20)
-4. Set up nighttime schedule (optional)
+4. Set up nighttime schedule or Nighttime State Entity (optional)
 5. For each button:
    - Configure scene actions (single press, multi-press, hold, release)
    - Select entity to track (optional)
+     - If no entity is tracked, use "Turn Off Untracked LEDs" to keep the button dark.
    - Configure LED behavior for on/off/unavailable states
    - Set LED colors and brightness
 6. Configure 3-way switch scene control (if applicable)
@@ -139,8 +148,9 @@ Each button can be configured with:
 ## Notes
 
 - For ZEN32/ZEN35: Configure any additional Z-Wave parameters directly on the device page in Home Assistant
-- The ZEN32/ZEN35 blueprint automatically updates device parameters when the automation is reloaded
-- Nighttime LED behavior: When an entity changes state during nighttime, LEDs will properly reflect the new state (e.g., turning off when entity goes from on to off)
+- Optimization: This blueprint uses a modular design to refresh LEDs instantly upon automation reload or Home Assistant restart.
+- Race Condition Guard: Includes a 60-second startup delay to ensure the Z-Wave mesh is ready before syncing LED states.
+- Nighttime LED behavior: When an entity changes state during nighttime, LEDs will properly reflect the new state and apply any nighttime color/brightness overrides.
 - For 3-way switch support on ZEN32/ZEN35, the 3-way switch must be set to momentary mode
 
 ## Troubleshooting

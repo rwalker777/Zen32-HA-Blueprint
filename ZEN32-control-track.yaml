@@ -5,7 +5,7 @@ blueprint:
 
     Please configure any other Z-Wave parameters on the device page
 
-    **Version**: 2025.12.0
+    **Version**: 2026.2.0
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
