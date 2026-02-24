@@ -77,8 +77,9 @@ blueprint:
             entity:
               multiple: false
               domain:
-                - input_boolean
                 - binary_sensor
+                - input_boolean
+                - sensor
                 - sun
         invert_night_entity:
           name: Invert Night Entity Logic
@@ -802,6 +803,12 @@ variables:
   # adding it here updates the logic so its state can be tracked
   on_states: ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_night", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1, "home", "active"]
   off_states: ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked", "not_home", "away"]
+  
+  # --- Night Mode Detection States ---
+  # These are the states that trigger "Night Mode" when detected on your night_entity.
+  # If you make a template sensor either make sure it outputs one of these states or
+  # make sure to update this Dictionary to reflect its output.
+  night_states: ['on', 'below_horizon', 'True', 'true', 'night', 'Night']
 
   # --- Button Filter Array ---
   # Creates a clean list of only the buttons that actually have an entity 
@@ -823,7 +830,7 @@ variables:
   # preventing mode changes.
   in_nighttime: >
     {% if night_entity != [] and night_entity != '' %}
-      {% set is_night = states(night_entity) in ['on', 'below_horizon'] %}
+      {% set is_night = states(night_entity) in night_states %}
       {{ not is_night if invert_night_entity else is_night }}
     {% else %}
       {% set time_now = (now() + timedelta(seconds=2)).strftime('%H:%M:%S') %}
