@@ -809,7 +809,7 @@ variables:
   # physical relay (0 or 1). This prevents the loops from wasting processing power.
   valid_buttons: "{{ inputs | rejectattr('trigger_entity', 'eq', []) | rejectattr('track_relay', 'in', ['0', '1']) | list }}"
 
-
+  # --- Untracked Entities ---
   turn_off_untracked: !input 'turn_off_untracked'
   untracked_buttons: "{{ inputs | selectattr('trigger_entity', 'eq', []) | rejectattr('track_relay', 'in', ['0', '1']) | list }}"
   
