@@ -62,15 +62,26 @@ blueprint:
       name: Nighttime settings
       collapsed: true
       input:
+        night_entity:
+          name: Nighttime State Entity (Optional Override)
+          description: "Select a toggle (e.g., your input_boolean.night_mode), binary_sensor, or sun entity. When 'on' or 'below_horizon', it is Nighttime. If used, this OVERRIDES the specific times below."
+          default: []
+          selector:
+            entity:
+              multiple: false
+              domain:
+                - input_boolean
+                - binary_sensor
+                - sun
         schedule_start:
-          name: Night time LEDs start time
-          description: "LEDs are dimmed or turned off at this time.  Scenes will still run.  To disable leave at 00:00:00 default."
+          name: Night time LEDs start time (Fallback)
+          description: "LEDs are dimmed or turned off at this time. Used ONLY if no Nighttime State Entity is selected above. To disable leave at 00:00:00 default."
           default: '00:00:00'
           selector:
             time:
         night_led_brightness:
           name: Night time brightness setting.
-          description: Override brightness of LEDs between schedule times.
+          description: Override brightness of LEDs between schedule times or when the Night Entity is active.
           default: '99'
           selector:
             select:
@@ -85,8 +96,8 @@ blueprint:
                 - label: Bright
                   value: '0'
         schedule_stop:
-          name: Night time LEDs stop time
-          description: "LED tracking is restored.  To disable leave at 00:00:00 default."
+          name: Night time LEDs stop time (Fallback)
+          description: "LED tracking is restored. Used ONLY if no Nighttime State Entity is selected. To disable leave at 00:00:00 default."
           default: '00:00:00'
           selector:
             time:
@@ -710,13 +721,25 @@ variables:
   color_offset: 6
   brightness_offset: 11
   night_led_brightness: !input 'night_led_brightness'
-  in_nighttime: '{{ schedule_set and (today_at(schedule_start) <= now() or now() < today_at(schedule_stop)) }}'
+  night_entity: !input 'night_entity'
+  in_nighttime: >
+    {% if night_entity != [] and night_entity != '' %}
+      {{ states(night_entity) in ['on', 'below_horizon'] }}
+    {% else %}
+      {% set time_now = (now() + timedelta(seconds=2)).strftime('%H:%M:%S') %}
+      {% if schedule_start < schedule_stop %}
+        {{ schedule_set and (schedule_start <= time_now < schedule_stop) }}
+      {% else %}
+        {{ schedule_set and (schedule_start <= time_now or time_now < schedule_stop) }}
+      {% endif %}
+    {% endif %}
 
 # Track override entry if set, else get first entity in scene, if neither set to empty
 trigger_variables:
   schedule_start: !input 'schedule_start'
   schedule_stop: !input 'schedule_stop'
-  schedule_set: '{{ schedule_start != schedule_stop }}'
+  night_entity: !input 'night_entity'
+  schedule_set: '{{ night_entity != [] or schedule_start != schedule_stop }}'
   inputs:
   - button_id: 0
     track_relay: !input 'track_relay0'
@@ -783,16 +806,32 @@ trigger:
     event_type: zwave_js_value_notification
     event_data:
       device_id: !input 'zooz_switch'
+  - alias: 'NightTimeEntity'
+    id: 'NightTime'
+    platform: state
+    entity_id: !input 'night_entity'
+    to:
+      - 'on'
+      - 'below_horizon'
+    enabled: '{{ night_entity != [] }}'
+  - alias: 'DayTimeEntity'
+    id: 'DayTime'
+    platform: state
+    entity_id: !input 'night_entity'
+    to:
+      - 'off'
+      - 'above_horizon'
+    enabled: '{{ night_entity != [] }}'
   - alias: 'NightTime'
     id: 'NightTime'
     platform: time
     at: !input 'schedule_start'
-    enabled: '{{ schedule_set }}'
+    enabled: '{{ night_entity == [] and schedule_set }}'
   - alias: 'DayTime'
     id: 'DayTime'
     platform: time
     at: !input 'schedule_stop'
-    enabled: '{{ schedule_set }}'
+    enabled: '{{ night_entity == [] and schedule_set }}'
   - alias: 'HassStart'
     id: 'HassStart'
     platform: homeassistant
@@ -1129,5 +1168,3 @@ action:
             value: '{{ input_p20 }}'
           target:
             device_id: '{{ controller_id }}'
-
-
