@@ -147,16 +147,27 @@ blueprint:
               multiple: false
               domain:
                 - alarm_control_panel
+                - automation
                 - binary_sensor
                 - climate
                 - cover
+                - device_tracker
                 - fan
+                - humidifier
                 - input_boolean
                 - light
                 - lock
                 - media_player
+                - person
+                - schedule
+                - script
                 - sensor
+                - siren
                 - switch
+                - timer
+                - update
+                - valve
+
         off_state0:
           name: Off behavior for button 1
           description: Led state when target is off, closed, disarmed or locked
@@ -764,8 +775,8 @@ variables:
   # A centralized list of all possible "truthy" and "falsy" entity states.
   # If a device you are trying to track uses a weird state (like "cooling"), 
   # adding it here updates the logic so its state can be tracked
-  on_states: ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_night", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]
-  off_states: ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]
+  on_states: ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_night", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1, "home", "active"]
+  off_states: ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked", "not_home", "away"]
 
   # --- Button Filter Array ---
   # Creates a clean list of only the buttons that actually have an entity 
