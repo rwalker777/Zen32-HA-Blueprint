@@ -1085,7 +1085,7 @@ action:
     - conditions: '{{ (trigger.id == ''DayTime'' and schedule_set) or (trigger.id == ''HassStart'') or (trigger.id == ''EntityToggle'' and schedule_set and not in_nighttime) }}'
       alias: 'RefreshLEDAction'
       sequence:
-        repeat:
+        repeat: &refresh_led_loop
           # All inputs that dont have empty trigger_entity or track_relay set to 0 or 1
           for_each: >
             {{ inputs | rejectattr('trigger_entity', 'eq', []) | rejectattr('track_relay', 'in', ['0', '1']) | list }}
@@ -1165,3 +1165,5 @@ action:
             value: '{{ input_p20 }}'
           target:
             device_id: '{{ controller_id }}'
+        # Call the LED refresh loop
+        - repeat: *refresh_led_loop
