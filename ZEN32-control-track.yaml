@@ -717,18 +717,63 @@ blueprint:
           selector:
             action:
 #############
+
+# -----------------------------------------------------------------
+# AUTOMATION EXECUTION MODE
+# -----------------------------------------------------------------
+# Parallel mode allows the automation to process multiple button presses 
+# or entity state changes at the exact same time without queuing or dropping 
+# them. 'max: 10' safely caps this so a malfunctioning entity can't crash HA.
 mode: parallel
 max: 10
+
+# -----------------------------------------------------------------
+# GLOBAL VARIABLES
+# Description: These variables are evaluated instantaneously when the 
+# automation triggers. By defining them globally here at the top, they 
+# act as a single source of truth for all the action sequences below.
+# -----------------------------------------------------------------
 variables:
+  # --- Hardware Configuration ---
   controller_id: !input 'zooz_switch'
   input_p19: !input 'p19_relay_control'
   input_p20: !input 'p20_relay_led_report'
+  
+  # --- Z-Wave Parameter Offsets ---
+  # The ZEN Scene Controllers use sequential parameter numbers for their LEDs. 
+  # The internal Button ID (0 through 4) plus these offsets are used to 
+  # mathematically target the correct parameter without hardcoding them. 
+  # Example: Button 2 (ID 2) + color_offset (6) = Parameter 8.
   toggle_offset: 1
   color_offset: 6
   brightness_offset: 11
+  
+  # --- Night Mode Inputs ---
   night_led_brightness: !input 'night_led_brightness'
   night_entity: !input 'night_entity'
   invert_night_entity: !input 'invert_night_entity'
+  
+  # --- Universal State Dictionaries ---
+  # A centralized list of all possible "truthy" and "falsy" entity states.
+  # If a device you are trying to track uses a weird state (like "cooling"), 
+  # adding it here updates the logic so its state can be tracked
+  on_states: ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_night", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]
+  off_states: ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]
+
+  # --- Button Filter Array ---
+  # Creates a clean list of only the buttons that actually have an entity 
+  # assigned to them, ignoring empty buttons and buttons set to track the 
+  # physical relay (0 or 1). This prevents the loops from wasting processing power.
+  valid_buttons: "{{ inputs | rejectattr('trigger_entity', 'eq', []) | rejectattr('track_relay', 'in', ['0', '1']) | list }}"
+  
+  # --- Nighttime Calculator ---
+  # This evaluates to a boolean (True/False) that dictates the switch's behavior.
+  # 1. It checks if a custom entity is provided, evaluates its state, and applies 
+  #    the invert toggle math if necessary.
+  # 2. If no entity exists, it falls back to the time schedule math.
+  # Note: timedelta(seconds=2) is used to prevent the Home Assistant "early fire" 
+  # bug, where time triggers occasionally fire a fraction of a millisecond early
+  # preventing mode changes.
   in_nighttime: >
     {% if night_entity != [] and night_entity != '' %}
       {% set is_night = states(night_entity) in ['on', 'below_horizon'] %}
@@ -983,163 +1028,158 @@ action:
             sequence: !input 'scene_64'
           - conditions: '{{ property_key_name == ''006'' and value == ''KeyPressed5x'' }}'
             sequence: !input 'scene_65'
-    # If track entity state changes update LEDs
+
+    # ---------------------------------------------------------------------
+    # ACTION 1: Individual Button State Change
+    # Description: This block catches the 'StateTrigger' event,
+    # which fires whenever a specific entity tracked by a button
+    # (e.g., a smart lock or a light bulb) changes its state.
+    # It updates ONLY that specific button's LED.
+    # ---------------------------------------------------------------------
     - conditions: '{{ trigger.id == ''StateTrigger'' }}'
-      alias: 'StateAction'
+      alias: 'SingleButtonStateUpdate'
       sequence:
+      
+      # --- Define "Arguments" for the Anchor Function ---
+      # We use the trigger's alias (which we set to 0, 1, 2, 3, or 4 in the trigger block) 
+      # to pull the correct button's settings from the inputs array.
       - variables:
-          current: >
-            {{ inputs[trigger.alias | int] }}
+          current: '{{ inputs[trigger.alias | int] }}'
+          target_state: '{{ trigger.to_state.state }}'
+      
+      # ===================================================================
+      # "FUNCTION": &fn_calc_led_vars
+      # Description: Translates a Home Assistant entity state into the 
+      #              correct Z-Wave LED configuration values.
+      # Required Inputs: 
+      #   - 'current': The blueprint configuration for the specific button.
+      #   - 'target_state': The current string state of the tracked entity.
+      # Outputs (Sets Variables): 
+      #   - 'condition': Dict with target state, color, and brightness.
+      #   - 'parameter': Dict with the exact Z-Wave parameter numbers.
+      # ===================================================================
+      - variables: &fn_calc_led_vars
           condition: >
-            {% if trigger.to_state.state in ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"] %}
+            {% if target_state in off_states %}
               {{ dict(state=current.off_state, color=current.off_color, brightness=current.off_brightness) }}
-            {% elif trigger.to_state.state in ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_night", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1] %}
+            {% elif target_state in on_states %}
               {{ dict(state=current.on_state, color=current.on_color, brightness=current.on_brightness) }}
-            {% elif trigger.to_state.state == "unavailable" %}
+            {% elif target_state == "unavailable" %}
               {{ dict(state=current.unavail_state, color=current.unavail_color, brightness=current.unavail_brightness) }}
             {% else %}
               {{ dict(state=None, color=None, brightness=None) }}
             {% endif %}
+
+          # Calculate the exact Z-Wave parameter numbers for this specific button.
+          # The Zooz ZEN Series uses sequential parameter numbers for its LEDs.
+          # Example: Button 1 (ID 0) + color_offset (6) = Parameter 6 (Button 1 Color)
           parameter:
             toggle: "{{ current.button_id | int + toggle_offset | int }}"
             color: "{{ current.button_id | int + color_offset | int }}"
             brightness: "{{ current.button_id | int + brightness_offset | int }}"
-      # Make sure we got a valid state - allow execution even if night + state 99
+
+      # --- Validate & Execute ---
+      # If the entity state was something unexpected that is not tracked, 'condition.state' 
+      # will be 'None', and we safely skip executing the Z-Wave commands.
       - if: 
         - condition: template
           value_template: '{{ condition.state != ''None'' }}'
         then:
-          sequence:
+          # ===================================================================
+          # "FUNCTION": &fn_send_zwave_led_commands
+          # Description: Sends the parallel Z-Wave JS commands to the switch.
+          # Required Inputs: 
+          #   - 'condition' and 'parameter' (Generated by *fn_calc_led_vars)
+          #   - 'schedule_set', 'in_nighttime', 'controller_id' (Globals)
+          # ===================================================================
+          sequence: &fn_send_zwave_led_commands
             - parallel:
-              # turn indicator on
+              # --- Command 1: LED State (On/Off/Flash) ---
               - service: zwave_js.set_config_parameter
                 data:
                   parameter: '{{ parameter.toggle }}'
-                  # If state is 99 (Daytime on) AND it is night, send 2 (Always Off). Else send 3 (Always On).
+                  # Logic: If the blueprint is set to '99' (On during daytime), we check the 
+                  # in_nighttime variable. If it IS night, we force the value to '2' (Always Off). 
+                  # Otherwise, we pass the user's selected state through to the hardware.
                   value: >
                     {% if condition.state == '99' %}
                       {{ '2' if schedule_set and in_nighttime else '3' }}
                     {% else %}
                       {{ condition.state }}
                     {% endif %}
-                target:
-                  device_id: '{{ controller_id }}'
-              # set indicator color
+                target: { device_id: '{{ controller_id }}' }
+              
+              # --- Command 2: LED Color ---
               - service: zwave_js.set_config_parameter
                 data:
                   parameter: '{{ parameter.color }}'
                   value: '{{ condition.color }}'
-                target:
-                  device_id: '{{ controller_id }}'
-              # set brightness
+                target: { device_id: '{{ controller_id }}' }
+              
+              # --- Command 3: LED Brightness ---
               - service: zwave_js.set_config_parameter
                 data:
                   parameter: '{{ parameter.brightness }}'
                   value: '{{ condition.brightness if not (night_led_brightness != ''99'' and in_nighttime and schedule_set) else night_led_brightness }}'
-                target:
-                  device_id: '{{ controller_id }}'
-    # At night time turn off LEDs or change brightness if time set
-    - conditions: '{{ (trigger.id == ''NightTime'' and schedule_set) or (trigger.id == ''EntityToggle'' and schedule_set and in_nighttime) }}'
-      alias: 'NightTimeAction'
+                target: { device_id: '{{ controller_id }}' }
+
+    # ---------------------------------------------------------------------
+    # ACTION 2: Universal Refresh (Handles Day, Night, Reboot, and Toggles)
+    # Description: This block fires on major events. Instead of updating
+    # one button, it loops through every button and repaints the entire
+    # switch to ensure all LEDs match the new Day/Night/Toggle reality.
+    # ---------------------------------------------------------------------
+    - conditions: >
+        {{ 
+          (trigger.id in ['NightTime', 'DayTime'] and schedule_set) or 
+          (trigger.id == 'HassStart') or 
+          (trigger.id == 'EntityToggle' and schedule_set) 
+        }}
+      alias: 'UniversalRefreshAction'
       sequence:
-        repeat:
-          # All inputs that dont have empty trigger_entity or track_relay set to 0 or 1
-          for_each: >
-            {{ inputs | rejectattr('trigger_entity', 'eq', []) | rejectattr('track_relay', 'in', ['0', '1']) | list }}
-          sequence:
-          - variables:
-              condition: >
-                {% if is_state(repeat.item.trigger_entity, ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) %}
-                  {{ dict(state=repeat.item.off_state, color=repeat.item.off_color, brightness=repeat.item.off_brightness) }}
-                {% elif is_state(repeat.item.trigger_entity, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) %}
-                  {{ dict(state=repeat.item.on_state, color=repeat.item.on_color, brightness=repeat.item.on_brightness) }}
-                {% elif is_state(repeat.item.trigger_entity, "unavailable") %}
-                  {{ dict(state=repeat.item.unavail_state, color=repeat.item.unavail_color, brightness=repeat.item.unavail_brightness) }}
-                {% else %}
-                  {{ dict(state=None, color=None) }}
-                {% endif %}
-              parameter:
-                toggle: "{{ repeat.item.button_id | int + toggle_offset | int }}"
-                color: "{{ repeat.item.button_id | int + color_offset | int }}"
-                brightness: "{{ repeat.item.button_id | int + brightness_offset | int }}"
-          - choose:
-            # turn indicator off if set to 99 or None
-            - conditions: '{{ condition.state == ''99'' or condition.state == ''None'' }}'
-              sequence:
-                - service: zwave_js.set_config_parameter
-                  data:
-                    parameter: '{{ parameter.toggle }}'
-                    value: '2'
-                  target:
-                    device_id: '{{ controller_id }}'
-            # set brightness if night_led_brightness not 99
-            - conditions: '{{ night_led_brightness != ''99'' }}'
-              sequence:
-                - service: zwave_js.set_config_parameter
-                  data:
-                    parameter: '{{ parameter.brightness }}'
-                    value: '{{ night_led_brightness }}'
-                  target:
-                    device_id: '{{ controller_id }}'
-    # At day time if schedule set or Home Assistant startup and not nighttime update LEDs for all buttons
-    - conditions: '{{ (trigger.id == ''DayTime'' and schedule_set) or (trigger.id == ''HassStart'') or (trigger.id == ''EntityToggle'' and schedule_set and not in_nighttime) }}'
-      alias: 'RefreshLEDAction'
-      sequence:
-        repeat: &refresh_led_loop
-          # All inputs that dont have empty trigger_entity or track_relay set to 0 or 1
-          for_each: >
-            {{ inputs | rejectattr('trigger_entity', 'eq', []) | rejectattr('track_relay', 'in', ['0', '1']) | list }}
-          sequence:
-          - variables:
-              condition: >
-                {% if is_state(repeat.item.trigger_entity, ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]) %}
-                  {{ dict(state=repeat.item.off_state, color=repeat.item.off_color, brightness=repeat.item.off_brightness) }}
-                {% elif is_state(repeat.item.trigger_entity, ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]) %}
-                  {{ dict(state=repeat.item.on_state, color=repeat.item.on_color, brightness=repeat.item.on_brightness) }}
-                {% elif is_state(repeat.item.trigger_entity, "unavailable") %}
-                  {{ dict(state=repeat.item.unavail_state, color=repeat.item.unavail_color, brightness=repeat.item.unavail_brightness) }}
-                {% else %}
-                  {{ dict(state=None, color=None) }}
-                {% endif %}
-              parameter:
-                toggle: "{{ repeat.item.button_id | int + toggle_offset | int }}"
-                color: "{{ repeat.item.button_id | int + color_offset | int }}"
-                brightness: "{{ repeat.item.button_id | int + brightness_offset | int }}"
-          # Make sure we got a valid state - allow execution even if night + state 99
-          - if: 
-              - condition: template
-                value_template: '{{ condition.state != ''None'' }}'
-            then:
-              sequence:
-                - parallel:
-                  # set indicator
-                  - service: zwave_js.set_config_parameter
-                    data:
-                      parameter: '{{ parameter.toggle }}'
-                      # If state is 99 (Daytime on) AND it is night, send 2 (Always Off). Else send 3 (Always On).
-                      value: >
-                        {% if condition.state == '99' %}
-                          {{ '2' if schedule_set and in_nighttime else '3' }}
-                        {% else %}
-                          {{ condition.state }}
-                        {% endif %}
-                    target:
-                      device_id: '{{ controller_id }}'
-                  # set indicator color
-                  - service: zwave_js.set_config_parameter
-                    data:
-                      parameter: '{{ parameter.color }}'
-                      value: '{{ condition.color }}'
-                    target:
-                      device_id: '{{ controller_id }}'
-                  # set brightness
-                  - service: zwave_js.set_config_parameter
-                    data:
-                      parameter: '{{ parameter.brightness }}'
-                      value: '{{ condition.brightness if not (night_led_brightness != ''99'' and in_nighttime and schedule_set) else night_led_brightness }}'
-                    target:
-                      device_id: '{{ controller_id }}'
-    # When automation is update, update parameters
+        
+        # --- Reboot Race Condition Prevention ---
+        # If Home Assistant just restarted, the Z-Wave mesh might still be 
+        # interviewing nodes and ignoring commands. We pause for 60 seconds 
+        # to ensure the ZEN Scene Controllers are awake and listening
+        # before we send out updates.
+        - if:
+            - condition: template
+              value_template: '{{ trigger.id == ''HassStart'' }}'
+          then:
+            - delay: '00:01:00'
+            
+        # ===================================================================
+        # "FUNCTION": &fn_refresh_all_leds
+        # Description: Loops through every active button on the switch. It 
+        # sets up the arguments based on the loop's current iteration, then 
+        # calls our calculation and execution anchors to process the update.
+        # ===================================================================
+        - repeat: &fn_refresh_all_leds
+            for_each: '{{ valid_buttons }}'
+            sequence:
+
+            # Define "Arguments" dynamically based on the loop item
+            - variables:
+                current: '{{ repeat.item }}'
+                target_state: '{{ states(repeat.item.trigger_entity) }}'
+            
+            # Call the calculation function to get parameters/values
+            - variables: *fn_calc_led_vars
+            
+            # Validate and call the Z-Wave execution function
+            - if: 
+                - condition: template
+                  value_template: '{{ condition.state != ''None'' }}'
+              then:
+                sequence: *fn_send_zwave_led_commands
+
+    # ---------------------------------------------------------------------
+    # ACTION 3: Automation Update (Save Parameters & Refresh LEDs)
+    # Description: This block catches the 'automation_reloaded' event.
+    # It fires immediately whenever the automation is saved,
+    # ensuring the switch parameters stay synced with the current settings
+    # ---------------------------------------------------------------------
     - conditions: '{{ trigger.id == ''AutomationUpdate'' }}'
       alias: 'AutomationUpdateAction'
       sequence:
@@ -1165,5 +1205,6 @@ action:
             value: '{{ input_p20 }}'
           target:
             device_id: '{{ controller_id }}'
-        # Call the LED refresh loop
-        - repeat: *refresh_led_loop
+            
+        # Call the refresh function to apply the saved settings immediately
+        - repeat: *fn_refresh_all_leds
