@@ -73,6 +73,12 @@ blueprint:
                 - input_boolean
                 - binary_sensor
                 - sun
+        invert_night_entity:
+          name: Invert Night Entity Logic
+          description: "Enable this if you are using a 'Daytime' entity. It reverses the logic so 'on/below_horizon' equals Daytime instead of Nighttime."
+          default: false
+          selector:
+            boolean: {}
         schedule_start:
           name: Night time LEDs start time (Fallback)
           description: "LEDs are dimmed or turned off at this time. Used ONLY if no Nighttime State Entity is selected above. To disable leave at 00:00:00 default."
@@ -722,9 +728,11 @@ variables:
   brightness_offset: 11
   night_led_brightness: !input 'night_led_brightness'
   night_entity: !input 'night_entity'
+  invert_night_entity: !input 'invert_night_entity'
   in_nighttime: >
     {% if night_entity != [] and night_entity != '' %}
-      {{ states(night_entity) in ['on', 'below_horizon'] }}
+      {% set is_night = states(night_entity) in ['on', 'below_horizon'] %}
+      {{ not is_night if invert_night_entity else is_night }}
     {% else %}
       {% set time_now = (now() + timedelta(seconds=2)).strftime('%H:%M:%S') %}
       {% if schedule_start < schedule_stop %}
@@ -806,21 +814,10 @@ trigger:
     event_type: zwave_js_value_notification
     event_data:
       device_id: !input 'zooz_switch'
-  - alias: 'NightTimeEntity'
-    id: 'NightTime'
+  - alias: 'EntityToggle'
+    id: 'EntityToggle'
     platform: state
     entity_id: !input 'night_entity'
-    to:
-      - 'on'
-      - 'below_horizon'
-    enabled: '{{ night_entity != [] }}'
-  - alias: 'DayTimeEntity'
-    id: 'DayTime'
-    platform: state
-    entity_id: !input 'night_entity'
-    to:
-      - 'off'
-      - 'above_horizon'
     enabled: '{{ night_entity != [] }}'
   - alias: 'NightTime'
     id: 'NightTime'
@@ -1042,7 +1039,7 @@ action:
                 target:
                   device_id: '{{ controller_id }}'
     # At night time turn off LEDs or change brightness if time set
-    - conditions: '{{ trigger.id == ''NightTime'' and schedule_set }}'
+    - conditions: '{{ (trigger.id == ''NightTime'' and schedule_set) or (trigger.id == ''EntityToggle'' and schedule_set and in_nighttime) }}'
       alias: 'NightTimeAction'
       sequence:
         repeat:
@@ -1085,7 +1082,7 @@ action:
                   target:
                     device_id: '{{ controller_id }}'
     # At day time if schedule set or Home Assistant startup and not nighttime update LEDs for all buttons
-    - conditions: '{{ (trigger.id == ''DayTime'' and schedule_set) or (trigger.id == ''HassStart'') }}'
+    - conditions: '{{ (trigger.id == ''DayTime'' and schedule_set) or (trigger.id == ''HassStart'') or (trigger.id == ''EntityToggle'' and schedule_set and not in_nighttime) }}'
       alias: 'RefreshLEDAction'
       sequence:
         repeat:
