@@ -57,6 +57,13 @@ blueprint:
                   value: '0'
                 - label: Disable
                   value: '1'
+        turn_off_untracked:
+          name: Turn Off Untracked LEDs
+          description: "If enabled, any scene buttons that do not have a tracked entity will have their LEDs permanently turned off (Always Off)."
+          default: false
+          selector:
+            boolean: {}
+
 #############
     nightime:
       name: Nighttime settings
@@ -765,6 +772,10 @@ variables:
   # assigned to them, ignoring empty buttons and buttons set to track the 
   # physical relay (0 or 1). This prevents the loops from wasting processing power.
   valid_buttons: "{{ inputs | rejectattr('trigger_entity', 'eq', []) | rejectattr('track_relay', 'in', ['0', '1']) | list }}"
+
+
+  turn_off_untracked: !input 'turn_off_untracked'
+  untracked_buttons: "{{ inputs | selectattr('trigger_entity', 'eq', []) | rejectattr('track_relay', 'in', ['0', '1']) | list }}"
   
   # --- Nighttime Calculator ---
   # This evaluates to a boolean (True/False) that dictates the switch's behavior.
@@ -1148,7 +1159,26 @@ action:
               value_template: '{{ trigger.id == ''HassStart'' }}'
           then:
             - delay: '00:01:00'
-            
+        
+        # ===================================================================
+        # "FUNCTION": &fn_disable_untracked_leds
+        # Description: Loops through buttons with no tracked entity and forces
+        #              their Z-Wave LED parameter to '2' (Always Off).
+        # ===================================================================
+        - if: 
+            - condition: template
+              value_template: '{{ turn_off_untracked and untracked_buttons | length > 0 }}'
+          then: &fn_disable_untracked_leds
+            - repeat:
+                for_each: '{{ untracked_buttons }}'
+                sequence:
+                  - service: zwave_js.set_config_parameter
+                    data:
+                      # Calculate the exact Z-Wave parameter for the LED toggle
+                      parameter: "{{ repeat.item.button_id | int + toggle_offset | int }}"
+                      value: '2' # '2' is the ZEN32 value for Always Off
+                    target: { device_id: '{{ controller_id }}' }
+
         # ===================================================================
         # "FUNCTION": &fn_refresh_all_leds
         # Description: Loops through every active button on the switch. It 
@@ -1205,6 +1235,12 @@ action:
             value: '{{ input_p20 }}'
           target:
             device_id: '{{ controller_id }}'
-            
+
+        # Call the untracked LEDs function to turn them off immediately on save
+        - if: 
+            - condition: template
+              value_template: '{{ turn_off_untracked and untracked_buttons | length > 0 }}'
+          then: *fn_disable_untracked_leds            
+        
         # Call the refresh function to apply the saved settings immediately
         - repeat: *fn_refresh_all_leds
