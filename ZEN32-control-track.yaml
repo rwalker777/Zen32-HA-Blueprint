@@ -1178,7 +1178,7 @@ action:
         # will be 'None', and we safely skip executing the Z-Wave commands.
         - if:
             - condition: template
-              value_template: "{{ condition.state != 'None' }}"
+              value_template: "{{ condition.state is not none }}"
           then:
             # ===================================================================
             # "FUNCTION": &fn_send_zwave_led_commands
@@ -1289,7 +1289,7 @@ action:
               # Validate and call the Z-Wave execution function
               - if:
                   - condition: template
-                    value_template: "{{ condition.state != 'None' }}"
+                    value_template: "{{ condition.state is not none }}"
                 then:
                   sequence: *fn_send_zwave_led_commands
 
