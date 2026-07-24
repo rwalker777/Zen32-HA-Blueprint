@@ -1,11 +1,11 @@
 blueprint:
-  name: ZEN32 and ZEN35 Scene and State (Z-Wave JS)
+  name: ZEN32 and ZEN35 Scene and State (Z-Wave JS)(v2026.7.0)
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32 or ZEN35.
 
     Please configure any other Z-Wave parameters on the device page
 
-    **Version**: 2026.2.0
+    **Version**: 2026.7.0
   domain: automation
   source_url: https://github.com/rwalker777/Zen32-HA-Blueprint/blob/main/ZEN32-control-track.yaml
   homeassistant:
