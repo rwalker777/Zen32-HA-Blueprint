@@ -1,11 +1,11 @@
 blueprint:
-  name: ZEN32 and ZEN35 Scene and State (Z-Wave JS)(v2026.9.1)
+  name: ZEN32 and ZEN35 Scene and State (Z-Wave JS)(v2026.9.2)
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32 or ZEN35.
 
     Please configure any other Z-Wave parameters on the device page
 
-    **Version**: 2026.9.1
+    **Version**: 2026.9.2
 
     **Firmware Support:**
     - ZEN32: All versions (uses 0-2 brightness scale)
@@ -274,7 +274,7 @@ blueprint:
           selector: *led_set_selector
         on_color0:
           name: On color for button 1
-          description: Color for led when target is on (default white)
+          description: Color for led when target is on (default blue)
           default: "1"
           selector: *led_color_selector
         on_brightness0:
@@ -374,7 +374,7 @@ blueprint:
           selector: *led_set_selector
         on_color1:
           name: On color for button 2
-          description: Color for led when target is on (default white)
+          description: Color for led when target is on (default green)
           default: "2"
           selector: *led_color_selector
         on_brightness1:
@@ -474,7 +474,7 @@ blueprint:
           selector: *led_set_selector
         on_color2:
           name: On color for button 3
-          description: Color for led when target is on (default white)
+          description: Color for led when target is on (default green)
           default: "2"
           selector: *led_color_selector
         on_brightness2:
@@ -574,7 +574,7 @@ blueprint:
           selector: *led_set_selector
         on_color3:
           name: On color for button 4
-          description: On color for button 4
+          description: Color for led when target is on (default green)
           default: "2"
           selector: *led_color_selector
         on_brightness3:
@@ -589,7 +589,7 @@ blueprint:
           selector: *led_set_selector
         unavail_color3:
           name: Unavailable Color for button 4
-          description: Unavailable Color for button 4
+          description: Color for led when target is unavailable (default red)
           default: "3"
           selector: *led_color_selector
         unavail_brightness3:
@@ -674,7 +674,7 @@ blueprint:
           selector: *led_set_selector
         on_color4:
           name: On color for button 5
-          description: Color for led when target is on (default white)
+          description: Color for led when target is on (default green)
           default: "2"
           selector: *led_color_selector
         on_brightness4:
@@ -689,7 +689,7 @@ blueprint:
           selector: *led_set_selector
         unavail_color4:
           name: Unavailable Color for button 5
-          description: Unavailable Color for button 5
+          description: Color for led when target is unavailable (default red)
           default: "3"
           selector: *led_color_selector
         unavail_brightness4:
@@ -819,7 +819,7 @@ variables:
     low: "3"
     medium: "6"
     bright: "10"
-  
+
   brightness_map: "{{ brightness_map_new if is_new_firmware else brightness_map_legacy }}"
 
   # --- Z-Wave Parameter Offsets ---
@@ -1179,40 +1179,49 @@ action:
               value_template: "{{ condition.state is not none }}"
           then:
             sequence: &fn_send_zwave_led_commands
-              - parallel:
-                  - service: zwave_js.set_config_parameter
-                    data:
-                      parameter: "{{ parameter.toggle }}"
-                      value: >
-                        {% if condition.state == '99' %}
-                          {{ '2' if schedule_set and in_nighttime else '3' }}
-                        {% else %}
-                          {{ condition.state }}
-                        {% endif %}
-                    target: { device_id: "{{ controller_id }}" }
+              # Sent sequentially (not in parallel) with short delays between
+              # each write, since firing 3 zwave_js.set_config_parameter calls
+              # at once to the same node can overload its command queue and
+              # trigger SetValueFailed errors.
+              - service: zwave_js.set_config_parameter
+                data:
+                  parameter: "{{ parameter.toggle }}"
+                  value: >
+                    {% if condition.state == '99' %}
+                      {{ '2' if schedule_set and in_nighttime else '3' }}
+                    {% else %}
+                      {{ condition.state }}
+                    {% endif %}
+                target: { device_id: "{{ controller_id }}" }
 
-                  - service: zwave_js.set_config_parameter
-                    data:
-                      parameter: "{{ parameter.color }}"
-                      value: >
-                        {% if night_led_color != '99' and in_nighttime and schedule_set %}
-                          {{ night_led_color }}
-                        {% else %}
-                          {{ condition.color }}
-                        {% endif %}
-                    target: { device_id: "{{ controller_id }}" }
+              - delay:
+                  milliseconds: 300
 
-                  - service: zwave_js.set_config_parameter
-                    data:
-                      parameter: "{{ parameter.brightness }}"
-                      value: "{{ condition.brightness if not (night_led_brightness != '99' and in_nighttime and schedule_set) else night_led_brightness }}"
-                    target: { device_id: "{{ controller_id }}" }
+              - service: zwave_js.set_config_parameter
+                data:
+                  parameter: "{{ parameter.color }}"
+                  value: >
+                    {% if night_led_color != '99' and in_nighttime and schedule_set %}
+                      {{ night_led_color }}
+                    {% else %}
+                      {{ condition.color }}
+                    {% endif %}
+                target: { device_id: "{{ controller_id }}" }
+
+              - delay:
+                  milliseconds: 300
+
+              - service: zwave_js.set_config_parameter
+                data:
+                  parameter: "{{ parameter.brightness }}"
+                  value: "{{ condition.brightness if not (night_led_brightness != '99' and in_nighttime and schedule_set) else night_led_brightness }}"
+                target: { device_id: "{{ controller_id }}" }
 
     - conditions: >
-        {{ 
-          (trigger.id in ['NightTime', 'DayTime'] and schedule_set) or 
-          (trigger.id == 'HassStart') or 
-          (trigger.id == 'EntityToggle' and schedule_set) 
+        {{
+          (trigger.id in ['NightTime', 'DayTime'] and schedule_set) or
+          (trigger.id == 'HassStart') or
+          (trigger.id == 'EntityToggle' and schedule_set)
         }}
       alias: "UniversalRefreshAction"
       sequence:
@@ -1250,19 +1259,21 @@ action:
                 then:
                   sequence: *fn_send_zwave_led_commands
 
+              - delay:
+                  milliseconds: 300
+
     - conditions: "{{ trigger.id == 'AutomationUpdate' }}"
       alias: "AutomationUpdateAction"
       sequence:
-        - if:
-            - condition: template
-              value_template: "{{ inputs[0].track_relay != '99' }}"
-          then:
-            - service: zwave_js.set_config_parameter
-              data:
-                parameter: "1"
-                value: "{{ inputs[0].track_relay }}"
-              target:
-                device_id: "{{ controller_id }}"
+        - service: zwave_js.set_config_parameter
+          data:
+            parameter: "1"
+            # "99" (Disabled) has no matching native value, so fall back to
+            # "Always off" here; if button 0 has a tracked entity, the LED
+            # refresh below will immediately override this with the real state.
+            value: "{{ '2' if inputs[0].track_relay == '99' else inputs[0].track_relay }}"
+          target:
+            device_id: "{{ controller_id }}"
         - service: zwave_js.set_config_parameter
           data:
             parameter: "19"
