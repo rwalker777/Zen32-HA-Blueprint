@@ -1,12 +1,12 @@
 blueprint:
-  name: ZEN32 and ZEN35 Scene and State (Z-Wave JS)(v2026.9.0)
+  name: ZEN32 and ZEN35 Scene and State (Z-Wave JS)(v2026.9.1)
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32 or ZEN35.
 
     Please configure any other Z-Wave parameters on the device page
 
-    **Version**: 2026.9.0
-    
+    **Version**: 2026.9.1
+
     **Firmware Support:**
     - ZEN32: All versions (uses 0-2 brightness scale)
     - ZEN32 800LR: v3.30+ (uses 1-10 brightness scale) - Recommended
@@ -1156,14 +1156,10 @@ action:
             target_state: "{{ trigger.to_state.state }}"
 
         - variables: &fn_calc_led_vars
+            map_b_off: "{{ brightness_map.get(current.off_brightness, current.off_brightness) if current.off_brightness != '99' else '99' }}"
+            map_b_on: "{{ brightness_map.get(current.on_brightness, current.on_brightness) if current.on_brightness != '99' else '99' }}"
+            map_b_unavail: "{{ brightness_map.get(current.unavail_brightness, current.unavail_brightness) if current.unavail_brightness != '99' else '99' }}"
             condition: >
-              {% set raw_b_off = current.off_brightness %}
-              {% set map_b_off = brightness_map.get(raw_b_off, raw_b_off) if raw_b_off != '99' else '99' %}
-              {% set raw_b_on = current.on_brightness %}
-              {% set map_b_on = brightness_map.get(raw_b_on, raw_b_on) if raw_b_on != '99' else '99' %}
-              {% set raw_b_unavail = current.unavail_brightness %}
-              {% set map_b_unavail = brightness_map.get(raw_b_unavail, raw_b_unavail) if raw_b_unavail != '99' else '99' %}
-
               {% if target_state in off_states %}
                 {{ dict(state=current.off_state, color=current.off_color, brightness=map_b_off) }}
               {% elif target_state in on_states %}
@@ -1173,7 +1169,6 @@ action:
               {% else %}
                 {{ dict(state=None, color=None, brightness=None) }}
               {% endif %}
-
             parameter:
               toggle: "{{ current.button_id | int + toggle_offset | int }}"
               color: "{{ current.button_id | int + color_offset | int }}"
