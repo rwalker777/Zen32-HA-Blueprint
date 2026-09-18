@@ -1,11 +1,11 @@
 blueprint:
-  name: ZEN32 and ZEN35 Scene and State (Z-Wave JS)(v2026.9.2)
+  name: ZEN32 and ZEN35 Scene and State (Z-Wave JS)(v2026.9.3)
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32 or ZEN35.
 
     Please configure any other Z-Wave parameters on the device page
 
-    **Version**: 2026.9.2
+    **Version**: 2026.9.3
 
     **Firmware Support:**
     - ZEN32: All versions (uses 0-2 brightness scale)
@@ -1148,7 +1148,12 @@ action:
             - conditions: "{{ property_key_name == '006' and value == 'KeyPressed5x' }}"
               sequence: !input "scene_65"
 
-    - conditions: "{{ trigger.id == 'StateTrigger' }}"
+    - conditions: >
+        {{
+          trigger.id == 'StateTrigger' and
+          (trigger.from_state is none or
+           trigger.to_state.state != trigger.from_state.state)
+        }}
       alias: "SingleButtonStateUpdate"
       sequence:
         - variables:
@@ -1221,7 +1226,9 @@ action:
         {{
           (trigger.id in ['NightTime', 'DayTime'] and schedule_set) or
           (trigger.id == 'HassStart') or
-          (trigger.id == 'EntityToggle' and schedule_set)
+          (trigger.id == 'EntityToggle' and schedule_set and
+           (trigger.from_state is none or
+            trigger.to_state.state != trigger.from_state.state))
         }}
       alias: "UniversalRefreshAction"
       sequence:
