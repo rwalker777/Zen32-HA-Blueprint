@@ -1,11 +1,9 @@
 blueprint:
-  name: ZEN32 and ZEN35 Scene and State (Z-Wave JS)(v2026.9.3)
+  name: ZEN32 and ZEN35 Scene and State (Z-Wave JS)(v2026.9.5)
   description: >
     Trigger on button press with LED state tracking for Zooz ZEN32 or ZEN35.
 
     Please configure any other Z-Wave parameters on the device page
-
-    **Version**: 2026.9.3
 
     **Firmware Support:**
     - ZEN32: All versions (uses 0-2 brightness scale)
@@ -831,7 +829,7 @@ variables:
   night_led_brightness_input: !input "night_led_brightness"
   night_led_brightness: >
     {% if night_led_brightness_input == '99' %}
-      "99"
+      {{ '99' }}
     {% else %}
       {{ brightness_map.get(night_led_brightness_input, '99') }}
     {% endif %}
@@ -1151,6 +1149,7 @@ action:
     - conditions: >
         {{
           trigger.id == 'StateTrigger' and
+          inputs[trigger.alias | int].track_relay not in ['0', '1'] and
           (trigger.from_state is none or
            trigger.to_state.state != trigger.from_state.state)
         }}
@@ -1200,7 +1199,7 @@ action:
                 target: { device_id: "{{ controller_id }}" }
 
               - delay:
-                  milliseconds: 300
+                  milliseconds: 100
 
               - service: zwave_js.set_config_parameter
                 data:
@@ -1214,7 +1213,7 @@ action:
                 target: { device_id: "{{ controller_id }}" }
 
               - delay:
-                  milliseconds: 300
+                  milliseconds: 100
 
               - service: zwave_js.set_config_parameter
                 data:
@@ -1267,7 +1266,7 @@ action:
                   sequence: *fn_send_zwave_led_commands
 
               - delay:
-                  milliseconds: 300
+                  milliseconds: 100
 
     - conditions: "{{ trigger.id == 'AutomationUpdate' }}"
       alias: "AutomationUpdateAction"
